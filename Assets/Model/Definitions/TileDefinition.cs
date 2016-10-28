@@ -12,6 +12,7 @@ public class TileDefinition : ScriptableObject {
 
 	public string identifier;
 	public Type type;
+	public bool walkable;
 	public int cost;
 	public int attackBonus;
 	public int defenseBonus;
