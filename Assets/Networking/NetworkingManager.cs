@@ -1,7 +1,11 @@
 ﻿using UnityEngine;
 using UnityEngine.Networking;
 
-public delegate void GameStateReceiver(GameState gameState);
+public delegate void GameStateReceivedHandler(GameState gameState);
+
+public delegate void ClientConnectionErrorHandler();
+
+public delegate void ConnectedToServerHandler();
 
 public class NetworkingManager : MonoBehaviour
 {
@@ -9,7 +13,9 @@ public class NetworkingManager : MonoBehaviour
     private const short MsgTypeGameStateC2S = 10000;
     private const short MsgTypeGameStateS2C = 10001;
 
-    public event GameStateReceiver StateReceivers;
+    public event GameStateReceivedHandler StateReceivers;
+    public event ClientConnectionErrorHandler ErrorHandlers;
+    public event ConnectedToServerHandler ConnectedHandler;
 
     private NetworkClient _client;
     private GameState _lastSeenGameState;
@@ -18,7 +24,11 @@ public class NetworkingManager : MonoBehaviour
     {
         InitializeGameState();
         InitializeServer();
+        InitializeLocalClient();
+    }
 
+    private void InitializeLocalClient()
+    {
         _client = ClientScene.ConnectLocalServer();
         RegisterClientHandlers();
     }
@@ -45,12 +55,17 @@ public class NetworkingManager : MonoBehaviour
     private void RegisterClientHandlers()
     {
         _client.RegisterHandler(MsgType.Connect, OnServerConnected);
+        _client.RegisterHandler(MsgType.Error, OnClientNetworkError);
+        _client.RegisterHandler(MsgType.Disconnect, OnClientNetworkError);
         _client.RegisterHandler(MsgTypeGameStateS2C, OnServerToClientStateMessage);
     }
 
     public void OnServerConnected(NetworkMessage message)
     {
-        Debug.Log("connected to server");
+        if (ConnectedHandler != null)
+        {
+            ConnectedHandler();
+        }
     }
 
     public void OnClientConnected(NetworkMessage message)
@@ -89,6 +104,14 @@ public class NetworkingManager : MonoBehaviour
             {
                 NetworkServer.SendToClient(connectionId, MsgTypeGameStateS2C, gameStateMessage);
             }
+        }
+    }
+
+    private void OnClientNetworkError(NetworkMessage networkMessage)
+    {
+        if (ErrorHandlers != null)
+        {
+            ErrorHandlers();
         }
     }
 }

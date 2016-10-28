@@ -4,9 +4,11 @@ using UnityEngine.Assertions;
 public class NetworkingManagerDebugUIThingy : MonoBehaviour
 {
     private bool _isAtStartup = true;
+    private bool _isConnected = false;
     private NetworkingManager _networkingManager;
+
     public GameState GameState;
-    public string serverHostname = "127.0.0.1";
+    public string ServerHostname = "127.0.0.1";
 
     void Awake()
     {
@@ -14,12 +16,25 @@ public class NetworkingManagerDebugUIThingy : MonoBehaviour
         Assert.IsNotNull(_networkingManager);
 
         _networkingManager.StateReceivers += OnStateReceived;
+        _networkingManager.ErrorHandlers += OnConnectionError;
+        _networkingManager.ConnectedHandler += OnConnected;
+    }
+
+    void OnConnectionError()
+    {
+        _isAtStartup = true;
+        _isConnected = false;
     }
 
     void OnStateReceived(GameState gameState)
     {
         GameState = gameState;
         Debug.LogError("Received game state " + GameState.CurrentState);
+    }
+
+    void OnConnected()
+    {
+        _isConnected = true;
     }
 
     void Update()
@@ -34,11 +49,11 @@ public class NetworkingManagerDebugUIThingy : MonoBehaviour
 
             if (Input.GetKeyDown(KeyCode.C))
             {
-                _networkingManager.ConnectToHost(serverHostname);
+                _networkingManager.ConnectToHost(ServerHostname);
                 _isAtStartup = false;
             }
         }
-        else
+        else if (_isConnected)
         {
             if (Input.GetKeyDown(KeyCode.P))
             {
@@ -71,11 +86,15 @@ public class NetworkingManagerDebugUIThingy : MonoBehaviour
         if (_isAtStartup)
         {
             GUI.Label(new Rect(2, 10, 150, 100), "Press S for server");
-            GUI.Label(new Rect(2, 50, 150, 100), "Press C for client");
+            GUI.Label(new Rect(2, 30, 150, 100), "Press C for client");
+        }
+        else if (_isConnected)
+        {
+            GUI.Label(new Rect(2, 10, 150, 100), "Press P to advance game state");
         }
         else
         {
-            GUI.Label(new Rect(2, 10, 150, 100), "Press P to advance game state");
+            GUI.Label(new Rect(2, 10, 150, 100), "Connecting...");
         }
     }
 }
