@@ -10,9 +10,20 @@ public class Unit
 		Down
 	}
 
-	public UnitDefinition Definition;
+	public int unitId;
+	public string definitionId;
 	public Direction facingDirection;
 	public Position position;
 	public int healthPoints;
+
+	[System.NonSerialized]
+	private UnitDefinition _definition;
+	public UnitDefinition Definition {
+		get {
+			if (!_definition)
+				_definition = DefinitionDatabase.Instance.UnitForId(definitionId);
+			return _definition;
+		}
+	}
 	
 }
