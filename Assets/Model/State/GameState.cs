@@ -17,4 +17,9 @@ public class GameState
 {
     public GameEngineState CurrentState;
     public Map Map;
+
+    public GameState()
+    {
+        CurrentState = GameEngineState.ServerWaiting;
+    }
 }

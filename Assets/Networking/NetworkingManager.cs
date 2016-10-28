@@ -12,13 +12,27 @@ public class NetworkingManager : MonoBehaviour
     public event GameStateReceiver StateReceivers;
 
     private NetworkClient _client;
+    private GameState _lastSeenGameState;
 
     public void StartHosting()
     {
-        NetworkServer.Listen(GamePort);
-        NetworkServer.RegisterHandler(MsgTypeGameStateC2S, OnClientToServerStateMessage);
+        InitializeGameState();
+        InitializeServer();
+
         _client = ClientScene.ConnectLocalServer();
         RegisterClientHandlers();
+    }
+
+    private void InitializeServer()
+    {
+        NetworkServer.Listen(GamePort);
+        NetworkServer.RegisterHandler(MsgTypeGameStateC2S, OnClientToServerStateMessage);
+        NetworkServer.RegisterHandler(MsgType.Connect, OnClientConnected);
+    }
+
+    private void InitializeGameState()
+    {
+        _lastSeenGameState = new GameState();
     }
 
     public void ConnectToHost(string hostname)
@@ -30,13 +44,21 @@ public class NetworkingManager : MonoBehaviour
 
     private void RegisterClientHandlers()
     {
-        _client.RegisterHandler(MsgType.Connect, OnConnected);
+        _client.RegisterHandler(MsgType.Connect, OnServerConnected);
         _client.RegisterHandler(MsgTypeGameStateS2C, OnServerToClientStateMessage);
     }
 
-    public void OnConnected(NetworkMessage message)
+    public void OnServerConnected(NetworkMessage message)
     {
         Debug.Log("connected to server");
+    }
+
+    public void OnClientConnected(NetworkMessage message)
+    {
+        if (_lastSeenGameState != null)
+        {
+            message.conn.Send(MsgTypeGameStateS2C, new MessageGameState(_lastSeenGameState));
+        }
     }
 
     public void SendState(GameState gameState)
@@ -56,15 +78,16 @@ public class NetworkingManager : MonoBehaviour
 
     private void OnClientToServerStateMessage(NetworkMessage networkMessage)
     {
-        var message = networkMessage.ReadMessage<MessageGameState>();
+        var gameStateMessage = networkMessage.ReadMessage<MessageGameState>();
         var sendingClientId = networkMessage.conn.connectionId;
 
+        _lastSeenGameState = gameStateMessage.ToGameState();
         foreach (var connection in NetworkServer.connections)
         {
             var connectionId = connection.connectionId;
             if (connectionId != sendingClientId)
             {
-                NetworkServer.SendToClient(connectionId, MsgTypeGameStateS2C, message);
+                NetworkServer.SendToClient(connectionId, MsgTypeGameStateS2C, gameStateMessage);
             }
         }
     }

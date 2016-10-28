@@ -5,6 +5,8 @@ public class NetworkingManagerDebugUIThingy : MonoBehaviour
 {
     private bool _isAtStartup = true;
     private NetworkingManager _networkingManager;
+    public GameState GameState;
+    public string serverHostname = "127.0.0.1";
 
     void Awake()
     {
@@ -16,7 +18,8 @@ public class NetworkingManagerDebugUIThingy : MonoBehaviour
 
     void OnStateReceived(GameState gameState)
     {
-        Debug.LogError("Received game state");
+        GameState = gameState;
+        Debug.LogError("Received game state " + GameState.CurrentState);
     }
 
     void Update()
@@ -31,7 +34,7 @@ public class NetworkingManagerDebugUIThingy : MonoBehaviour
 
             if (Input.GetKeyDown(KeyCode.C))
             {
-                _networkingManager.ConnectToHost("127.0.0.1");
+                _networkingManager.ConnectToHost(serverHostname);
                 _isAtStartup = false;
             }
         }
@@ -39,7 +42,26 @@ public class NetworkingManagerDebugUIThingy : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.P))
             {
-                _networkingManager.SendState(new GameState());
+                switch (GameState.CurrentState)
+                {
+                    case GameEngineState.ServerWaiting:
+                        GameState.CurrentState = GameEngineState.P1Moving;
+                        break;
+                    case GameEngineState.P1Moving:
+                        GameState.CurrentState = GameEngineState.P2Moving;
+                        break;
+                    case GameEngineState.P2Moving:
+                        GameState.CurrentState = GameEngineState.P1Revising;
+                        break;
+                    case GameEngineState.P1Revising:
+                        GameState.CurrentState = GameEngineState.P2Revising;
+                        break;
+                    case GameEngineState.P2Revising:
+                        GameState.CurrentState = GameEngineState.P1Moving;
+                        break;
+                }
+                _networkingManager.SendState(GameState);
+                Debug.LogError("Sent game state " + GameState.CurrentState);
             }
         }
     }
@@ -53,13 +75,7 @@ public class NetworkingManagerDebugUIThingy : MonoBehaviour
         }
         else
         {
-            GUI.Label(new Rect(2, 10, 150, 100), "Press P to pend");
+            GUI.Label(new Rect(2, 10, 150, 100), "Press P to advance game state");
         }
-    }
-
-    void OnGameState(GameState newGameState)
-    {
-        Debug.LogError("Such state, much wow!");
-
     }
 }
