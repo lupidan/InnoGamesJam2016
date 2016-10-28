@@ -5,19 +5,18 @@ public class NetworkingManagerDebugUIThingy : MonoBehaviour
 {
     private bool _isAtStartup = true;
     private bool _isConnected = false;
-    private NetworkingManager _networkingManager;
+
+    public ServerNetworkingManager _server;
+    public ClientNetworkingManager _client;
 
     public GameState GameState;
     public string ServerHostname = "127.0.0.1";
 
     void Awake()
     {
-        _networkingManager = GetComponent<NetworkingManager>();
-        Assert.IsNotNull(_networkingManager);
-
-        _networkingManager.StateReceivers += OnStateReceived;
-        _networkingManager.ErrorHandlers += OnConnectionError;
-        _networkingManager.ConnectedHandler += OnConnected;
+        _client.StateReceivers += OnStateReceived;
+        _client.ErrorHandlers += OnConnectionError;
+        _client.ConnectedHandler += OnConnected;
     }
 
     void OnConnectionError()
@@ -43,13 +42,14 @@ public class NetworkingManagerDebugUIThingy : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.S))
             {
-                _networkingManager.StartHosting();
+                _server.StartServer();
+                _client.ConnectLocally();
                 _isAtStartup = false;
             }
 
             if (Input.GetKeyDown(KeyCode.C))
             {
-                _networkingManager.ConnectToHost(ServerHostname);
+                _client.ConnectToHost(ServerHostname);
                 _isAtStartup = false;
             }
         }
@@ -75,7 +75,7 @@ public class NetworkingManagerDebugUIThingy : MonoBehaviour
                         GameState.CurrentState = GameEngineState.P1Moving;
                         break;
                 }
-                _networkingManager.SendState(GameState);
+                _client.SendState(GameState);
                 Debug.LogError("Sent game state " + GameState.CurrentState);
             }
         }
