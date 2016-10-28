@@ -1,5 +1,7 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections;
+using Combat.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.EventSystems;
 
@@ -7,15 +9,24 @@ using UnityEngine.EventSystems;
 [RequireComponent(typeof(Collider2D))]
 [RequireComponent(typeof(SpriteRenderer))]
 [RequireComponent(typeof(Animator))]
-public class UnitController : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
+public class UnitController :
+    MonoBehaviour,
+    IPointerClickHandler,
+    IPointerEnterHandler,
+    IPointerExitHandler,
+    ITakeDamageHandler
 {
     private Animator animator;
 
     private AudioSource audioSource;
 
-    public UnitDefinition unit;
+    private Unit unitData;
 
-    public Vector2 selectedTarget;
+    private Position selectedTarget;
+
+    private Position target;
+
+    public UnitDefinition unitDefinition;
 
     public AudioClip clickedSound;
 
@@ -28,21 +39,39 @@ public class UnitController : MonoBehaviour, IPointerClickHandler, IPointerEnter
     public AudioClip dyingSound;
 
 
+    public enum UnitAnimationEvents
+    {
+        StartedMoving,
+        StoppedMoving,
+        Died
+    }
+
     // Use this for initialization
     void Start()
     {
         animator = GetComponent<Animator>();
         audioSource = GetComponent<AudioSource>();
+
+        unitData = new Unit();
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        if (hasArrivedAtDestination())
+        {
+            animator.SetBool(UnitAnimationEvents.StoppedMoving.ToString(), true);
+        }
     }
 
-    public void move()
+    public Boolean hasArrivedAtDestination()
     {
+        return true;
+    }
+
+    public void moveTo()
+    {
+        animator.SetBool("startedMoving", true);
     }
 
 
@@ -91,6 +120,26 @@ public class UnitController : MonoBehaviour, IPointerClickHandler, IPointerEnter
         audioSource.Play();
     }
 
+    private void highlightUnit()
+    {
+        Debug.LogError("Highlighting Unit is not implemented yet");
+    }
+
+    private void removeHighlighting()
+    {
+        Debug.LogError("removing Highliting Unit is not implemented yet");
+    }
+
+    private void markSelected()
+    {
+        Debug.LogError("mark unit selected Unit is not implemented yet");
+    }
+
+    private void removeSelection()
+    {
+        Debug.LogError(" Unit is not implemented yet");
+    }
+
     public void OnPointerClick(PointerEventData eventData)
     {
         var selected = EventSystem.current.currentSelectedGameObject;
@@ -104,9 +153,24 @@ public class UnitController : MonoBehaviour, IPointerClickHandler, IPointerEnter
 
     public void OnPointerEnter(PointerEventData eventData)
     {
+        highlightUnit();
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
+        removeHighlighting();
+    }
+
+    public void OnTakeDamage(TakeDamageEventData damage)
+    {
+
+        if (unitData.healthPoints > 0)
+        {
+            unitData.healthPoints -= damage.damage;
+            if (unitData.healthPoints <= 0)
+            {
+                animator.SetBool(UnitAnimationEvents.Died.ToString(), true);
+            }
+        }
     }
 }
