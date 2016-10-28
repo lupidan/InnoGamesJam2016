@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.Networking;
 
 public delegate void GameStateReceivedHandler(GameState gameState);
@@ -14,15 +15,18 @@ public class ClientNetworkingManager : MonoBehaviour
     public event ConnectedToServerHandler ConnectedHandler;
 
     private NetworkClient _client;
+    private int _playerId;
 
     public void ConnectLocally()
     {
+        _playerId = 0;
         _client = ClientScene.ConnectLocalServer();
         RegisterClientHandlers();
     }
 
     public void ConnectToHost(string hostname)
     {
+        _playerId = 1;
         _client = new NetworkClient();
         RegisterClientHandlers();
         _client.Connect(hostname, NetworkingConstants.GamePort);
@@ -44,10 +48,14 @@ public class ClientNetworkingManager : MonoBehaviour
         }
     }
 
-    public void SendState(GameState gameState)
+    public void SendActions(List<GameAction> actions)
     {
-        var message = new MessageGameState(gameState);
-        _client.Send(NetworkingConstants.MsgTypeGameStateC2S, message);
+        var gameActions = new GameActions();
+        gameActions.actions = actions;
+        gameActions.playerID = _playerId;
+
+        var message = new MessageGameActions(gameActions);
+        _client.Send(NetworkingConstants.MsgTypeGameActionsC2S, message);
     }
 
     private void OnServerToClientStateMessage(NetworkMessage networkMessage)

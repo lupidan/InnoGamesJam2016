@@ -1,10 +1,12 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.Assertions;
 
 public class NetworkingManagerDebugUIThingy : MonoBehaviour
 {
     private bool _isAtStartup = true;
     private bool _isConnected = false;
+    private bool _isWaiting = false;
 
     public ServerNetworkingManager _server;
     public ClientNetworkingManager _client;
@@ -27,6 +29,7 @@ public class NetworkingManagerDebugUIThingy : MonoBehaviour
 
     void OnStateReceived(GameState gameState)
     {
+        _isWaiting = false;
         GameState = gameState;
         Debug.LogError("Received game state " + GameState.CurrentState);
     }
@@ -53,29 +56,12 @@ public class NetworkingManagerDebugUIThingy : MonoBehaviour
                 _isAtStartup = false;
             }
         }
-        else if (_isConnected)
+        else if (_isConnected && !_isWaiting)
         {
             if (Input.GetKeyDown(KeyCode.P))
             {
-                switch (GameState.CurrentState)
-                {
-                    case GameEngineState.ServerWaiting:
-                        GameState.CurrentState = GameEngineState.P1Moving;
-                        break;
-                    case GameEngineState.P1Moving:
-                        GameState.CurrentState = GameEngineState.P2Moving;
-                        break;
-                    case GameEngineState.P2Moving:
-                        GameState.CurrentState = GameEngineState.P1Revising;
-                        break;
-                    case GameEngineState.P1Revising:
-                        GameState.CurrentState = GameEngineState.P2Revising;
-                        break;
-                    case GameEngineState.P2Revising:
-                        GameState.CurrentState = GameEngineState.P1Moving;
-                        break;
-                }
-                _client.SendState(GameState);
+                _isWaiting = true;
+                _client.SendActions(new List<GameAction>());
                 Debug.LogError("Sent game state " + GameState.CurrentState);
             }
         }
@@ -88,7 +74,11 @@ public class NetworkingManagerDebugUIThingy : MonoBehaviour
             GUI.Label(new Rect(2, 10, 150, 100), "Press S for server");
             GUI.Label(new Rect(2, 30, 150, 100), "Press C for client");
         }
-        else if (_isConnected)
+        else if (_isConnected && _isWaiting)
+        {
+            GUI.Label(new Rect(2, 10, 150, 100), "Waiting for other player...");
+        }
+        else if (_isConnected && !_isWaiting)
         {
             GUI.Label(new Rect(2, 10, 150, 100), "Press P to advance game state");
         }
