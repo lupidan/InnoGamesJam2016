@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections;
-using System.Media;
 using UnityEngine.EventSystems;
 using UnityEngine.EventSystems;
 
@@ -14,18 +13,19 @@ public class UnitController : MonoBehaviour, IPointerClickHandler, IPointerEnter
 
     private AudioSource audioSource;
 
+    public UnitDefinition unit;
+
+    public Vector2 selectedTarget;
+
     public AudioClip clickedSound;
 
     public AudioClip attackSound;
 
     public AudioClip damagedSound;
 
+    public AudioClip movingSound;
+
     public AudioClip dyingSound;
-
-    [SerializeField] public AudioClip movingSound;
-
-
-    public Vector2 selectedTarget;
 
 
     // Use this for initialization
@@ -38,11 +38,7 @@ public class UnitController : MonoBehaviour, IPointerClickHandler, IPointerEnter
     // Update is called once per frame
     void Update()
     {
-        bool stoppedMoving;
-        if (stoppedMoving)
-        {
-            animator.
-        }
+
     }
 
     public void move()

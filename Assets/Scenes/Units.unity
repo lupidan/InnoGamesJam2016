@@ -101,6 +101,7 @@ GameObject:
   - 212: {fileID: 172844991}
   - 61: {fileID: 172844993}
   - 114: {fileID: 172844994}
+  - 95: {fileID: 172844995}
   m_Layer: 0
   m_Name: Tank
   m_TagString: Untagged
@@ -179,6 +180,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2827ee164260f472eb99892ccbd4140a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  unit: {fileID: 11400000, guid: a71636f860e8f4044a22eb8dc6b6f11e, type: 2}
+  selectedTarget: {x: 0, y: 0}
+  clickedSound: {fileID: 0}
+  attackSound: {fileID: 0}
+  damagedSound: {fileID: 0}
+  movingSound: {fileID: 0}
+  dyingSound: {fileID: 0}
+--- !u!95 &172844995
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 172844990}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
 --- !u!1 &849554507
 GameObject:
   m_ObjectHideFlags: 0
