@@ -2,6 +2,6 @@
 
 [System.Serializable]
 public class Tile {
-	TileDefinition definition;
-	Position position;
+	public TileDefinition definition;
+	public Position position;
 }
