@@ -4,16 +4,25 @@ using UnityEngine.Assertions;
 public class NetworkingManagerDebugUIThingy : MonoBehaviour
 {
     private bool _isAtStartup = true;
-    private NetworkingManager _networkingManager;
+    private bool _isConnected = false;
+
+    public ServerNetworkingManager _server;
+    public ClientNetworkingManager _client;
+
     public GameState GameState;
-    public string serverHostname = "127.0.0.1";
+    public string ServerHostname = "127.0.0.1";
 
     void Awake()
     {
-        _networkingManager = GetComponent<NetworkingManager>();
-        Assert.IsNotNull(_networkingManager);
+        _client.StateReceivers += OnStateReceived;
+        _client.ErrorHandlers += OnConnectionError;
+        _client.ConnectedHandler += OnConnected;
+    }
 
-        _networkingManager.StateReceivers += OnStateReceived;
+    void OnConnectionError()
+    {
+        _isAtStartup = true;
+        _isConnected = false;
     }
 
     void OnStateReceived(GameState gameState)
@@ -22,23 +31,29 @@ public class NetworkingManagerDebugUIThingy : MonoBehaviour
         Debug.LogError("Received game state " + GameState.CurrentState);
     }
 
+    void OnConnected()
+    {
+        _isConnected = true;
+    }
+
     void Update()
     {
         if (_isAtStartup)
         {
             if (Input.GetKeyDown(KeyCode.S))
             {
-                _networkingManager.StartHosting();
+                _server.StartServer();
+                _client.ConnectLocally();
                 _isAtStartup = false;
             }
 
             if (Input.GetKeyDown(KeyCode.C))
             {
-                _networkingManager.ConnectToHost(serverHostname);
+                _client.ConnectToHost(ServerHostname);
                 _isAtStartup = false;
             }
         }
-        else
+        else if (_isConnected)
         {
             if (Input.GetKeyDown(KeyCode.P))
             {
@@ -60,7 +75,7 @@ public class NetworkingManagerDebugUIThingy : MonoBehaviour
                         GameState.CurrentState = GameEngineState.P1Moving;
                         break;
                 }
-                _networkingManager.SendState(GameState);
+                _client.SendState(GameState);
                 Debug.LogError("Sent game state " + GameState.CurrentState);
             }
         }
@@ -71,11 +86,15 @@ public class NetworkingManagerDebugUIThingy : MonoBehaviour
         if (_isAtStartup)
         {
             GUI.Label(new Rect(2, 10, 150, 100), "Press S for server");
-            GUI.Label(new Rect(2, 50, 150, 100), "Press C for client");
+            GUI.Label(new Rect(2, 30, 150, 100), "Press C for client");
+        }
+        else if (_isConnected)
+        {
+            GUI.Label(new Rect(2, 10, 150, 100), "Press P to advance game state");
         }
         else
         {
-            GUI.Label(new Rect(2, 10, 150, 100), "Press P to advance game state");
+            GUI.Label(new Rect(2, 10, 150, 100), "Connecting...");
         }
     }
 }
