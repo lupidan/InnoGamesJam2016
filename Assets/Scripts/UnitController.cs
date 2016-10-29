@@ -173,4 +173,29 @@ public class UnitController :
             }
         }
     }
+
+    public void PlayMoveAnimation(Position toPosition, Action onFinished)
+    {
+
+    }
+
+    public void PlayRotateAnimation(Unit.Direction toDirection, Action onFinished)
+    {
+
+    }
+
+    public void PlayAttackAnimation(Position targetPosition, Action onFinished)
+    {
+
+    }
+
+    public void PlayHitpointChange(int newHitpoints, Action onFinished)
+    {
+
+    }
+
+    public void PlayDeathAnimation(Action onFinished)
+    {
+        
+    }
 }
