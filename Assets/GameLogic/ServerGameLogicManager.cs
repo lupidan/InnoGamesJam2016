@@ -150,14 +150,14 @@ public class ServerGameLogicManager : MonoBehaviour
             GetAttackStrengthAtPosition(
                 fighterLeft.Definition.attackPattern,
                 fighterLeft.position,
-                fighterRight.position) - fighterRight.Definition.defense[(int)fighterLeft.Definition.type],
+                fighterRight.position) - fighterRight.Definition.DefenseAgainst(fighterLeft.Definition.type),
             0);
 
         result[1] = Math.Max(
             GetAttackStrengthAtPosition(
                 fighterRight.Definition.attackPattern,
                 fighterRight.position,
-                fighterLeft.position) - fighterLeft.Definition.defense[(int)fighterRight.Definition.type],
+                fighterLeft.position) - fighterLeft.Definition.DefenseAgainst(fighterRight.Definition.type),
             0);
 
         return result;
