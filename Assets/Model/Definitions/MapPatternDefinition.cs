@@ -6,6 +6,9 @@ public class MapPatternDefinition : ScriptableObject
 {
     public int Width = 1;
     public int Height = 1;
+
+    public Position offset;
+
     [SerializeField]
     private string[] Data = new string[1];
 

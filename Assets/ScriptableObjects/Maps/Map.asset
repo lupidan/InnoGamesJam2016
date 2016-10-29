@@ -13,7 +13,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Width: 20
   Height: 15
+  offset:
+    x: 2
+    y: 2
   Data:
+  - rock_tile
   - grass_tile
   - grass_tile
   - grass_tile
@@ -273,6 +277,7 @@ MonoBehaviour:
   - grass_tile
   - grass_tile
   - grass_tile
+  - sand_tile
   - grass_tile
   - grass_tile
   - grass_tile
@@ -292,6 +297,7 @@ MonoBehaviour:
   - grass_tile
   - grass_tile
   - grass_tile
+  - swamp_tile
   - grass_tile
   - grass_tile
   - grass_tile
@@ -310,7 +316,4 @@ MonoBehaviour:
   - grass_tile
   - grass_tile
   - grass_tile
-  - grass_tile
-  - grass_tile
-  - grass_tile
-  - grass_tile
+  - swamp_tile

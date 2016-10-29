@@ -38,18 +38,33 @@ public class MapShapeEditor : Editor
     public static float InspectMapPattern(Rect position, MapPatternDefinition mapPattern)
     {
         float usedHeight = 0f;
-        float halfPositionX = position.width * 0.5f;
+        float quarterPositionX = position.width * 0.5f;
 
         int newWidth = EditorGUI.IntField(
-            new Rect(position.x, position.y, halfPositionX, EditorGUIUtility.singleLineHeight),
+            new Rect(position.x + quarterPositionX * 0, position.y, quarterPositionX, EditorGUIUtility.singleLineHeight),
             "Width:",
             mapPattern.Width
         );
 
         int newHeight = EditorGUI.IntField(
-            new Rect(position.x + halfPositionX, position.y, halfPositionX, EditorGUIUtility.singleLineHeight),
+            new Rect(position.x + quarterPositionX * 1, position.y, quarterPositionX, EditorGUIUtility.singleLineHeight),
             "Height:",
             mapPattern.Height
+        );
+
+        position.y += EditorGUIUtility.singleLineHeight;
+        usedHeight += EditorGUIUtility.singleLineHeight;
+
+        mapPattern.offset.x = EditorGUI.IntField(
+            new Rect(position.x + quarterPositionX * 0, position.y, quarterPositionX, EditorGUIUtility.singleLineHeight),
+            "OffsetX:",
+            mapPattern.offset.x
+        );
+
+        mapPattern.offset.y = EditorGUI.IntField(
+            new Rect(position.x + quarterPositionX * 1, position.y, quarterPositionX, EditorGUIUtility.singleLineHeight),
+            "OffsetY:",
+            mapPattern.offset.y
         );
 
         position.y += EditorGUIUtility.singleLineHeight;
@@ -73,6 +88,15 @@ public class MapShapeEditor : Editor
 
         GUIStyle fontStyle = new GUIStyle(EditorStyles.textField);
         fontStyle.fontSize = Mathf.FloorToInt(xWidth * 0.7f);
+
+        // Draw map offset
+        EditorGUI.DrawRect(new Rect(
+            position.x + mapPattern.offset.x * xWidth,
+            position.y + mapPattern.offset.y * xWidth,
+            (mapPattern.Width - mapPattern.offset.x * 2) * xWidth,
+            (mapPattern.Height - mapPattern.offset.y * 2) * xWidth
+        ), Color.red);
+
 
         for (uint x = 0; x < mapPattern.Width; x++)
         {
