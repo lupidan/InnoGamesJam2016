@@ -5,7 +5,7 @@ AnimatorController:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: blue heavy
+  m_Name: blue range
   serializedVersion: 5
   m_AnimatorParameters:
   - m_Name: StartAttacking
@@ -202,7 +202,7 @@ AnimatorState:
   m_SpeedParameterActive: 0
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 6cc97f8378150494aa963bf85be43292, type: 2}
+  m_Motion: {fileID: 7400000, guid: 8d60ad3675d5e40e38408ccb7a56117a, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -275,7 +275,7 @@ AnimatorState:
   m_SpeedParameterActive: 0
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 6cc97f8378150494aa963bf85be43292, type: 2}
+  m_Motion: {fileID: 7400000, guid: 8d60ad3675d5e40e38408ccb7a56117a, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -309,7 +309,7 @@ AnimatorState:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: Attack
+  m_Name: blue heavy attack
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -322,7 +322,7 @@ AnimatorState:
   m_SpeedParameterActive: 0
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 8ad05dc222bf247c8b8ed8a335b5118e, type: 2}
+  m_Motion: {fileID: 7400000, guid: 7cf4522bdcc6b4e45b8316821ddb6a8e, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
