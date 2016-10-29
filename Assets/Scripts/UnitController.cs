@@ -133,6 +133,14 @@ public class UnitController :
         gameObject.transform.position = position;
     }
 
+    private void DisplayTeleport()
+    {
+        GameObject gameObject = FindObjectOfType<MapGenerator>().InstantiatePrefab("EffectTeleport");
+        Vector3 position = this.transform.position;
+        position.z -= 0.1f;
+        gameObject.transform.position = position;
+    }
+
     private void DisplayHeavyShotRelative()
     {
         GameObject gameObject = FindObjectOfType<MapGenerator>().InstantiatePrefab("HeavyEffect");
