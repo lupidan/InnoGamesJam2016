@@ -50,4 +50,23 @@ public class LevelGenerator : MonoBehaviour {
 		tileController.name = "tile_" + tile.position.x + "_" + tile.position.y;
 		return tileController;
 	}
+
+	public List<TileController> CreateTiles(Position offset, string[,] tiles)
+	{
+		List<TileController> tileControllers = new List<TileController>();
+		for (int i = 0; i < tiles.GetLength(0); i++)
+		{
+			for (int j = 0; j < tiles.GetLength(1); j++)
+			{
+				Tile tile = new Tile();
+				tile.position.x = j + offset.x;
+				tile.position.y = i + offset.y;
+				tile.definitionId = tiles[i,j];
+				TileController tileController = CreateTile(tile);
+				tileControllers.Add(tileController);
+			}
+		}
+		return tileControllers;
+	}
+
 }
