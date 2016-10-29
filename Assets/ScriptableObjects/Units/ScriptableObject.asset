@@ -9,16 +9,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0986ec97543a4413994bdf37a1a31413, type: 3}
-  m_Name: MeeleUnit
+  m_Name: ScriptableObject
   m_EditorClassIdentifier: 
-  identifier: meele_unit
-  unitName: Meele unit
-  type: 0
+  identifier: king_unit
+  unitName: King Unit
+  type: 4
   maxHealth: 10
-  heavyDefense: 3
+  heavyDefense: 7
   meeleDefense: 5
   rangeDefense: 7
   kingDefense: 0
-  maxMovements: 10
-  maxCheatingMovements: 3
-  attackPattern: {fileID: 11400000, guid: b5b6fa5d2eecf4bc6a9e495cc47ce52d, type: 2}
+  maxMovements: 5
+  maxCheatingMovements: 5
+  attackPattern: {fileID: 0}

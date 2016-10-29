@@ -10,10 +10,10 @@ public delegate void StateUpdatedHandler();
 /// </summary>
 /// [RequireComponent(typeof(Animator))]
 ///
-[RequireComponent(typeof(LevelGenerator))]
+[RequireComponent(typeof(MapGenerator))]
 public class ClientGameLogicManager : MonoBehaviour
 {
-    private LevelGenerator generator;
+    private MapGenerator generator;
 
     public GameState CurrentServerSideState;
     public GameState CurrentVisibleState;
@@ -24,7 +24,7 @@ public class ClientGameLogicManager : MonoBehaviour
 
     public void Start()
     {
-        generator = GetComponent<LevelGenerator>();
+        generator = GetComponent<MapGenerator>();
     }
 
     public void ReceivedNewGameState(GameState gameState)
