@@ -3,7 +3,8 @@
 [System.Serializable]
 public class GameAction
 {
-
+    public int UnitId;
+    public Position moveToPosition;
 }
 
 [System.Serializable]

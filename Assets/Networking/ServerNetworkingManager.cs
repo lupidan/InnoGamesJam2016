@@ -17,6 +17,12 @@ public class ServerNetworkingManager : MonoBehaviour
         InitializeServer();
     }
 
+    public void StartSinglePlayerServer()
+    {
+        _gameLogic.InitializeNewSinglePlayerGame();
+        InitializeServer();
+    }
+
     private void InitializeServer()
     {
         NetworkServer.Listen(NetworkingConstants.GamePort);

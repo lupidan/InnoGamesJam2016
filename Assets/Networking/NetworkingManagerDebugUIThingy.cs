@@ -48,6 +48,13 @@ public class NetworkingManagerDebugUIThingy : MonoBehaviour
                 _isAtStartup = false;
             }
 
+            if (Input.GetKeyDown(KeyCode.X))
+            {
+                Server.StartSinglePlayerServer();
+                Client.ConnectLocally();
+                _isAtStartup = false;
+            }
+
             if (Input.GetKeyDown(KeyCode.C))
             {
                 Client.ConnectToHost(ServerHostname);
@@ -69,7 +76,8 @@ public class NetworkingManagerDebugUIThingy : MonoBehaviour
         if (_isAtStartup)
         {
             GUI.Label(new Rect(2, 10, 150, 100), "Press S for server");
-            GUI.Label(new Rect(2, 30, 150, 100), "Press C for client");
+            GUI.Label(new Rect(2, 30, 150, 100), "Press X for singleplayer server");
+            GUI.Label(new Rect(2, 50, 150, 100), "Press C for client");
         }
         else if (_isConnected && _isWaiting)
         {
