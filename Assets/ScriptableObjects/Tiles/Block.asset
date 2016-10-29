@@ -9,11 +9,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: aad111f0fc36b468faf043e971f83952, type: 3}
-  m_Name: Grass
+  m_Name: Block
   m_EditorClassIdentifier: 
-  identifier: grass_tile
-  type: 0
-  walkable: 1
-  cost: 1
+  identifier: block_tile
+  type: 1
+  walkable: 0
+  cost: 0
   attackBonus: 0
   defenseBonus: 0

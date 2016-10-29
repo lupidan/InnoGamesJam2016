@@ -9,11 +9,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: aad111f0fc36b468faf043e971f83952, type: 3}
-  m_Name: Forest
+  m_Name: Normal
   m_EditorClassIdentifier: 
-  identifier: forest_tile
-  type: 2
+  identifier: normal_tile
+  type: 0
   walkable: 1
-  cost: 2
+  cost: 1
   attackBonus: 0
-  defenseBonus: 2
+  defenseBonus: 0

@@ -4,9 +4,8 @@
 public class TileDefinition : ScriptableObject {
 
 	public enum Type {
-		Grass,
-		Mountain,
-		Forest,
+		Normal,
+		Block,
         Swamp
 	}
 

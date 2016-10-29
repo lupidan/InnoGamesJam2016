@@ -8,7 +8,7 @@ public class MapShapeEditor : Editor
 {
 
     private static readonly string[] tileTypes = {
-        "grass_tile", "rock_tile", "sand_tile", "swamp_tile"
+        "normal_tile", "rock_tile", "swamp_tile"
     };
 
 
@@ -102,6 +102,7 @@ public class MapShapeEditor : Editor
         {
             for (uint y = 0; y < mapPattern.Height; y++)
             {
+                uint mapY = (uint)mapPattern.Height - 1 - y;
                 int res = EditorGUI.IntField(
                     new Rect(
                         position.x + xWidth * x,
@@ -109,11 +110,11 @@ public class MapShapeEditor : Editor
                         xWidth,
                         xWidth
                     ),
-                    IndexOfTile(mapPattern.GetData(x, y)),
+                    IndexOfTile(mapPattern.GetData(x, mapY)),
                     fontStyle
                 );
 
-                mapPattern.SetData(x, y, tileTypes[res]);
+                mapPattern.SetData(x, mapY, tileTypes[res]);
             }
         }
 
@@ -163,7 +164,8 @@ public class MapShapeEditor : Editor
         {
             for (uint y = 0; y < mapPattern.Height; y++)
             {
-                if (mapPattern.GetData(x, y) != "")
+                uint mapY = (uint)mapPattern.Height - 1 - y;
+                if (mapPattern.GetData(x, mapY) != "")
                 {
                     EditorGUI.DrawRect(
                         new Rect(
@@ -172,7 +174,7 @@ public class MapShapeEditor : Editor
                             blockSize - 2,
                             blockSize - 2
                         ),
-                        new Color(0, 0, 0, IndexOfTile(mapPattern.GetData(x, y)) * divMax)
+                        new Color(0, 0, 0, IndexOfTile(mapPattern.GetData(x, mapY)) * divMax)
                     );
                 }
             }
@@ -215,12 +217,13 @@ public class MapShapeEditor : Editor
         {
             for (uint y = 0; y < mapPattern.Height; y++)
             {
-                if (mapPattern.GetData(x, y) != "")
+                uint mapY = (uint)mapPattern.Height - 1 - y;
+                if (mapPattern.GetData(x, mapY) != "")
                 {
                     int sx = (int)(offX + (int) x * blockSize + 1);
                     int sy = (int)(texHeight - (offY + (int) y * blockSize + 1) - blockSize);
 
-                    Color color = new Color(0, 0, 0, IndexOfTile(mapPattern.GetData(x, y)) * divMax);
+                    Color color = new Color(0, 0, 0, IndexOfTile(mapPattern.GetData(x, mapY)) * divMax);
 
                     for (int px = 0; px < blockSize - 2; px++)
                     {

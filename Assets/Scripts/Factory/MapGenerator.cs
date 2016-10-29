@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-public class LevelGenerator : MonoBehaviour {
+public class MapGenerator : MonoBehaviour {
 
 	[SerializeField]
 	private GameObject[] prefabs;

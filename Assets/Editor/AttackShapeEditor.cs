@@ -75,7 +75,8 @@ public class AttackShapeEditor : Editor
         {
             for (uint y = 0; y < attackPatternDefinition.Height; y++)
             {
-                if (!attackPatternDefinition.IsCenter(x,y))
+                uint mapY = (uint)attackPatternDefinition.Height - 1 - y;
+                if (!attackPatternDefinition.IsCenter(x,mapY))
                 {
                     int res = EditorGUI.IntField(
                         new Rect(
@@ -84,11 +85,11 @@ public class AttackShapeEditor : Editor
                             xWidth,
                             xWidth
                         ),
-                        attackPatternDefinition.GetData(x, y),
+                        attackPatternDefinition.GetData(x, mapY),
                         fontStyle
                     );
 
-                    attackPatternDefinition.SetData(x, y, res);
+                    attackPatternDefinition.SetData(x, mapY, res);
                 }
             }
         }
@@ -133,7 +134,8 @@ public class AttackShapeEditor : Editor
         {
             for (uint y = 0; y < attackPattern.Height; y++)
             {
-                if (attackPattern.GetData(x, y) > 0)
+                uint mapY = (uint)attackPattern.Height - 1 - y;
+                if (attackPattern.GetData(x, mapY) > 0)
                 {
                     EditorGUI.DrawRect(
                         new Rect(
@@ -142,10 +144,10 @@ public class AttackShapeEditor : Editor
                             blockSize - 2,
                             blockSize - 2
                         ),
-                        new Color(RED_COLOR, 0, 0, attackPattern.GetData(x, y) * divMax)
+                        new Color(RED_COLOR, 0, 0, attackPattern.GetData(x, mapY) * divMax)
                     );
                 }
-                else if (attackPattern.IsCenter(x, y))
+                else if (attackPattern.IsCenter(x, mapY))
                 {
                     EditorGUI.DrawRect(
                         new Rect(
@@ -197,12 +199,13 @@ public class AttackShapeEditor : Editor
         {
             for (uint y = 0; y < attackPattern.Height; y++)
             {
-                if (attackPattern.GetData(x, y) > 0)
+                uint mapY = (uint)attackPattern.Height - 1 - y;
+                if (attackPattern.GetData(x, mapY) > 0)
                 {
                     int sx = (int) (offX + (int) x * blockSize + 1);
                     int sy = (int) (texHeight - (offY + (int) y * blockSize + 1) - blockSize);
 
-                    Color color = new Color(RED_COLOR, 0, 0, attackPattern.GetData(x, y) * divMax);
+                    Color color = new Color(RED_COLOR, 0, 0, attackPattern.GetData(x, mapY) * divMax);
 
                     for (int px = 0; px < blockSize - 2; px++)
                     {
@@ -212,7 +215,7 @@ public class AttackShapeEditor : Editor
                         }
                     }
                 }
-                else if(attackPattern.IsCenter(x, y))
+                else if(attackPattern.IsCenter(x, mapY))
                 {
                     int sx = (int) (offX + (int) x * blockSize + 1);
                     int sy = (int) (texHeight - (offY + (int) y * blockSize + 1) - blockSize);
