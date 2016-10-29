@@ -7,6 +7,7 @@ using System.Collections.Generic;
 public class Player
 {
     public String name;
+    public int id;
     public Dictionary<int, Unit> units;
 
 }
