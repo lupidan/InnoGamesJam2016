@@ -278,38 +278,8 @@ MonoBehaviour:
   - normal_tile
   - normal_tile
   - normal_tile
-  - normal_tile
-  - normal_tile
-  - normal_tile
-  - normal_tile
-  - normal_tile
-  - normal_tile
-  - normal_tile
-  - normal_tile
-  - normal_tile
-  - normal_tile
-  - normal_tile
-  - normal_tile
-  - normal_tile
-  - normal_tile
-  - normal_tile
-  - normal_tile
-  - normal_tile
-  - normal_tile
-  - normal_tile
-  - normal_tile
-  - normal_tile
-  - normal_tile
-  - normal_tile
-  - normal_tile
-  - normal_tile
-  - normal_tile
-  - normal_tile
-  - normal_tile
-  - normal_tile
-  - normal_tile
-  - normal_tile
-  - normal_tile
+  - block_tile
+  - block_tile
   - swamp_tile
   - swamp_tile
   - swamp_tile
@@ -373,6 +343,36 @@ MonoBehaviour:
   - swamp_tile
   - swamp_tile
   - swamp_tile
+  - normal_tile
+  - normal_tile
+  - normal_tile
+  - normal_tile
+  - normal_tile
+  - normal_tile
+  - normal_tile
+  - normal_tile
+  - normal_tile
+  - normal_tile
+  - normal_tile
+  - normal_tile
+  - normal_tile
+  - normal_tile
+  - normal_tile
+  - normal_tile
+  - normal_tile
+  - normal_tile
+  - normal_tile
+  - normal_tile
+  - normal_tile
+  - normal_tile
+  - normal_tile
+  - normal_tile
+  - normal_tile
+  - normal_tile
+  - normal_tile
+  - normal_tile
+  - normal_tile
+  - normal_tile
   - normal_tile
   - normal_tile
   - normal_tile
