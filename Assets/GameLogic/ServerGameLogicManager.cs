@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -123,7 +124,6 @@ public class ServerGameLogicManager : MonoBehaviour
 
         newGameState.ResultsFromLastPhase = new List<GameResultAction>();
 
-
         // DEBUG
         newGameState.ResultsFromLastPhase.Add(new GameAttackResultAction(3, new Position(1, 2)));
         List<Position> positions = new List<Position>();
@@ -140,6 +140,11 @@ public class ServerGameLogicManager : MonoBehaviour
         // END DEBUG
 
         return newGameState;
+    }
+
+    public Tuple<int, int> CalculateDamage(Unit fighterLeft, Unit fighterRight)
+    {
+        return new Tuple<int, int>(0, 0);
     }
 
     private void GameStateHasUpdated()
