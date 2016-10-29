@@ -98,19 +98,9 @@ public class ServerGameLogicManager : MonoBehaviour
     private void DeterminePossibleWinner()
     {
         var remainingAlivePlayers = new List<int>(CurrentGameState.players.Keys);
-        foreach (Player player in CurrentGameState.players.Values)
+        foreach (var player in CurrentGameState.players.Values)
         {
-            var hasKing = false;
-            foreach (var unit in player.units.Values)
-            {
-                if (unit.Definition.Equals(king))
-                {
-                    hasKing = true;
-                }
-            }
-
-
-            if (!hasKing)
+            if (!player.units.Values.Any(unit => unit.Definition.Equals(king)))
             {
                 remainingAlivePlayers.Remove(player.id);
             }
@@ -135,10 +125,6 @@ public class ServerGameLogicManager : MonoBehaviour
 
     private GameState ProcessPlayerActions()
     {
-        var newGameState = GameState.Clone(CurrentGameState);
-        var gameActionsByTurn = GetGameActionsPerTurn();
-        var gameActionResults = new List<GameResultAction>();
-
         var allUnits = CurrentGameState.players.Values.SelectMany(player => player.units.Values).ToList();
         var allUnitsById = new Dictionary<int, Unit>();
         foreach (var unit in allUnits)
@@ -146,10 +132,15 @@ public class ServerGameLogicManager : MonoBehaviour
             allUnitsById[unit.unitId] = unit;
         }
 
+        var newGameState = GameState.Clone(CurrentGameState);
+        var gameActionsByTurn = GetGameActionsPerTurn(allUnitsById);
+        var gameActionResults = new List<GameResultAction>();
+
+        var blockedUnitIds = new List<int>();
         foreach (var gameActions in gameActionsByTurn)
         {
             // move all units
-            EvaluateUnitMovements(gameActions, allUnitsById, gameActionResults);
+            EvaluateUnitMovements(gameActions, allUnitsById, gameActionResults, blockedUnitIds);
 
             // execute battles
             foreach (var battlePairing in DetermineBattlePairings(allUnits))
@@ -178,18 +169,35 @@ public class ServerGameLogicManager : MonoBehaviour
         return newGameState;
     }
 
-    private static void EvaluateUnitMovements(List<GameAction> gameActions, Dictionary<int, Unit> allUnitsById, List<GameResultAction> gameActionResults)
+    private static void EvaluateUnitMovements(List<GameAction> gameActions, Dictionary<int, Unit> allUnitsById, List<GameResultAction> gameActionResults, List<int> blockedUnitIds)
     {
         foreach (var gameAction in gameActions)
         {
             if (gameAction.moveToPositions.Count > 0)
             {
                 var movingUnitId = gameAction.UnitId;
-                var destinationPosition = gameAction.moveToPositions.Last();
+                if (blockedUnitIds.Contains(movingUnitId))
+                {
+                    continue;
+                }
+
+                var desiredDestinationPosition = gameAction.moveToPositions.Last();
                 var movingUnit = allUnitsById[movingUnitId];
 
+                var isDestinationBlocked = allUnitsById.Values.Any(
+                    unit =>
+                        unit.unitId != movingUnitId &&
+                        unit.position.x == desiredDestinationPosition.x &&
+                        unit.position.y == desiredDestinationPosition.y);
+
+                if (isDestinationBlocked)
+                {
+                    blockedUnitIds.Add(movingUnitId);
+                    continue;
+                }
+
                 gameActionResults.Add(new GameMoveResultAction(movingUnitId, gameAction.moveToPositions));
-                movingUnit.position = destinationPosition;
+                movingUnit.position = desiredDestinationPosition;
             }
         }
     }
@@ -202,11 +210,8 @@ public class ServerGameLogicManager : MonoBehaviour
             where leftUnit.owningPlayerId != rightUnit.owningPlayerId && leftUnit.unitId < rightUnit.unitId
             select new[] {leftUnit, rightUnit}).ToList();
 
-        possibleBattlePairings.Sort(delegate(Unit[] pairingA, Unit[] pairingB)
-        {
-            // FIXME: better sort criteria for battle pairings
-            return pairingA[0].healthPoints - pairingB[0].healthPoints;
-        });
+        // FIXME: sorting should be based on all affected units
+        possibleBattlePairings.Sort((pairingA, pairingB) => pairingA[0].CompareTo(pairingB[0]));
 
         return possibleBattlePairings;
     }
@@ -235,7 +240,7 @@ public class ServerGameLogicManager : MonoBehaviour
             gameActionResults.Add(new GameUnitDeathResultAction(rightUnit.unitId));
     }
 
-    private List<List<GameAction>> GetGameActionsPerTurn()
+    private List<List<GameAction>> GetGameActionsPerTurn(Dictionary<int, Unit> allUnitsById)
     {
         var actionCount = CurrentGameState.PlayerGameActions
             .Select(actions => actions.Count)
@@ -245,19 +250,27 @@ public class ServerGameLogicManager : MonoBehaviour
         for (var turnNumber = 0; turnNumber < actionCount; turnNumber++)
         {
             // collect all player actions and resolve any collision
-            // FIXME: Collision resolution
-            var gameActions = new List<GameAction>();
-            for (var playerId = 0; playerId < CurrentGameState.PlayerCount; playerId++)
-            {
-                var gameActionsFromPlayer = CurrentGameState.PlayerGameActions[turnNumber];
-                if (turnNumber < gameActionsFromPlayer.Count)
-                {
-                    gameActions.Add(gameActionsFromPlayer[turnNumber]);
-                }
-            }
+            var gameActions = CollectGameActionsForTurn(turnNumber);
+            gameActions.Sort((action1, action2) =>
+                    allUnitsById[action1.UnitId].CompareTo(allUnitsById[action2.UnitId]));
+
             gameActionsByTurn.Add(gameActions);
         }
         return gameActionsByTurn;
+    }
+
+    private List<GameAction> CollectGameActionsForTurn(int turnNumber)
+    {
+        var gameActions = new List<GameAction>();
+        for (var playerId = 0; playerId < CurrentGameState.PlayerCount; playerId++)
+        {
+            var gameActionsFromPlayer = CurrentGameState.PlayerGameActions[turnNumber];
+            if (turnNumber < gameActionsFromPlayer.Count)
+            {
+                gameActions.Add(gameActionsFromPlayer[turnNumber]);
+            }
+        }
+        return gameActions;
     }
 
     public int[] CalculateDamage(Unit fighterLeft, Unit fighterRight)
