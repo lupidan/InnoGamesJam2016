@@ -36,6 +36,8 @@ public class UnitController :
 
     public AudioClip dyingSound;
 
+    public AudioClip tombAppearSound;
+
 
     public enum UnitAnimationEvents
     {
@@ -77,8 +79,10 @@ public class UnitController :
 
     private void playClickedSound()
     {
-        audioSource.clip = clickedSound;
-        audioSource.Play();
+        if (clickedSound) {
+            audioSource.clip = clickedSound;
+            audioSource.Play();
+        }
     }
 
     private void startPlayingMovingSound()
@@ -110,25 +114,13 @@ public class UnitController :
         audioSource.Play();
     }
 
-    private void highlightUnit()
+    private void playTombAppearSound()
     {
-        Debug.LogError("Highlighting Unit is not implemented yet");
+
     }
 
-    private void removeHighlighting()
-    {
-        Debug.LogError("removing Highliting Unit is not implemented yet");
-    }
-
-    private void markSelected()
-    {
-        Debug.LogError("mark unit selected Unit is not implemented yet");
-    }
-
-    private void removeSelection()
-    {
-        Debug.LogError(" Unit is not implemented yet");
-    }
+    public void OnPointerDown(PointerEventData eventData) { }
+    public void OnPointerUp(PointerEventData eventData) { }
 
     public void OnPointerClick(PointerEventData eventData)
     {
