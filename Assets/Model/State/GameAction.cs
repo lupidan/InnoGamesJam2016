@@ -4,7 +4,7 @@
 public class GameAction
 {
     public int UnitId;
-    public Position moveToPosition;
+    public List<Position> moveToPositions;
 }
 
 [System.Serializable]
