@@ -12,10 +12,15 @@ using UnityEngine.UI;
 [RequireComponent(typeof(Animator))]
 public class UnitController :
     MonoBehaviour,
+    IPointerDownHandler,
     IPointerClickHandler,
-    IPointerEnterHandler,
-    IPointerExitHandler
+    IPointerUpHandler,
+    ISelectHandler,
+    IDeselectHandler
 {
+    public static UnitController SelectedUnit { get; private set; }
+
+
     private Animator animator;
 
     private AudioSource audioSource;
@@ -114,9 +119,10 @@ public class UnitController :
         audioSource.Play();
     }
 
-    private void playTombAppearSound()
+    private void playSound(AudioClip audio)
     {
-
+        audioSource.clip = audio;
+        audioSource.Play();
     }
 
     public void OnPointerDown(PointerEventData eventData) { }
@@ -129,18 +135,29 @@ public class UnitController :
         {
             EventSystem.current.SetSelectedGameObject(gameObject);
         }
-
         playClickedSound();
     }
 
-    public void OnPointerEnter(PointerEventData eventData)
-    {
-        highlightUnit();
+    public void OnSelect(BaseEventData eventData) {
+        UnitController.SelectedUnit = this;
+        LeanTween.value(gameObject, Color.white, Color.green, 0.5f)
+                 .setLoopPingPong()
+                 .setEaseInOutCubic()
+                 .setOnUpdate((color) => {
+                     GetComponent<SpriteRenderer>().color = color;
+                 });
     }
 
-    public void OnPointerExit(PointerEventData eventData)
-    {
-        removeHighlighting();
+    public void OnDeselect(BaseEventData eventData) {
+        LeanTween.cancel(gameObject);
+        gameObject.GetComponent<SpriteRenderer>().color = Color.white;
+
+        if (UnitController.SelectedUnit == this && TileController.HighlightedTile != null) {
+            Vector3 pos = UnitController.SelectedUnit.transform.position;
+            pos.x = TileController.HighlightedTile.transform.position.x;
+            pos.y = TileController.HighlightedTile.transform.position.y;
+            UnitController.SelectedUnit.transform.position = pos;
+        }
     }
 
     public void PlayMoveAnimation(Position toPosition, Action onFinished)
