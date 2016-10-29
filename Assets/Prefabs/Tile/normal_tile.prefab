@@ -22,7 +22,7 @@ GameObject:
   - 212: {fileID: 212000011291214446}
   - 114: {fileID: 114000011712821850}
   m_Layer: 0
-  m_Name: grass_tile
+  m_Name: normal_tile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -52,9 +52,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f8392c003a184aef927be827635d751, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tile:
+  tileData:
     tileId: 0
-    definitionId: grass_tile
+    definitionId: 
     position:
       x: 0
       y: 0
