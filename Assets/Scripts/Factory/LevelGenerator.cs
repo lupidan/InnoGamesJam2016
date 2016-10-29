@@ -7,10 +7,18 @@ public class LevelGenerator : MonoBehaviour {
 	private GameObject[] prefabs;
 	private Dictionary<string, GameObject> unitPrefabCache;
 
+    [SerializeField]
+    private MapPatternDefinition mapPatternDefinition;
+
 	void Awake()
 	{
 		unitPrefabCache = InitCacheFromPrefabs(prefabs);
 	}
+
+    void Start()
+    {
+        CreateTiles();
+    }
 
 	private Dictionary<string, GameObject> InitCacheFromPrefabs(GameObject[] prefabs)
 	{
@@ -51,21 +59,23 @@ public class LevelGenerator : MonoBehaviour {
 		return tileController;
 	}
 
-	public List<TileController> CreateTiles(Position offset, string[,] tiles)
+	private List<TileController> CreateTiles()
 	{
-		List<TileController> tileControllers = new List<TileController>();
-		for (int i = 0; i < tiles.GetLength(0); i++)
-		{
-			for (int j = 0; j < tiles.GetLength(1); j++)
-			{
-				Tile tile = new Tile();
-				tile.position.x = j + offset.x;
-				tile.position.y = i + offset.y;
-				tile.definitionId = tiles[i,j];
-				TileController tileController = CreateTile(tile);
-				tileControllers.Add(tileController);
-			}
-		}
+	    var offset = mapPatternDefinition.offset;
+
+	    List<TileController> tileControllers = new List<TileController>();
+	    for (int row = 0; row < mapPatternDefinition.Height; row++)
+	    {
+	        for (int col = 0; col < mapPatternDefinition.Width; col++)
+	        {
+	            Tile tile = new Tile();
+	            tile.position.x = col - offset.x;
+	            tile.position.y = row - offset.y;
+	            tile.definitionId = mapPatternDefinition.GetData((uint)col, (uint)row);
+	            TileController tileController = CreateTile(tile);
+	            tileControllers.Add(tileController);
+	        }
+	    }
 		return tileControllers;
 	}
 

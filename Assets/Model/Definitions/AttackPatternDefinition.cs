@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 [CreateAssetMenu(fileName = "ScriptableObject", menuName = "Assets/AttackPattern", order = 1)]
 public class AttackPatternDefinition : ScriptableObject
@@ -26,10 +25,25 @@ public class AttackPatternDefinition : ScriptableObject
         return 0;
     }
 
+    public bool IsCenter(uint x, uint y)
+    {
+        return x == Width / 2 && y == Height / 2;
+    }
+
     public void Resize(int width, int height)
     {
         width = Mathf.Max(width, 1);
         height = Mathf.Max(height, 1);
+
+        if ((width & 0x1) == 0)
+        {
+            width += 1;
+        }
+
+        if ((height & 0x1) == 0)
+        {
+            height += 1;
+        }
 
         int[] newData = new int[width * height];
         for (uint x = 0; x < Width && x < width; x++)
@@ -39,9 +53,15 @@ public class AttackPatternDefinition : ScriptableObject
                 newData[x + y * width] = Data[Index(x, y)];
             }
         }
+
         Width = width;
         Height = height;
         Data = newData;
+
+        if (Width > 0 && Height > 0)
+        {
+            Data[Width / 2 + Width * (Height / 2)] = 0;
+        }
     }
 
     public int GetMax()

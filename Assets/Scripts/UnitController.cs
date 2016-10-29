@@ -4,6 +4,7 @@ using System.Collections;
 using Combat.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(AudioSource))]
 [RequireComponent(typeof(Collider2D))]
@@ -41,11 +42,9 @@ public class UnitController :
         StartMoving,
         StopMoving,
         StartAttacking,
-        StopAttacking,
         StartDying
     }
 
-    // Use this for initialization
     void Start()
     {
         animator = GetComponent<Animator>();
@@ -54,25 +53,10 @@ public class UnitController :
         unitData = new Unit();
     }
 
-    // Update is called once per frame
-    void Update()
+    IEnumerator ExecuteActionAfterTime(Action action, float time)
     {
-        if (hasArrivedAtDestination())
-        {
-            animator.SetBool(UnitAnimationEvents.StopMoving.ToString(), true);
-        }
-    }
-
-    public IEnumerator PlayOneShot ( string paramName )
-    {
-        animator.SetBool( paramName, true );
-        yield return null;
-        animator.SetBool( paramName, false );
-    }
-
-    public Boolean hasArrivedAtDestination()
-    {
-        return true;
+        yield return new WaitForSeconds(time);
+        action.Invoke();
     }
 
     public void moveTo()
@@ -167,24 +151,19 @@ public class UnitController :
         removeHighlighting();
     }
 
-
-    public void OnTakeDamage(TakeDamageEventData damage)
-    {
-
-        if (unitData.healthPoints > 0)
-        {
-            unitData.healthPoints -= damage.damage;
-            if (unitData.healthPoints <= 0)
-            {
-                animator.SetBool(UnitAnimationEvents.StartDying.ToString(), true);
-            }
-        }
-    }
-
     public void PlayMoveAnimation(Position toPosition, Action onFinished)
     {
-        Debug.LogError("(☞ﾟヮﾟ)☞ (" + unitData.unitId + ")");
-        onFinished();
+        animator.SetTrigger(UnitAnimationEvents.StartMoving.ToString());
+        Vector3 newPosition = transform.position;
+        newPosition.x = toPosition.x;
+        newPosition.y = toPosition.y;
+        LeanTween.move(gameObject, newPosition, 0.2f)
+                 .setEaseLinear()
+                 .setOnComplete(() => {
+                     transform.position = newPosition;
+                     animator.SetTrigger(UnitAnimationEvents.StopMoving.ToString());
+                     onFinished.Invoke();
+                 });
     }
 
     public void PlayRotateAnimation(Unit.Direction toDirection, Action onFinished)
@@ -195,8 +174,8 @@ public class UnitController :
 
     public void PlayAttackAnimation(Position targetPosition, Action onFinished)
     {
-        Debug.LogError("┌(ﾟдﾟ)┘ (" + unitData.unitId + ")");
-        onFinished();
+        animator.SetTrigger(UnitAnimationEvents.StartAttacking.ToString());
+        StartCoroutine(ExecuteActionAfterTime(onFinished, 1.0f));
     }
 
     public void PlayHitpointChange(int newHitpoints, Action onFinished)
@@ -207,8 +186,8 @@ public class UnitController :
 
     public void PlayDeathAnimation(Action onFinished)
     {
-        Debug.LogError("he ded. (" + unitData.unitId + ")");
-        onFinished();
+        animator.SetTrigger(UnitAnimationEvents.StartDying.ToString());
+        StartCoroutine(ExecuteActionAfterTime(onFinished, 1.0f));
     }
 
 }

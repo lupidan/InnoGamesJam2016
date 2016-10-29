@@ -13,6 +13,14 @@ public class ServerGameLogicManager : MonoBehaviour
 
     public GameStateUpdatedHandler UpdateHandlers;
 
+    public MapPatternDefinition mapPattern;
+
+    public UnitDefinition heavy;
+
+    public UnitDefinition meele;
+
+    public UnitDefinition range;
+
     public bool HasGameStarted
     {
         get { return CurrentGameState.CurrentPhase != GamePhase.WaitingForStart; }
@@ -20,12 +28,12 @@ public class ServerGameLogicManager : MonoBehaviour
 
     public void InitializeNewGame()
     {
-        CurrentGameState = new GameState(2);
+        CurrentGameState = new GameState(2, mapPattern, meele, heavy, range);
     }
 
     public void InitializeNewSinglePlayerGame()
     {
-        CurrentGameState = new GameState(1);
+        CurrentGameState = new GameState(1, mapPattern, meele, heavy, range);
     }
 
     public void PlayerHasJoined(int playerId)
@@ -100,11 +108,35 @@ public class ServerGameLogicManager : MonoBehaviour
     {
         var newGameState = GameState.Clone(CurrentGameState);
 
+        for (int playerId=0; playerId < newGameState.PlayerCount; playerId++)
+        {
+            List<GameAction> actions=newGameState.GetGameActionForPlayer(playerId);
+
+
+            foreach (var gameAction in actions)
+            {
+                //newGameState.Map[gameAction.UnitId]
+
+            }
+        }
+
+
         newGameState.ResultsFromLastPhase = new List<GameResultAction>();
 
+
         // DEBUG
-        newGameState.ResultsFromLastPhase.Add(new GameAttackResultAction(1, new Position(1, 2)));
-        newGameState.ResultsFromLastPhase.Add(new GameUnitDeathResultAction(2));
+        newGameState.ResultsFromLastPhase.Add(new GameAttackResultAction(3, new Position(1, 2)));
+        List<Position> positions = new List<Position>();
+        positions.Add(new Position(0,0));
+        positions.Add(new Position(1,0));
+        positions.Add(new Position(2,0));
+        positions.Add(new Position(3,0));
+        positions.Add(new Position(4,0));
+        positions.Add(new Position(5,0));
+        positions.Add(new Position(6,0));
+        newGameState.ResultsFromLastPhase.Add(new GameMoveResultAction(3, positions));
+        newGameState.ResultsFromLastPhase.Add(new GameAttackResultAction(3, new Position(1, 2)));
+        newGameState.ResultsFromLastPhase.Add(new GameUnitDeathResultAction(3));
         // END DEBUG
 
         return newGameState;
