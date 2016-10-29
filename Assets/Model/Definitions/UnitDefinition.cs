@@ -18,4 +18,6 @@ public class UnitDefinition : ScriptableObject
     public int attack;
     public int defense;
 
+    public AttackPatternDefinition attackPattern;
+
 }

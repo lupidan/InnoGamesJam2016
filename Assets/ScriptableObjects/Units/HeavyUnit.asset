@@ -17,3 +17,4 @@ MonoBehaviour:
   maxHealth: 10
   attack: 3
   defense: 6
+  attackPattern: {fileID: 11400000, guid: f37256fa9553142208d7732859bbbb9f, type: 2}
