@@ -100,7 +100,21 @@ public class ServerGameLogicManager : MonoBehaviour
     {
         var newGameState = GameState.Clone(CurrentGameState);
 
+        for (int playerId=0; playerId < newGameState.PlayerCount; playerId++)
+        {
+            List<GameAction> actions=newGameState.GetGameActionForPlayer(playerId);
+
+
+            foreach (var gameAction in actions)
+            {
+                //newGameState.Map[gameAction.UnitId]
+
+            }
+        }
+
+
         newGameState.ResultsFromLastPhase = new List<GameResultAction>();
+
 
         // DEBUG
         newGameState.ResultsFromLastPhase.Add(new GameAttackResultAction(3, new Position(1, 2)));

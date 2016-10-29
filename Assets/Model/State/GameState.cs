@@ -60,4 +60,9 @@ public class GameState
     {
         PlayerGameActions[playerId] = actions;
     }
+
+    public List<GameAction> GetGameActionForPlayer(int playerId)
+    {
+        return PlayerGameActions[playerId];
+    }
 }
