@@ -1,6 +1,9 @@
-﻿using UnityEngine;
+using System;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices.ComTypes;
 
 public delegate void GameStateUpdatedHandler();
 
@@ -61,11 +64,6 @@ public class ServerGameLogicManager : MonoBehaviour
         }
 
         EvaluatePlayerMovedAndAdvance();
-        if (CurrentGameState.CurrentPhase != GamePhase.Finished)
-        {
-            CurrentGameState.ResetPhaseToWaitingForAllPlayers();
-        }
-
         GameStateHasUpdated();
     }
 
@@ -83,6 +81,8 @@ public class ServerGameLogicManager : MonoBehaviour
                 Debug.LogError("Tried to evaluate invalid game phase: " + CurrentGameState.CurrentPhase);
                 break;
         }
+
+        CurrentGameState.ResetPhaseToWaitingForAllPlayers();
     }
 
     private void EvaluateRevisionPhase()
@@ -107,39 +107,133 @@ public class ServerGameLogicManager : MonoBehaviour
     private GameState ProcessPlayerActions()
     {
         var newGameState = GameState.Clone(CurrentGameState);
+        var gameActionsByTurn = GetGameActionsPerTurn();
+        var gameActionResults = new List<GameResultAction>();
 
-        for (int playerId=0; playerId < newGameState.PlayerCount; playerId++)
+        var allUnits = CurrentGameState.players.Values.SelectMany(player => player.units.Values).ToList();
+        var allUnitsById = new Dictionary<int, Unit>();
+        foreach (var unit in allUnits)
         {
-            List<GameAction> actions=newGameState.GetGameActionForPlayer(playerId);
+            allUnitsById[unit.unitId] = unit;
+        }
 
+        foreach (var gameActions in gameActionsByTurn)
+        {
+            // move all units
+            EvaluateUnitMovements(gameActions, allUnitsById, gameActionResults);
 
-            foreach (var gameAction in actions)
+            // execute battles
+            foreach (var battlePairing in DetermineBattlePairings(allUnits))
             {
-                //newGameState.Map[gameAction.UnitId]
-
+                ExecuteBattleForPairing(battlePairing, gameActionResults);
             }
         }
 
-
-        newGameState.ResultsFromLastPhase = new List<GameResultAction>();
-
+        newGameState.ResultsFromLastPhase = gameActionResults;
 
         // DEBUG
-        newGameState.ResultsFromLastPhase.Add(new GameAttackResultAction(3, new Position(1, 2)));
-        List<Position> positions = new List<Position>();
-        positions.Add(new Position(0,0));
-        positions.Add(new Position(1,0));
-        positions.Add(new Position(2,0));
-        positions.Add(new Position(3,0));
-        positions.Add(new Position(4,0));
-        positions.Add(new Position(5,0));
-        positions.Add(new Position(6,0));
-        newGameState.ResultsFromLastPhase.Add(new GameMoveResultAction(3, positions));
-        newGameState.ResultsFromLastPhase.Add(new GameAttackResultAction(3, new Position(1, 2)));
-        newGameState.ResultsFromLastPhase.Add(new GameUnitDeathResultAction(3));
+//        newGameState.ResultsFromLastPhase.Add(new GameAttackResultAction(3, new Position(1, 2)));
+//        List<Position> positions = new List<Position>();
+//        positions.Add(new Position(0,0));
+//        positions.Add(new Position(1,0));
+//        positions.Add(new Position(2,0));
+//        positions.Add(new Position(3,0));
+//        positions.Add(new Position(4,0));
+//        positions.Add(new Position(5,0));
+//        positions.Add(new Position(6,0));
+//        newGameState.ResultsFromLastPhase.Add(new GameMoveResultAction(3, positions));
+//        newGameState.ResultsFromLastPhase.Add(new GameAttackResultAction(3, new Position(1, 2)));
+//        newGameState.ResultsFromLastPhase.Add(new GameUnitDeathResultAction(3));
         // END DEBUG
 
         return newGameState;
+    }
+
+    private static void EvaluateUnitMovements(List<GameAction> gameActions, Dictionary<int, Unit> allUnitsById, List<GameResultAction> gameActionResults)
+    {
+        foreach (var gameAction in gameActions)
+        {
+            if (gameAction.moveToPositions.Count > 0)
+            {
+                var movingUnitId = gameAction.UnitId;
+                var destinationPosition = gameAction.moveToPositions.Last();
+                var movingUnit = allUnitsById[movingUnitId];
+
+                gameActionResults.Add(new GameMoveResultAction(movingUnitId, gameAction.moveToPositions));
+                movingUnit.position = destinationPosition;
+            }
+        }
+    }
+
+    private List<Unit[]> DetermineBattlePairings(List<Unit> allUnits)
+    {
+        var possibleBattlePairings = (
+            from leftUnit in allUnits
+            from rightUnit in allUnits
+            where leftUnit.owningPlayerId != rightUnit.owningPlayerId && leftUnit.unitId < rightUnit.unitId
+            select new[] {leftUnit, rightUnit}).ToList();
+
+        possibleBattlePairings.Sort(delegate(Unit[] pairingA, Unit[] pairingB)
+        {
+            // FIXME: better sort criteria for battle pairings
+            return pairingA[0].healthPoints - pairingB[0].healthPoints;
+        });
+
+        return possibleBattlePairings;
+    }
+
+    private void ExecuteBattleForPairing(Unit[] battlePairing, List<GameResultAction> gameActionResults)
+    {
+        var leftUnit = battlePairing[0];
+        var rightUnit = battlePairing[1];
+        var takenDamage = CalculateDamage(leftUnit, rightUnit);
+        var leftDamage = takenDamage[0];
+        var rightDamage = takenDamage[1];
+        leftUnit.healthPoints = Math.Max(0, leftUnit.healthPoints - leftDamage);
+        rightUnit.healthPoints = Math.Max(0, rightUnit.healthPoints - rightDamage);
+
+        if (leftDamage > 0)
+            gameActionResults.Add(new GameAttackResultAction(rightUnit.unitId, leftUnit.position));
+        if (rightDamage > 0)
+            gameActionResults.Add(new GameAttackResultAction(leftUnit.unitId, rightUnit.position));
+        if (leftDamage > 0)
+            gameActionResults.Add(new GameHitpointChangeResultAction(leftUnit.unitId, leftUnit.healthPoints));
+        if (rightDamage > 0)
+            gameActionResults.Add(new GameHitpointChangeResultAction(rightUnit.unitId, rightUnit.healthPoints));
+        if (leftUnit.healthPoints <= 0)
+            gameActionResults.Add(new GameUnitDeathResultAction(leftUnit.unitId));
+        if (rightUnit.healthPoints <= 0)
+            gameActionResults.Add(new GameUnitDeathResultAction(rightUnit.unitId));
+    }
+
+    private List<List<GameAction>> GetGameActionsPerTurn()
+    {
+        var actionCount = CurrentGameState.PlayerGameActions
+            .Select(actions => actions.Count)
+            .Max();
+
+        var gameActionsByTurn = new List<List<GameAction>>();
+        for (var turnNumber = 0; turnNumber < actionCount; turnNumber++)
+        {
+            // collect all player actions and resolve any collision
+            // FIXME: Collision resolution
+            var gameActions = new List<GameAction>();
+            for (var playerId = 0; playerId < CurrentGameState.PlayerCount; playerId++)
+            {
+                var gameActionsFromPlayer = CurrentGameState.PlayerGameActions[turnNumber];
+                if (turnNumber < gameActionsFromPlayer.Count)
+                {
+                    gameActions.Add(gameActionsFromPlayer[turnNumber]);
+                }
+            }
+            gameActionsByTurn.Add(gameActions);
+        }
+        return gameActionsByTurn;
+    }
+
+    public int[] CalculateDamage(Unit fighterLeft, Unit fighterRight)
+    {
+        return new int[2] {0, 0};
     }
 
     private void GameStateHasUpdated()

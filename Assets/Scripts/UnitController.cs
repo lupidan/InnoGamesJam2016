@@ -12,10 +12,15 @@ using UnityEngine.UI;
 [RequireComponent(typeof(Animator))]
 public class UnitController :
     MonoBehaviour,
+    IPointerDownHandler,
     IPointerClickHandler,
-    IPointerEnterHandler,
-    IPointerExitHandler
+    IPointerUpHandler,
+    ISelectHandler,
+    IDeselectHandler
 {
+    public static UnitController SelectedUnit { get; private set; }
+
+
     private Animator animator;
 
     private AudioSource audioSource;
@@ -35,6 +40,8 @@ public class UnitController :
     public AudioClip movingSound;
 
     public AudioClip dyingSound;
+
+    public AudioClip tombAppearSound;
 
 
     public enum UnitAnimationEvents
@@ -77,8 +84,10 @@ public class UnitController :
 
     private void playClickedSound()
     {
-        audioSource.clip = clickedSound;
-        audioSource.Play();
+        if (clickedSound) {
+            audioSource.clip = clickedSound;
+            audioSource.Play();
+        }
     }
 
     private void startPlayingMovingSound()
@@ -110,25 +119,14 @@ public class UnitController :
         audioSource.Play();
     }
 
-    private void highlightUnit()
+    private void playSound(AudioClip audio)
     {
-        Debug.LogError("Highlighting Unit is not implemented yet");
+        audioSource.clip = audio;
+        audioSource.Play();
     }
 
-    private void removeHighlighting()
-    {
-        Debug.LogError("removing Highliting Unit is not implemented yet");
-    }
-
-    private void markSelected()
-    {
-        Debug.LogError("mark unit selected Unit is not implemented yet");
-    }
-
-    private void removeSelection()
-    {
-        Debug.LogError(" Unit is not implemented yet");
-    }
+    public void OnPointerDown(PointerEventData eventData) { }
+    public void OnPointerUp(PointerEventData eventData) { }
 
     public void OnPointerClick(PointerEventData eventData)
     {
@@ -137,18 +135,29 @@ public class UnitController :
         {
             EventSystem.current.SetSelectedGameObject(gameObject);
         }
-
         playClickedSound();
     }
 
-    public void OnPointerEnter(PointerEventData eventData)
-    {
-        highlightUnit();
+    public void OnSelect(BaseEventData eventData) {
+        UnitController.SelectedUnit = this;
+        LeanTween.value(gameObject, Color.white, Color.green, 0.5f)
+                 .setLoopPingPong()
+                 .setEaseInOutCubic()
+                 .setOnUpdate((color) => {
+                     GetComponent<SpriteRenderer>().color = color;
+                 });
     }
 
-    public void OnPointerExit(PointerEventData eventData)
-    {
-        removeHighlighting();
+    public void OnDeselect(BaseEventData eventData) {
+        LeanTween.cancel(gameObject);
+        gameObject.GetComponent<SpriteRenderer>().color = Color.white;
+
+        if (UnitController.SelectedUnit == this && TileController.HighlightedTile != null) {
+            Vector3 pos = UnitController.SelectedUnit.transform.position;
+            pos.x = TileController.HighlightedTile.transform.position.x;
+            pos.y = TileController.HighlightedTile.transform.position.y;
+            UnitController.SelectedUnit.transform.position = pos;
+        }
     }
 
     public void PlayMoveAnimation(Position toPosition, Action onFinished)

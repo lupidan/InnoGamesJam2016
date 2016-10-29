@@ -31,6 +31,6 @@ public class Unit
 
     public static string UnitControllerNameForId(int unitId)
     {
-        return string.Format("Unit/{0}", unitId);
+        return string.Format("unit_{0}", unitId);
     }
 }
