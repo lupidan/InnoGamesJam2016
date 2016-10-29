@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 338c8518aef1c418b94a8e8162a1110f, type: 3}
+  m_Name: HeavyUnitMovePattern
+  m_EditorClassIdentifier: 
+  Width: 1
+  Height: 1
+  Data: 00000000
