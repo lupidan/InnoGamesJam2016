@@ -1,8 +1,16 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEditor;
+using Object = UnityEngine.Object;
 
 [CustomEditor(typeof(MapPatternDefinition)), CanEditMultipleObjects]
-public class MapShapeEditor : Editor {
+public class MapShapeEditor : Editor
+{
+
+    private static readonly string[] tileTypes = {
+        "grass_tile", "rock_tile", "sand_tile", "swamp_tile"
+    };
+
 
     public override void OnInspectorGUI()
     {
@@ -13,6 +21,7 @@ public class MapShapeEditor : Editor {
 
         Rect position = new Rect(0, 50, Screen.width, Screen.height - 50);
 
+
         foreach (var item in targets)
         {
             if (position.height < EditorGUIUtility.singleLineHeight * 2)
@@ -21,12 +30,12 @@ public class MapShapeEditor : Editor {
             }
 
             MapPatternDefinition mapPattern = item as MapPatternDefinition;
-            float usedHeight = InspectmapPattern(position, mapPattern);
+            float usedHeight = InspectMapPattern(position, mapPattern);
             position.y += usedHeight;
         }
     }
 
-    public static float InspectmapPattern(Rect position, MapPatternDefinition mapPattern)
+    public static float InspectMapPattern(Rect position, MapPatternDefinition mapPattern)
     {
         float usedHeight = 0f;
         float halfPositionX = position.width * 0.5f;
@@ -76,11 +85,11 @@ public class MapShapeEditor : Editor {
                         xWidth,
                         xWidth
                     ),
-                    mapPattern.GetData(x, y),
+                    IndexOfTile(mapPattern.GetData(x, y)),
                     fontStyle
                 );
 
-                mapPattern.SetData(x, y, res);
+                mapPattern.SetData(x, y, tileTypes[res]);
             }
         }
 
@@ -92,6 +101,12 @@ public class MapShapeEditor : Editor {
         }
 
         return usedHeight;
+    }
+
+    private static int IndexOfTile(string value)
+    {
+        var indexOf = Array.IndexOf(tileTypes, value);
+        return Math.Max(0, indexOf);
     }
 
     public override bool HasPreviewGUI()
@@ -117,14 +132,14 @@ public class MapShapeEditor : Editor {
         float offY = (targetRect.height - blockSize * mapPattern.Height) * 0.5f + targetRect.y;
 
         // Get max
-        int maxStrength = mapPattern.GetMax();
+        int maxStrength = tileTypes.Length;
         float divMax = 1.0f / maxStrength;
 
         for (uint x = 0; x < mapPattern.Width; x++)
         {
             for (uint y = 0; y < mapPattern.Height; y++)
             {
-                if (mapPattern.GetData(x, y) > 0)
+                if (mapPattern.GetData(x, y) != "")
                 {
                     EditorGUI.DrawRect(
                         new Rect(
@@ -133,7 +148,7 @@ public class MapShapeEditor : Editor {
                             blockSize - 2,
                             blockSize - 2
                         ),
-                        new Color(0, 0, 0, mapPattern.GetData(x, y) * divMax)
+                        new Color(0, 0, 0, IndexOfTile(mapPattern.GetData(x, y)) * divMax)
                     );
                 }
             }
@@ -159,7 +174,7 @@ public class MapShapeEditor : Editor {
         float offY = (texHeight - blockSize * mapPattern.Height) * 0.5f;
 
         // Get max
-        int maxStrength = mapPattern.GetMax();
+        int maxStrength = tileTypes.Length;
         float divMax = 1.0f / maxStrength;
 
         // Set blank
@@ -176,12 +191,12 @@ public class MapShapeEditor : Editor {
         {
             for (uint y = 0; y < mapPattern.Height; y++)
             {
-                if (mapPattern.GetData(x, y) > 0)
+                if (mapPattern.GetData(x, y) != "")
                 {
                     int sx = (int)(offX + (int) x * blockSize + 1);
                     int sy = (int)(texHeight - (offY + (int) y * blockSize + 1) - blockSize);
 
-                    Color color = new Color(0, 0, 0, mapPattern.GetData(x, y) * divMax);
+                    Color color = new Color(0, 0, 0, IndexOfTile(mapPattern.GetData(x, y)) * divMax);
 
                     for (int px = 0; px < blockSize - 2; px++)
                     {
