@@ -2,20 +2,23 @@
 using UnityEngine;
 using UnityEngine.Networking;
 
-public delegate void GameStateReceivedHandler(GameState gameState);
-
 public delegate void ClientConnectionErrorHandler();
 
 public delegate void ConnectedToServerHandler();
 
 public class ClientNetworkingManager : MonoBehaviour
 {
-    public event GameStateReceivedHandler StateReceivers;
     public event ClientConnectionErrorHandler ErrorHandlers;
     public event ConnectedToServerHandler ConnectedHandler;
 
     private NetworkClient _client;
     private int _playerId;
+    private ClientGameLogicManager _gameLogic;
+
+    public void Awake()
+    {
+        _gameLogic = GetComponent<ClientGameLogicManager>();
+    }
 
     public void ConnectLocally()
     {
@@ -50,9 +53,11 @@ public class ClientNetworkingManager : MonoBehaviour
 
     public void SendActions(List<GameAction> actions)
     {
-        var gameActions = new GameActions();
-        gameActions.actions = actions;
-        gameActions.playerID = _playerId;
+        var gameActions = new GameActions
+        {
+            actions = actions,
+            playerID = _playerId
+        };
 
         var message = new MessageGameActions(gameActions);
         _client.Send(NetworkingConstants.MsgTypeGameActionsC2S, message);
@@ -61,10 +66,7 @@ public class ClientNetworkingManager : MonoBehaviour
     private void OnServerToClientStateMessage(NetworkMessage networkMessage)
     {
         var message = networkMessage.ReadMessage<MessageGameState>();
-        if (StateReceivers != null)
-        {
-            StateReceivers(message.ToGameState());
-        }
+        _gameLogic.ReceivedNewGameState(message.ToGameState());
     }
 
     private void OnClientNetworkError(NetworkMessage networkMessage)

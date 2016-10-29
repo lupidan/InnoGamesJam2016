@@ -99,26 +99,13 @@ GameObject:
   m_Component:
   - 4: {fileID: 837992747}
   - 114: {fileID: 837992748}
-  - 114: {fileID: 837992749}
-  - 114: {fileID: 837992746}
   m_Layer: 0
-  m_Name: NetworkingManager
+  m_Name: NetworkingManagerUITestThingy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &837992746
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 837992745}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f14cdd1f0c1da4a4481aacc0c39314aa, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &837992747
 Transform:
   m_ObjectHideFlags: 0
@@ -131,7 +118,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 3
 --- !u!114 &837992748
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -143,25 +130,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18cfb6cd38e9246a190c452d2b58ea68, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _server: {fileID: 837992746}
-  _client: {fileID: 837992749}
-  GameState:
-    CurrentState: 0
-    Map:
-      tile: []
-      units: []
+  Server: {fileID: 1871798899}
+  Client: {fileID: 2013505827}
+  GameLogic: {fileID: 2013505829}
   ServerHostname: 127.0.0.1
---- !u!114 &837992749
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 837992745}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5e3e5db36cb144647bef01787e146f31, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1519776735
 GameObject:
   m_ObjectHideFlags: 0
@@ -249,3 +221,125 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
+--- !u!1 &1871798898
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 1871798901}
+  - 114: {fileID: 1871798900}
+  - 114: {fileID: 1871798899}
+  m_Layer: 0
+  m_Name: NetworkServer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1871798899
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1871798898}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f14cdd1f0c1da4a4481aacc0c39314aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1871798900
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1871798898}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 832d0f2698f7749edb6b2340ddffe81f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CurrentGameState:
+    CurrentPhase: 0
+    PendingPlayerIDs: 0000000001000000
+    Map:
+      tile: []
+      units: []
+--- !u!4 &1871798901
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1871798898}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 1
+--- !u!1 &2013505826
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 2013505828}
+  - 114: {fileID: 2013505827}
+  - 114: {fileID: 2013505829}
+  m_Layer: 0
+  m_Name: NetworkClient
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2013505827
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2013505826}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e3e5db36cb144647bef01787e146f31, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &2013505828
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2013505826}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 2
+--- !u!114 &2013505829
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2013505826}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8923cbcf662cf4224b4a2533ed04dd40, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CurrentServerSideState:
+    CurrentPhase: 0
+    PendingPlayerIDs: 0000000001000000
+    Map:
+      tile: []
+      units: []
+  CurrentSimulatedState:
+    CurrentPhase: 0
+    PendingPlayerIDs: 0000000001000000
+    Map:
+      tile: []
+      units: []

@@ -8,17 +8,17 @@ public class NetworkingManagerDebugUIThingy : MonoBehaviour
     private bool _isConnected = false;
     private bool _isWaiting = false;
 
-    public ServerNetworkingManager _server;
-    public ClientNetworkingManager _client;
+    public ServerNetworkingManager Server;
+    public ClientNetworkingManager Client;
+    public ClientGameLogicManager GameLogic;
 
-    public GameState GameState;
     public string ServerHostname = "127.0.0.1";
 
     void Awake()
     {
-        _client.StateReceivers += OnStateReceived;
-        _client.ErrorHandlers += OnConnectionError;
-        _client.ConnectedHandler += OnConnected;
+        GameLogic.StateUpdatedHandler += OnStateChanged;
+        Client.ErrorHandlers += OnConnectionError;
+        Client.ConnectedHandler += OnConnected;
     }
 
     void OnConnectionError()
@@ -27,11 +27,9 @@ public class NetworkingManagerDebugUIThingy : MonoBehaviour
         _isConnected = false;
     }
 
-    void OnStateReceived(GameState gameState)
+    void OnStateChanged()
     {
         _isWaiting = false;
-        GameState = gameState;
-        Debug.LogError("Received game state " + GameState.CurrentState);
     }
 
     void OnConnected()
@@ -45,14 +43,14 @@ public class NetworkingManagerDebugUIThingy : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.S))
             {
-                _server.StartServer();
-                _client.ConnectLocally();
+                Server.StartServer();
+                Client.ConnectLocally();
                 _isAtStartup = false;
             }
 
             if (Input.GetKeyDown(KeyCode.C))
             {
-                _client.ConnectToHost(ServerHostname);
+                Client.ConnectToHost(ServerHostname);
                 _isAtStartup = false;
             }
         }
@@ -61,8 +59,7 @@ public class NetworkingManagerDebugUIThingy : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.P))
             {
                 _isWaiting = true;
-                _client.SendActions(new List<GameAction>());
-                Debug.LogError("Sent game state " + GameState.CurrentState);
+                Client.SendActions(new List<GameAction>());
             }
         }
     }
