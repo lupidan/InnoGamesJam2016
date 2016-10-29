@@ -131,10 +131,6 @@ public class MapShapeEditor : Editor
     private static int IndexOfTile(string value)
     {
         var indexOf = Array.IndexOf(tileTypes, value);
-        if (indexOf == 3)
-        {
-            indexOf = 1;
-        }
         return Math.Max(0, indexOf);
     }
 
