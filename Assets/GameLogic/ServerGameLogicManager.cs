@@ -286,7 +286,7 @@ public class ServerGameLogicManager : MonoBehaviour
         int distX = pos1.x - pos2.x + pattern.Width / 2;
         int distY = pos1.y - pos2.y + pattern.Height / 2;
 
-        if (distX < 0 || distX > pattern.Width || distY < 0 || distY > pattern.Height)
+        if (distX < 0 || distX >= pattern.Width || distY < 0 || distY >= pattern.Height)
         {
             return 0;
         }
