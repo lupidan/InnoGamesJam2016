@@ -125,6 +125,30 @@ public class UnitController :
         audioSource.Play();
     }
 
+    private void DisplayPoof()
+    {
+        GameObject gameObject = FindObjectOfType<MapGenerator>().InstantiatePrefab("DeathPoof");
+        Vector3 position = this.transform.position;
+        position.z -= 0.1f;
+        gameObject.transform.position = position;
+    }
+
+    private void DisplayHeavyShotRelative()
+    {
+        GameObject gameObject = FindObjectOfType<MapGenerator>().InstantiatePrefab("HeavyEffect");
+        gameObject.transform.SetParent(this.transform);
+        Vector3 localPosition = new Vector3(0.9f, 0.05f, -0.1f);
+        gameObject.transform.localPosition = localPosition;
+    }
+
+    private void DisplayRangeShotRelative()
+    {
+        GameObject gameObject = FindObjectOfType<MapGenerator>().InstantiatePrefab("RangeEffect");
+        gameObject.transform.SetParent(this.transform);
+        Vector3 localPosition = new Vector3(0.737f, 0.521f, -0.1f);
+        gameObject.transform.localPosition = localPosition;
+    }
+
     public void OnPointerDown(PointerEventData eventData) { }
     public void OnPointerUp(PointerEventData eventData) { }
 
