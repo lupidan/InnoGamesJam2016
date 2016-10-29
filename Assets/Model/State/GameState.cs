@@ -15,16 +15,20 @@ public enum GamePhase
 [System.Serializable]
 public class GameState
 {
-    public const int PlayerCount = 2;
+    public readonly int PlayerCount;
 
     public GamePhase CurrentPhase;
     public List<int> PendingPlayerIDs;
     public Map Map;
+    public List<GameResultAction> ResultsFromLastPhase;
+    public List<List<GameAction>> PlayerGameActions;
 
-    public GameState()
+    public GameState(int desiredPlayerCount)
     {
+        PlayerCount = desiredPlayerCount;
         CurrentPhase = GamePhase.WaitingForStart;
-        RefreshAllPlayersPending();
+        ResultsFromLastPhase = new List<GameResultAction>();
+        ResetPhaseToWaitingForAllPlayers();
     }
 
     public static GameState Clone(GameState other)
@@ -36,17 +40,24 @@ public class GameState
         return (GameState) binaryFormatter.Deserialize(memoryStream);
     }
 
-    public void RefreshAllPlayersPending()
+    public void ResetPhaseToWaitingForAllPlayers()
     {
         PendingPlayerIDs = new List<int>();
+        PlayerGameActions = new List<List<GameAction>>();
         for (var i = 0; i < PlayerCount; i++)
         {
             PendingPlayerIDs.Add(i);
+            PlayerGameActions.Add(new List<GameAction>());
         }
     }
 
-    public bool AllPlayersMoved()
+    public bool DidAllPlayersMove()
     {
         return PendingPlayerIDs.Count == 0;
+    }
+
+    public void SetGameActionForPlayer(int playerId, List<GameAction> actions)
+    {
+        PlayerGameActions[playerId] = actions;
     }
 }

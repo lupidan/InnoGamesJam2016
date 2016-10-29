@@ -1,8 +1,10 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 [System.Serializable]
 public class Unit
 {
+    [System.Serializable]
 	public enum Direction {
 		Right,
 		Left,
@@ -15,6 +17,7 @@ public class Unit
 	public Direction facingDirection;
 	public Position position;
 	public int healthPoints;
+    public int owningPlayerId;
 
 	[System.NonSerialized]
 	private UnitDefinition _definition;
@@ -25,5 +28,9 @@ public class Unit
 			return _definition;
 		}
 	}
-	
+
+    public static string UnitControllerNameForId(int unitId)
+    {
+        return string.Format("Unit/{0}", unitId);
+    }
 }

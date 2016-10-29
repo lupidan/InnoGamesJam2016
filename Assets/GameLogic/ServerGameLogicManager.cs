@@ -13,16 +13,41 @@ public class ServerGameLogicManager : MonoBehaviour
 
     public GameStateUpdatedHandler UpdateHandlers;
 
+    public bool HasGameStarted
+    {
+        get { return CurrentGameState.CurrentPhase != GamePhase.WaitingForStart; }
+    }
+
     public void InitializeNewGame()
     {
-        CurrentGameState = new GameState();
+        CurrentGameState = new GameState(2);
+    }
+
+    public void InitializeNewSinglePlayerGame()
+    {
+        CurrentGameState = new GameState(1);
+    }
+
+    public void PlayerHasJoined(int playerId)
+    {
+        if (CurrentGameState.CurrentPhase == GamePhase.WaitingForStart)
+        {
+            CurrentGameState.PendingPlayerIDs.Remove(playerId);
+            if (CurrentGameState.DidAllPlayersMove())
+            {
+                CurrentGameState.CurrentPhase = GamePhase.Planning;
+                CurrentGameState.ResetPhaseToWaitingForAllPlayers();
+                GameStateHasUpdated();
+            }
+        }
     }
 
     public void ReceivedActionsFromPlayer(int playerId, List<GameAction> actions)
     {
         CurrentGameState.PendingPlayerIDs.Remove(playerId);
+        CurrentGameState.SetGameActionForPlayer(playerId, actions);
 
-        if (!CurrentGameState.AllPlayersMoved())
+        if (!CurrentGameState.DidAllPlayersMove())
         {
             return;
         }
@@ -30,7 +55,7 @@ public class ServerGameLogicManager : MonoBehaviour
         EvaluatePlayerMovedAndAdvance();
         if (CurrentGameState.CurrentPhase != GamePhase.Finished)
         {
-            CurrentGameState.RefreshAllPlayersPending();
+            CurrentGameState.ResetPhaseToWaitingForAllPlayers();
         }
 
         GameStateHasUpdated();

@@ -17,11 +17,30 @@ public class ServerNetworkingManager : MonoBehaviour
         InitializeServer();
     }
 
+    public void StartSinglePlayerServer()
+    {
+        _gameLogic.InitializeNewSinglePlayerGame();
+        InitializeServer();
+    }
+
     private void InitializeServer()
     {
         NetworkServer.Listen(NetworkingConstants.GamePort);
         NetworkServer.RegisterHandler(MsgType.Connect, OnClientConnected);
         NetworkServer.RegisterHandler(NetworkingConstants.MsgTypeGameActionsC2S, OnGameActionsFromClient);
+        NetworkServer.RegisterHandler(NetworkingConstants.MsgTypeGameJoin, OnPlayerJoin);
+    }
+
+    public void OnPlayerJoin(NetworkMessage message)
+    {
+        if (_gameLogic.HasGameStarted)
+        {
+            message.conn.Disconnect();
+            return;
+        }
+
+        var joinMessage = message.ReadMessage<MessagePlayerJoin>();
+        _gameLogic.PlayerHasJoined(joinMessage.PlayerId);
     }
 
     public void OnClientConnected(NetworkMessage message)

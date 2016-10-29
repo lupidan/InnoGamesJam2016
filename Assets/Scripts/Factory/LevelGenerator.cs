@@ -1,0 +1,72 @@
+﻿using UnityEngine;
+using System.Collections.Generic;
+
+public class LevelGenerator : MonoBehaviour {
+
+	[SerializeField]
+	private GameObject[] prefabs;
+	private Dictionary<string, GameObject> unitPrefabCache;
+
+	void Awake()
+	{
+		unitPrefabCache = InitCacheFromPrefabs(prefabs);
+	}
+
+	private Dictionary<string, GameObject> InitCacheFromPrefabs(GameObject[] prefabs)
+	{
+		Dictionary<string, GameObject> cache = new Dictionary<string, GameObject>();
+		for (int i = 0; i < prefabs.Length; i++)
+		{
+			cache[prefabs[i].name] = prefabs[i];
+		}
+		return cache;
+	}
+
+	private T InstantiatePrefab<T>(string identifier) where T : Component
+	{
+		GameObject prefab;
+		if (unitPrefabCache.TryGetValue(identifier, out prefab))
+		{
+			GameObject instantiatedGameObject = Instantiate(prefab);
+			return instantiatedGameObject.GetComponent<T>();
+		}
+		return null;
+	}
+
+	public UnitController CreateUnit(Unit unit)
+	{
+		UnitController unitController = InstantiatePrefab<UnitController>(unit.definitionId);
+		unitController.unitData = unit;
+		unitController.transform.position = new Vector3(unit.position.x, unit.position.y, 0.0f);
+		unitController.name = "unit_" + unit.unitId;
+		return unitController;
+	}
+
+	public TileController CreateTile(Tile tile)
+	{
+		TileController tileController = InstantiatePrefab<TileController>(tile.definitionId);
+		tileController.tileData = tile;
+		tileController.transform.position = new Vector3(tile.position.x, tile.position.y, 0.0f);
+		tileController.name = "tile_" + tile.position.x + "_" + tile.position.y;
+		return tileController;
+	}
+
+	public List<TileController> CreateTiles(Position offset, string[,] tiles)
+	{
+		List<TileController> tileControllers = new List<TileController>();
+		for (int i = 0; i < tiles.GetLength(0); i++)
+		{
+			for (int j = 0; j < tiles.GetLength(1); j++)
+			{
+				Tile tile = new Tile();
+				tile.position.x = j + offset.x;
+				tile.position.y = i + offset.y;
+				tile.definitionId = tiles[i,j];
+				TileController tileController = CreateTile(tile);
+				tileControllers.Add(tileController);
+			}
+		}
+		return tileControllers;
+	}
+
+}

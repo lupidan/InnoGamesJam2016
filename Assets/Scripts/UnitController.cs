@@ -19,13 +19,11 @@ public class UnitController :
 
     private AudioSource audioSource;
 
-    private Unit unitData;
-
     private Position selectedTarget;
 
     private Position target;
 
-    public UnitDefinition unitDefinition;
+    public Unit unitData;
 
     public AudioClip clickedSound;
 
@@ -167,6 +165,45 @@ public class UnitController :
     public void OnPointerExit(PointerEventData eventData)
     {
         removeHighlighting();
+    }
+
+
+    public void OnTakeDamage(TakeDamageEventData damage)
+    {
+
+        if (unitData.healthPoints > 0)
+        {
+            unitData.healthPoints -= damage.damage;
+            if (unitData.healthPoints <= 0)
+            {
+                animator.SetBool(UnitAnimationEvents.StartDying.ToString(), true);
+            }
+        }
+    }
+
+    public void PlayMoveAnimation(Position toPosition, Action onFinished)
+    {
+
+    }
+
+    public void PlayRotateAnimation(Unit.Direction toDirection, Action onFinished)
+    {
+
+    }
+
+    public void PlayAttackAnimation(Position targetPosition, Action onFinished)
+    {
+
+    }
+
+    public void PlayHitpointChange(int newHitpoints, Action onFinished)
+    {
+
+    }
+
+    public void PlayDeathAnimation(Action onFinished)
+    {
+        
     }
 
 }
