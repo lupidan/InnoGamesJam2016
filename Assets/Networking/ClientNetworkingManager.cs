@@ -45,6 +45,8 @@ public class ClientNetworkingManager : MonoBehaviour
 
     public void OnServerConnected(NetworkMessage message)
     {
+        _client.Send(NetworkingConstants.MsgTypeGameJoin, new MessagePlayerJoin(_playerId));
+
         if (ConnectedHandler != null)
         {
             ConnectedHandler();

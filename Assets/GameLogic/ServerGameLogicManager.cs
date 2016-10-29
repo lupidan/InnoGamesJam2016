@@ -13,6 +13,11 @@ public class ServerGameLogicManager : MonoBehaviour
 
     public GameStateUpdatedHandler UpdateHandlers;
 
+    public bool HasGameStarted
+    {
+        get { return CurrentGameState.CurrentPhase != GamePhase.WaitingForStart; }
+    }
+
     public void InitializeNewGame()
     {
         CurrentGameState = new GameState(2);
@@ -21,6 +26,20 @@ public class ServerGameLogicManager : MonoBehaviour
     public void InitializeNewSinglePlayerGame()
     {
         CurrentGameState = new GameState(1);
+    }
+
+    public void PlayerHasJoined(int playerId)
+    {
+        if (CurrentGameState.CurrentPhase == GamePhase.WaitingForStart)
+        {
+            CurrentGameState.PendingPlayerIDs.Remove(playerId);
+            if (CurrentGameState.DidAllPlayersMove())
+            {
+                CurrentGameState.CurrentPhase = GamePhase.Planning;
+                CurrentGameState.ResetPhaseToWaitingForAllPlayers();
+                GameStateHasUpdated();
+            }
+        }
     }
 
     public void ReceivedActionsFromPlayer(int playerId, List<GameAction> actions)
