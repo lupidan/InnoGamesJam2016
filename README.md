@@ -4,7 +4,7 @@ Theme: Time Cheating
 # What's the game about
 Turn based strategy game with a board, you will have a set of units that will move across the board. Units will attack each other when in range, at the end of the turn.
 
-This is a game in which it is important to know the movements of your opponent.
+This is a game in which it is important to anticipate the movements of your opponent.
 
 ## How to win
  - Defeat the king of your opponent
