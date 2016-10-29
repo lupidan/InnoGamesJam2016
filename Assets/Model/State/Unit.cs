@@ -17,6 +17,7 @@ public class Unit
 	public Direction facingDirection;
 	public Position position;
 	public int healthPoints;
+    public int owningPlayerId;
 
 	[System.NonSerialized]
 	private UnitDefinition _definition;
