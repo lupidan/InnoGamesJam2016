@@ -7,6 +7,8 @@ public class LevelGenerator : MonoBehaviour {
 	private GameObject[] prefabs;
 	private Dictionary<string, GameObject> unitPrefabCache;
 
+    
+
 	void Awake()
 	{
 		unitPrefabCache = InitCacheFromPrefabs(prefabs);
