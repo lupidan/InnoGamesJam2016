@@ -23,7 +23,7 @@ GameObject:
   - 95: {fileID: 95000011676318764}
   - 114: {fileID: 114000010419838960}
   m_Layer: 0
-  m_Name: DeeathPoof
+  m_Name: DeathPoof
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

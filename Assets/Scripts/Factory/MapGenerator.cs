@@ -30,13 +30,22 @@ public class MapGenerator : MonoBehaviour {
 		return cache;
 	}
 
-	private T InstantiatePrefab<T>(string identifier) where T : Component
+	public T InstantiatePrefab<T>(string identifier) where T : Component
+	{
+		GameObject prefab = InstantiatePrefab(identifier);
+		if (prefab != null)
+		{
+			return prefab.GetComponent<T>();
+		}
+		return null;
+	}
+
+	public GameObject InstantiatePrefab(string identifier)
 	{
 		GameObject prefab;
 		if (unitPrefabCache.TryGetValue(identifier, out prefab))
 		{
-			GameObject instantiatedGameObject = Instantiate(prefab);
-			return instantiatedGameObject.GetComponent<T>();
+			return Instantiate(prefab);
 		}
 		return null;
 	}
