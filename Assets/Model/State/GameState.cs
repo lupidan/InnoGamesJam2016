@@ -22,17 +22,13 @@ public class GameState
     public Dictionary<int, Player> players;
     public List<GameResultAction> ResultsFromLastPhase;
     public List<List<GameAction>> PlayerGameActions;
-    public MapPatternDefinition mapPattern;
+    public MapPatternDefinition MapPattern;
+    public int WinningPlayerId;
 
-    public GameState(
-        int desiredPlayerCount,
-        MapPatternDefinition mapPattern,
-        UnitDefinition meeleDefinition,
-        UnitDefinition heavyDefinition,
-        UnitDefinition rangeDefinition
-    )
+    public GameState(int desiredPlayerCount, MapPatternDefinition mapPattern)
     {
-        this.mapPattern = mapPattern;
+        WinningPlayerId = -1;
+        MapPattern = mapPattern;
         PlayerCount = desiredPlayerCount;
         CurrentPhase = GamePhase.WaitingForStart;
         ResultsFromLastPhase = new List<GameResultAction>();
@@ -41,21 +37,22 @@ public class GameState
         // manually deploy units
         players= new Dictionary<int, Player>();
 
-        int unitCounter = 0;
-        for (int i = 0; i < PlayerCount; i++)
+        var unitCounter = 0;
+        for (var i = 0; i < PlayerCount; i++)
         {
-            Player player= new Player();
-            player.name = "Player "+1;
+            var player = new Player { name = "Player " + (i + 1), id = i };
 
-            Unit heavy= new Unit();
-            heavy.unitId = unitCounter++;
-            heavy.owningPlayerId = i;
-            heavy.facingDirection = Unit.Direction.Right;
-            heavy.position = new Position(2, 2);
+            // FIXME: unit initialization
+            var heavy = new Unit
+            {
+                unitId = unitCounter++,
+                owningPlayerId = i,
+                facingDirection = Unit.Direction.Right,
+                position = new Position(2, 2)
+            };
 
+            player.units = new Dictionary<int, Unit> {{heavy.unitId, heavy}};
 
-            player.units = new Dictionary<int, Unit>();
-            player.units.Add(heavy.unitId, heavy);
             players.Add(i, player);
         }
 

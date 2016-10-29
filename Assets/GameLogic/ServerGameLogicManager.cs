@@ -22,6 +22,8 @@ public class ServerGameLogicManager : MonoBehaviour
 
     public UnitDefinition range;
 
+    public UnitDefinition king;
+
     public bool HasGameStarted
     {
         get { return CurrentGameState.CurrentPhase != GamePhase.WaitingForStart; }
@@ -29,12 +31,12 @@ public class ServerGameLogicManager : MonoBehaviour
 
     public void InitializeNewGame()
     {
-        CurrentGameState = new GameState(2, mapPattern, meele, heavy, range);
+        CurrentGameState = new GameState(2, mapPattern);
     }
 
     public void InitializeNewSinglePlayerGame()
     {
-        CurrentGameState = new GameState(1, mapPattern, meele, heavy, range);
+        CurrentGameState = new GameState(1, mapPattern);
     }
 
     public void PlayerHasJoined(int playerId)
@@ -89,13 +91,39 @@ public class ServerGameLogicManager : MonoBehaviour
     private void EvaluateRevisionPhase()
     {
         CurrentGameState = ProcessPlayerActions();
-        CurrentGameState.CurrentPhase = GamePhase.Planning;
 
-/*
-                        CurrentGameState.CurrentPhase = new System.Random().Next() % 4 == 0
-                            ? GamePhase.Finished
-                            : GamePhase.Planning;
-                */
+        CurrentGameState.CurrentPhase = GamePhase.Planning;
+        DeterminePossibleWinner();
+    }
+
+    private void DeterminePossibleWinner()
+    {
+        var remainingAlivePlayers = new List<int>(CurrentGameState.players.Keys);
+        foreach (Player player in CurrentGameState.players.Values)
+        {
+            var hasKing = false;
+            foreach (var unit in player.units.Values)
+            {
+                if (unit.Definition.Equals(king))
+                {
+                    hasKing = true;
+                }
+            }
+
+            if (!hasKing)
+            {
+                remainingAlivePlayers.Remove(player.id);
+            }
+        }
+
+        if (remainingAlivePlayers.Count <= 1)
+        {
+            CurrentGameState.CurrentPhase = GamePhase.Finished;
+            if (remainingAlivePlayers.Count == 1)
+            {
+                CurrentGameState.WinningPlayerId = remainingAlivePlayers[0];
+            }
+        }
     }
 
     private void EvaluatePlanningPhase()
