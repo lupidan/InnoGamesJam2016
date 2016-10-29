@@ -206,6 +206,7 @@ MonoBehaviour:
   - {fileID: 1000013321329400, guid: ec65c655aeb7e42cea6d474d4b381f7d, type: 2}
   - {fileID: 1000011035245940, guid: 9934ad9bccda54581a4462d1afa018cb, type: 2}
   - {fileID: 1000010217409466, guid: d2dafca1c5f554290b4fa31db8965006, type: 2}
+  - {fileID: 1000011587589994, guid: ee036a2b2cb9a4fadadb33ed2756d723, type: 2}
   mapPatternDefinition: {fileID: 11400000, guid: cbbb925c26e7c466daf7a6582cf03d19,
     type: 2}
 --- !u!4 &377680913
