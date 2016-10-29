@@ -104,7 +104,17 @@ public class ServerGameLogicManager : MonoBehaviour
 
         // DEBUG
         newGameState.ResultsFromLastPhase.Add(new GameAttackResultAction(3, new Position(1, 2)));
-        //newGameState.ResultsFromLastPhase.Add(new GameUnitDeathResultAction(3));
+        List<Position> positions = new List<Position>();
+        positions.Add(new Position(0,0));
+        positions.Add(new Position(1,0));
+        positions.Add(new Position(2,0));
+        positions.Add(new Position(3,0));
+        positions.Add(new Position(4,0));
+        positions.Add(new Position(5,0));
+        positions.Add(new Position(6,0));
+        newGameState.ResultsFromLastPhase.Add(new GameMoveResultAction(1, positions));
+        newGameState.ResultsFromLastPhase.Add(new GameAttackResultAction(1, new Position(1, 2)));
+        newGameState.ResultsFromLastPhase.Add(new GameUnitDeathResultAction(2));
         // END DEBUG
 
         return newGameState;
