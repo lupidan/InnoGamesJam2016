@@ -17,7 +17,7 @@ public class UnitDefinition : ScriptableObject
     public Type type;
     public int maxHealth;
     public int attack;
-    public int[] defense=new int[3]{0,0,0};
+    public int[] defense=new int[4]{0,0,0,0};
     public int maxMovements;
     public int maxCheatingMovements;
 
