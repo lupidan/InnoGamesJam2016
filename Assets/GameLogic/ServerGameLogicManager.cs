@@ -24,6 +24,8 @@ public class ServerGameLogicManager : MonoBehaviour
 
     public UnitDefinition range;
 
+    public UnitDefinition king;
+
     public bool HasGameStarted
     {
         get { return CurrentGameState.CurrentPhase != GamePhase.WaitingForStart; }
@@ -31,12 +33,12 @@ public class ServerGameLogicManager : MonoBehaviour
 
     public void InitializeNewGame()
     {
-        CurrentGameState = new GameState(2, mapPattern, meele, heavy, range);
+        CurrentGameState = new GameState(2, mapPattern);
     }
 
     public void InitializeNewSinglePlayerGame()
     {
-        CurrentGameState = new GameState(1, mapPattern, meele, heavy, range);
+        CurrentGameState = new GameState(1, mapPattern);
     }
 
     public void PlayerHasJoined(int playerId)
@@ -88,13 +90,40 @@ public class ServerGameLogicManager : MonoBehaviour
     private void EvaluateRevisionPhase()
     {
         CurrentGameState = ProcessPlayerActions();
-        CurrentGameState.CurrentPhase = GamePhase.Planning;
 
-/*
-        CurrentGameState.CurrentPhase = new System.Random().Next() % 4 == 0
-            ? GamePhase.Finished
-            : GamePhase.Planning;
-*/
+        CurrentGameState.CurrentPhase = GamePhase.Planning;
+        DeterminePossibleWinner();
+    }
+
+    private void DeterminePossibleWinner()
+    {
+        var remainingAlivePlayers = new List<int>(CurrentGameState.players.Keys);
+        foreach (Player player in CurrentGameState.players.Values)
+        {
+            var hasKing = false;
+            foreach (var unit in player.units.Values)
+            {
+                if (unit.Definition.Equals(king))
+                {
+                    hasKing = true;
+                }
+            }
+
+
+            if (!hasKing)
+            {
+                remainingAlivePlayers.Remove(player.id);
+            }
+        }
+
+        if (remainingAlivePlayers.Count <= 1)
+        {
+            CurrentGameState.CurrentPhase = GamePhase.Finished;
+            if (remainingAlivePlayers.Count == 1)
+            {
+                CurrentGameState.WinningPlayerId = remainingAlivePlayers[0];
+            }
+        }
     }
 
     private void EvaluatePlanningPhase()
@@ -233,7 +262,35 @@ public class ServerGameLogicManager : MonoBehaviour
 
     public int[] CalculateDamage(Unit fighterLeft, Unit fighterRight)
     {
-        return new int[2] {0, 0};
+        var result = new int[2] {0, 0};
+
+        result[0] = Math.Max(
+            GetAttackStrengthAtPosition(
+                fighterLeft.Definition.attackPattern,
+                fighterLeft.position,
+                fighterRight.position) - fighterRight.Definition.DefenseAgainst(fighterLeft.Definition.type),
+            0);
+
+        result[1] = Math.Max(
+            GetAttackStrengthAtPosition(
+                fighterRight.Definition.attackPattern,
+                fighterRight.position,
+                fighterLeft.position) - fighterLeft.Definition.DefenseAgainst(fighterRight.Definition.type),
+            0);
+
+        return result;
+    }
+
+    public int GetAttackStrengthAtPosition(AttackPatternDefinition pattern, Position pos1, Position pos2)
+    {
+        int distX = pos1.x - pos2.x + pattern.Width / 2;
+        int distY = pos1.y - pos2.y + pattern.Height / 2;
+
+        if (distX < 0 || distX > pattern.Width || distY < 0 || distY > pattern.Height)
+        {
+            return 0;
+        }
+        return Math.Max(pattern.GetData((uint)distX,(uint) distY), 0);
     }
 
     private void GameStateHasUpdated()
