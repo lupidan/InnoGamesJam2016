@@ -19,6 +19,12 @@ public class ClientGameLogicManager : MonoBehaviour
 
     public void ReceivedNewGameState(GameState gameState)
     {
+        if (CurrentServerSideState == null)
+        {
+            //LevelGenerator generator = new LevelGenerator();
+            //generator
+
+        }
         CurrentServerSideState = gameState;
         CurrentVisibleState = GameState.Clone(gameState);
         _resultActionQueue = new List<GameResultAction>(CurrentServerSideState.ResultsFromLastPhase);
@@ -38,6 +44,7 @@ public class ClientGameLogicManager : MonoBehaviour
     {
         return GameObject.Find(Unit.UnitControllerNameForId(unitId)).GetComponent<UnitController>();
     }
+
 
     // Play the next animation on any UnitController or inform the game that the phase is finished
     public void PlayNextAnimation()

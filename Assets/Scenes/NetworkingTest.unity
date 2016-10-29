@@ -309,10 +309,12 @@ MonoBehaviour:
   CurrentGameState:
     CurrentPhase: 0
     PendingPlayerIDs: 0000000001000000
-    Map:
-      tile: []
-      units: []
     ResultsFromLastPhase: []
+    mapPattern: {fileID: 0}
+  mapPattern: {fileID: 0}
+  heavy: {fileID: 11400000, guid: a71636f860e8f4044a22eb8dc6b6f11e, type: 2}
+  meele: {fileID: 0}
+  range: {fileID: 0}
 --- !u!4 &1871798901
 Transform:
   m_ObjectHideFlags: 0
@@ -381,14 +383,10 @@ MonoBehaviour:
   CurrentServerSideState:
     CurrentPhase: 0
     PendingPlayerIDs: 0000000001000000
-    Map:
-      tile: []
-      units: []
     ResultsFromLastPhase: []
+    mapPattern: {fileID: 0}
   CurrentVisibleState:
     CurrentPhase: 0
     PendingPlayerIDs: 0000000001000000
-    Map:
-      tile: []
-      units: []
     ResultsFromLastPhase: []
+    mapPattern: {fileID: 0}
