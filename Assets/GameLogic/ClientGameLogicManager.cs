@@ -10,14 +10,14 @@ public delegate void StateUpdatedHandler();
 public class ClientGameLogicManager : MonoBehaviour
 {
     public GameState CurrentServerSideState;
-    public GameState CurrentSimulatedState;
+    public GameState CurrentVisibleState;
 
     public event StateUpdatedHandler StateUpdatedHandler;
 
     public void ReceivedNewGameState(GameState gameState)
     {
         CurrentServerSideState = gameState;
-        CurrentSimulatedState = GameState.Clone(gameState);
+        CurrentVisibleState = GameState.Clone(gameState);
 
         Debug.LogError("New game state phase is " + gameState.CurrentPhase);
 
