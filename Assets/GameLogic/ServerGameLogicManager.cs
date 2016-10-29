@@ -103,8 +103,8 @@ public class ServerGameLogicManager : MonoBehaviour
         newGameState.ResultsFromLastPhase = new List<GameResultAction>();
 
         // DEBUG
-        newGameState.ResultsFromLastPhase.Add(new GameAttackResultAction(1, new Position(1, 2)));
-        newGameState.ResultsFromLastPhase.Add(new GameUnitDeathResultAction(2));
+        newGameState.ResultsFromLastPhase.Add(new GameAttackResultAction(3, new Position(1, 2)));
+        //newGameState.ResultsFromLastPhase.Add(new GameUnitDeathResultAction(3));
         // END DEBUG
 
         return newGameState;

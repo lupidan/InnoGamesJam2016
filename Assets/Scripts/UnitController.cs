@@ -4,6 +4,7 @@ using System.Collections;
 using Combat.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(AudioSource))]
 [RequireComponent(typeof(Collider2D))]
@@ -59,15 +60,8 @@ public class UnitController :
     {
         if (hasArrivedAtDestination())
         {
-            animator.SetBool(UnitAnimationEvents.StopMoving.ToString(), true);
+            //animator.SetBool(UnitAnimationEvents.StopMoving.ToString(), true);
         }
-    }
-
-    public IEnumerator PlayOneShot ( string paramName )
-    {
-        animator.SetBool( paramName, true );
-        yield return null;
-        animator.SetBool( paramName, false );
     }
 
     public Boolean hasArrivedAtDestination()
@@ -167,20 +161,6 @@ public class UnitController :
         removeHighlighting();
     }
 
-
-    public void OnTakeDamage(TakeDamageEventData damage)
-    {
-
-        if (unitData.healthPoints > 0)
-        {
-            unitData.healthPoints -= damage.damage;
-            if (unitData.healthPoints <= 0)
-            {
-                animator.SetBool(UnitAnimationEvents.StartDying.ToString(), true);
-            }
-        }
-    }
-
     public void PlayMoveAnimation(Position toPosition, Action onFinished)
     {
         Debug.LogError("(☞ﾟヮﾟ)☞ (" + unitData.unitId + ")");
@@ -196,7 +176,10 @@ public class UnitController :
     public void PlayAttackAnimation(Position targetPosition, Action onFinished)
     {
         Debug.LogError("┌(ﾟдﾟ)┘ (" + unitData.unitId + ")");
-        onFinished();
+        animator.SetBool("StartAttacking" , false);
+        Debug.LogError(UnitAnimationEvents.StartAttacking.ToString());
+        //playAttackSound();
+        //onFinished();
     }
 
     public void PlayHitpointChange(int newHitpoints, Action onFinished)
