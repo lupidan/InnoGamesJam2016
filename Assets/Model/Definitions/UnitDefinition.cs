@@ -17,5 +17,9 @@ public class UnitDefinition : ScriptableObject
     public int maxHealth;
     public int attack;
     public int defense;
+    public int maxMovements;
+    public int maxCheatingMovements;
+
+    public AttackPatternDefinition attackPattern;
 
 }

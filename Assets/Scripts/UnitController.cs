@@ -163,8 +163,15 @@ public class UnitController :
 
     public void PlayMoveAnimation(Position toPosition, Action onFinished)
     {
-        Debug.LogError("(☞ﾟヮﾟ)☞ (" + unitData.unitId + ")");
-        onFinished();
+        Vector3 newPosition = transform.position;
+        newPosition.x = toPosition.x;
+        newPosition.y = toPosition.y;
+        LeanTween.move(gameObject, newPosition, 0.2f)
+                 .setEaseLinear()
+                 .setOnComplete(() => {
+                     transform.position = newPosition;
+                     onFinished.Invoke();
+                 });
     }
 
     public void PlayRotateAnimation(Unit.Direction toDirection, Action onFinished)

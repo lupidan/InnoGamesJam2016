@@ -17,3 +17,6 @@ MonoBehaviour:
   maxHealth: 10
   attack: 3
   defense: 6
+  attackPattern: {fileID: 11400000, guid: f37256fa9553142208d7732859bbbb9f, type: 2}
+  movePattern: {fileID: 11400000, guid: cebd649452f9e4832a4f1c59d0d2aa6f, type: 2}
+  cheatMovePattern: {fileID: 11400000, guid: 95367e2022e4f4b4a91941c67ef42f1f, type: 2}
