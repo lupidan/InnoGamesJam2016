@@ -143,8 +143,9 @@ public class ServerGameLogicManager : MonoBehaviour
     }
 
     public Tuple<int, int> CalculateDamage(Unit fighterLeft, Unit fighterRight)
+    public int[] CalculateDamage(Unit fighterLeft, Unit fighterRight)
     {
-        return new Tuple<int, int>(0, 0);
+        return new int[2] {0, 0};
     }
 
     private void GameStateHasUpdated()
