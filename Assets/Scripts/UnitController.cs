@@ -13,8 +13,7 @@ public class UnitController :
     MonoBehaviour,
     IPointerClickHandler,
     IPointerEnterHandler,
-    IPointerExitHandler,
-    ITakeDamageHandler
+    IPointerExitHandler
 {
     private Animator animator;
 
@@ -41,9 +40,11 @@ public class UnitController :
 
     public enum UnitAnimationEvents
     {
-        StartedMoving,
-        StoppedMoving,
-        Died
+        StartMoving,
+        StopMoving,
+        StartAttacking,
+        StopAttacking,
+        StartDying
     }
 
     // Use this for initialization
@@ -60,8 +61,15 @@ public class UnitController :
     {
         if (hasArrivedAtDestination())
         {
-            animator.SetBool(UnitAnimationEvents.StoppedMoving.ToString(), true);
+            animator.SetBool(UnitAnimationEvents.StopMoving.ToString(), true);
         }
+    }
+
+    public IEnumerator PlayOneShot ( string paramName )
+    {
+        animator.SetBool( paramName, true );
+        yield return null;
+        animator.SetBool( paramName, false );
     }
 
     public Boolean hasArrivedAtDestination()
@@ -161,16 +169,4 @@ public class UnitController :
         removeHighlighting();
     }
 
-    public void OnTakeDamage(TakeDamageEventData damage)
-    {
-
-        if (unitData.healthPoints > 0)
-        {
-            unitData.healthPoints -= damage.damage;
-            if (unitData.healthPoints <= 0)
-            {
-                animator.SetBool(UnitAnimationEvents.Died.ToString(), true);
-            }
-        }
-    }
 }
