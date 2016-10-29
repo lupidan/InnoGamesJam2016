@@ -1,8 +1,10 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 [System.Serializable]
 public class Unit
 {
+    [System.Serializable]
 	public enum Direction {
 		Right,
 		Left,
@@ -25,5 +27,9 @@ public class Unit
 			return _definition;
 		}
 	}
-	
+
+    public static string UnitControllerNameForId(int unitId)
+    {
+        return string.Format("Unit/{0}", unitId);
+    }
 }

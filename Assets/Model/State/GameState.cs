@@ -20,12 +20,14 @@ public class GameState
     public GamePhase CurrentPhase;
     public List<int> PendingPlayerIDs;
     public Map Map;
+    public List<GameResultAction> ResultsFromLastPhase;
     public List<List<GameAction>> PlayerGameActions;
 
     public GameState(int desiredPlayerCount)
     {
         PlayerCount = desiredPlayerCount;
         CurrentPhase = GamePhase.WaitingForStart;
+        ResultsFromLastPhase = new List<GameResultAction>();
         ResetPhaseToWaitingForAllPlayers();
     }
 
