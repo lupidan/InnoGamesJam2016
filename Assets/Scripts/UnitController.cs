@@ -13,7 +13,7 @@ public class UnitController : MonoBehaviour, IPointerClickHandler, IPointerEnter
 
     private AudioSource audioSource;
 
-    public UnitDefinition unit;
+    public Unit unit;
 
     public Vector2 selectedTarget;
 

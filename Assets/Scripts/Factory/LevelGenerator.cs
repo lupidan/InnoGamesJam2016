@@ -36,8 +36,9 @@ public class LevelGenerator : MonoBehaviour {
 	public UnitController CreateUnit(Unit unit)
 	{
 		UnitController unitController = InstantiatePrefab<UnitController>(unit.definitionId);
-		//unitController.unit = unit;
+		unitController.unit = unit;
 		unitController.transform.position = new Vector3(unit.position.x, unit.position.y, 0.0f);
+		unitController.name = "unit_" + unit.unitId;
 		return unitController;
 	}
 
@@ -46,6 +47,7 @@ public class LevelGenerator : MonoBehaviour {
 		TileController tileController = InstantiatePrefab<TileController>(tile.definitionId);
 		tileController.tile = tile;
 		tileController.transform.position = new Vector3(tile.position.x, tile.position.y, 0.0f);
+		tileController.name = "tile_" + tile.position.x + "_" + tile.position.y;
 		return tileController;
 	}
 }
