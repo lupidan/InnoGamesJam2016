@@ -277,6 +277,7 @@ GameObject:
   - 4: {fileID: 1871798901}
   - 114: {fileID: 1871798900}
   - 114: {fileID: 1871798899}
+  - 114: {fileID: 1871798902}
   m_Layer: 0
   m_Name: NetworkServer
   m_TagString: Untagged
@@ -309,10 +310,12 @@ MonoBehaviour:
   CurrentGameState:
     CurrentPhase: 0
     PendingPlayerIDs: 0000000001000000
-    Map:
-      tile: []
-      units: []
     ResultsFromLastPhase: []
+    mapPattern: {fileID: 0}
+  mapPattern: {fileID: 0}
+  heavy: {fileID: 11400000, guid: a71636f860e8f4044a22eb8dc6b6f11e, type: 2}
+  meele: {fileID: 0}
+  range: {fileID: 0}
 --- !u!4 &1871798901
 Transform:
   m_ObjectHideFlags: 0
@@ -326,6 +329,31 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 1
+--- !u!114 &1871798902
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1871798898}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ac8b648ac4ee42f1aee6824e96ffb75, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefabs:
+  - {fileID: 1000011688717172, guid: 45672671a3a1840379bbd4e7f89cbaaa, type: 2}
+  - {fileID: 1000011853202886, guid: ea66162366c9e4ba9b14a3522cb58fca, type: 2}
+  - {fileID: 1000013658651350, guid: de7306f8834144ee1bf9313eb40be239, type: 2}
+  - {fileID: 1000013301402850, guid: f06a27fe7a9334ad4bbab34c19b5481a, type: 2}
+  - {fileID: 1000010529091342, guid: 940f784015dfc48fbb0eb3b0d47ec9fe, type: 2}
+  - {fileID: 1000013689123758, guid: 31f2ae409d8b842f6a7ab89dee044465, type: 2}
+  - {fileID: 1000013058251638, guid: 46f6d8d19019049fdbbabe274e405aaf, type: 2}
+  - {fileID: 1000013343835192, guid: f7271069b9e6640b195da98a75a07b61, type: 2}
+  - {fileID: 1000012954162360, guid: 4cd522224f8774752b52926ef423b760, type: 2}
+  - {fileID: 1000011000336512, guid: 57a0fa4627e62420b8f332f9f6fda082, type: 2}
+  - {fileID: 1000013430104524, guid: 71194b794f9154d028e615ce83ef180d, type: 2}
+  mapPatternDefinition: {fileID: 11400000, guid: cbbb925c26e7c466daf7a6582cf03d19,
+    type: 2}
 --- !u!1 &2013505826
 GameObject:
   m_ObjectHideFlags: 0
@@ -381,14 +409,10 @@ MonoBehaviour:
   CurrentServerSideState:
     CurrentPhase: 0
     PendingPlayerIDs: 0000000001000000
-    Map:
-      tile: []
-      units: []
     ResultsFromLastPhase: []
+    mapPattern: {fileID: 0}
   CurrentVisibleState:
     CurrentPhase: 0
     PendingPlayerIDs: 0000000001000000
-    Map:
-      tile: []
-      units: []
     ResultsFromLastPhase: []
+    mapPattern: {fileID: 0}

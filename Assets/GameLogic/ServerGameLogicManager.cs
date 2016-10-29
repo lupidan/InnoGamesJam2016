@@ -13,6 +13,14 @@ public class ServerGameLogicManager : MonoBehaviour
 
     public GameStateUpdatedHandler UpdateHandlers;
 
+    public MapPatternDefinition mapPattern;
+
+    public UnitDefinition heavy;
+
+    public UnitDefinition meele;
+
+    public UnitDefinition range;
+
     public bool HasGameStarted
     {
         get { return CurrentGameState.CurrentPhase != GamePhase.WaitingForStart; }
@@ -20,12 +28,12 @@ public class ServerGameLogicManager : MonoBehaviour
 
     public void InitializeNewGame()
     {
-        CurrentGameState = new GameState(2);
+        CurrentGameState = new GameState(2, mapPattern, meele, heavy, range);
     }
 
     public void InitializeNewSinglePlayerGame()
     {
-        CurrentGameState = new GameState(1);
+        CurrentGameState = new GameState(1, mapPattern, meele, heavy, range);
     }
 
     public void PlayerHasJoined(int playerId)

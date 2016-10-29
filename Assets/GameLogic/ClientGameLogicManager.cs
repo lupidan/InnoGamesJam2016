@@ -8,8 +8,13 @@ public delegate void StateUpdatedHandler();
 /// Basic game logic manager for the client-side behaviour,
 /// allowing for simulation and holding of a game state
 /// </summary>
+/// [RequireComponent(typeof(Animator))]
+///
+[RequireComponent(typeof(LevelGenerator))]
 public class ClientGameLogicManager : MonoBehaviour
 {
+    private LevelGenerator generator;
+
     public GameState CurrentServerSideState;
     public GameState CurrentVisibleState;
 
@@ -17,8 +22,19 @@ public class ClientGameLogicManager : MonoBehaviour
 
     private List<GameResultAction> _resultActionQueue;
 
+    public void Start()
+    {
+        generator = GetComponent<LevelGenerator>();
+    }
+
     public void ReceivedNewGameState(GameState gameState)
     {
+        if (CurrentServerSideState == null)
+        {
+            //LevelGenerator generator = new LevelGenerator();
+            //generator
+            
+        }
         CurrentServerSideState = gameState;
         CurrentVisibleState = GameState.Clone(gameState);
         _resultActionQueue = new List<GameResultAction>(CurrentServerSideState.ResultsFromLastPhase);
@@ -38,6 +54,7 @@ public class ClientGameLogicManager : MonoBehaviour
     {
         return GameObject.Find(Unit.UnitControllerNameForId(unitId)).GetComponent<UnitController>();
     }
+
 
     // Play the next animation on any UnitController or inform the game that the phase is finished
     public void PlayNextAnimation()
