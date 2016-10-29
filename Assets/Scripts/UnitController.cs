@@ -20,13 +20,11 @@ public class UnitController :
 
     private AudioSource audioSource;
 
-    private Unit unitData;
-
     private Position selectedTarget;
 
     private Position target;
 
-    public UnitDefinition unitDefinition;
+    public Unit unitData;
 
     public AudioClip clickedSound;
 
