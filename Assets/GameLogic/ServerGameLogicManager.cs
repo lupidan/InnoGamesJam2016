@@ -92,10 +92,10 @@ public class ServerGameLogicManager : MonoBehaviour
         CurrentGameState.CurrentPhase = GamePhase.Planning;
 
 /*
-        CurrentGameState.CurrentPhase = new System.Random().Next() % 4 == 0
-            ? GamePhase.Finished
-            : GamePhase.Planning;
-*/
+                        CurrentGameState.CurrentPhase = new System.Random().Next() % 4 == 0
+                            ? GamePhase.Finished
+                            : GamePhase.Planning;
+                */
     }
 
     private void EvaluatePlanningPhase()
@@ -109,15 +109,14 @@ public class ServerGameLogicManager : MonoBehaviour
     {
         var newGameState = GameState.Clone(CurrentGameState);
 
-        for (int playerId=0; playerId < newGameState.PlayerCount; playerId++)
+        for (int playerId = 0; playerId < newGameState.PlayerCount; playerId++)
         {
-            List<GameAction> actions=newGameState.GetGameActionForPlayer(playerId);
+            List<GameAction> actions = newGameState.GetGameActionForPlayer(playerId);
 
 
             foreach (var gameAction in actions)
             {
                 //newGameState.Map[gameAction.UnitId]
-
             }
         }
 
@@ -127,13 +126,13 @@ public class ServerGameLogicManager : MonoBehaviour
         // DEBUG
         newGameState.ResultsFromLastPhase.Add(new GameAttackResultAction(3, new Position(1, 2)));
         List<Position> positions = new List<Position>();
-        positions.Add(new Position(0,0));
-        positions.Add(new Position(1,0));
-        positions.Add(new Position(2,0));
-        positions.Add(new Position(3,0));
-        positions.Add(new Position(4,0));
-        positions.Add(new Position(5,0));
-        positions.Add(new Position(6,0));
+        positions.Add(new Position(0, 0));
+        positions.Add(new Position(1, 0));
+        positions.Add(new Position(2, 0));
+        positions.Add(new Position(3, 0));
+        positions.Add(new Position(4, 0));
+        positions.Add(new Position(5, 0));
+        positions.Add(new Position(6, 0));
         newGameState.ResultsFromLastPhase.Add(new GameMoveResultAction(3, positions));
         newGameState.ResultsFromLastPhase.Add(new GameAttackResultAction(3, new Position(1, 2)));
         newGameState.ResultsFromLastPhase.Add(new GameUnitDeathResultAction(3));
@@ -142,9 +141,36 @@ public class ServerGameLogicManager : MonoBehaviour
         return newGameState;
     }
 
+
     public int[] CalculateDamage(Unit fighterLeft, Unit fighterRight)
     {
-        return new int[2] {0, 0};
+        var result = new int[2] {0, 0};
+
+        result[0] = Math.Max(
+            GetAttackStrengthAtPosition(
+                fighterLeft.Definition.attackPattern,
+                fighterLeft.position,
+                fighterRight.position) - fighterRight.Definition.defense[(int)fighterLeft.Definition.type],
+            0);
+
+        result[1] = Math.Max(
+            GetAttackStrengthAtPosition(
+                fighterRight.Definition.attackPattern,
+                fighterRight.position,
+                fighterLeft.position) - fighterLeft.Definition.defense[(int)fighterRight.Definition.type],
+            0);
+
+        return result;
+    }
+
+    public int GetAttackStrengthAtPosition(AttackPatternDefinition pattern, Position pos1, Position pos2)
+    {
+        int distX = pos1.x - pos2.x;
+        int distY = pos1.y - pos2.y;
+
+        return pattern.GetData(
+            (uint) (distX - pattern.Width / 2),
+            (uint) (distY - pattern.Height / 2));
     }
 
     private void GameStateHasUpdated()
