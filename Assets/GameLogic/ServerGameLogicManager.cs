@@ -92,10 +92,10 @@ public class ServerGameLogicManager : MonoBehaviour
         CurrentGameState.CurrentPhase = GamePhase.Planning;
 
 /*
-                        CurrentGameState.CurrentPhase = new System.Random().Next() % 4 == 0
-                            ? GamePhase.Finished
-                            : GamePhase.Planning;
-                */
+                                        CurrentGameState.CurrentPhase = new System.Random().Next() % 4 == 0
+                                            ? GamePhase.Finished
+                                            : GamePhase.Planning;
+                                */
     }
 
     private void EvaluatePlanningPhase()
@@ -165,12 +165,14 @@ public class ServerGameLogicManager : MonoBehaviour
 
     public int GetAttackStrengthAtPosition(AttackPatternDefinition pattern, Position pos1, Position pos2)
     {
-        int distX = pos1.x - pos2.x;
-        int distY = pos1.y - pos2.y;
+        int distX = pos1.x - pos2.x + pattern.Width / 2;
+        int distY = pos1.y - pos2.y + pattern.Height / 2;
 
-        return pattern.GetData(
-            (uint) (distX - pattern.Width / 2),
-            (uint) (distY - pattern.Height / 2));
+        if (distX < 0 || distX > pattern.Width || distY < 0 || distY > pattern.Height)
+        {
+            return 0;
+        }
+        return Math.Max(pattern.GetData((uint)distX,(uint) distY), 0);
     }
 
     private void GameStateHasUpdated()
