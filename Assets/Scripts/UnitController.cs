@@ -183,27 +183,32 @@ public class UnitController :
 
     public void PlayMoveAnimation(Position toPosition, Action onFinished)
     {
-
+        Debug.LogError("(☞ﾟヮﾟ)☞ (" + unitData.unitId + ")");
+        onFinished();
     }
 
     public void PlayRotateAnimation(Unit.Direction toDirection, Action onFinished)
     {
-
+        Debug.LogError("☜(ﾟヮﾟ☜) (" + unitData.unitId + ")");
+        onFinished();
     }
 
     public void PlayAttackAnimation(Position targetPosition, Action onFinished)
     {
-
+        Debug.LogError("┌(ﾟдﾟ)┘ (" + unitData.unitId + ")");
+        onFinished();
     }
 
     public void PlayHitpointChange(int newHitpoints, Action onFinished)
     {
-
+        Debug.LogError("(╯°□°）╯︵ ┻━┻ (" + unitData.unitId + ")");
+        onFinished();
     }
 
     public void PlayDeathAnimation(Action onFinished)
     {
-        
+        Debug.LogError("he ded. (" + unitData.unitId + ")");
+        onFinished();
     }
 
 }

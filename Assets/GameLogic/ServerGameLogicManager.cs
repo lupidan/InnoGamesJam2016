@@ -63,21 +63,51 @@ public class ServerGameLogicManager : MonoBehaviour
 
     private void EvaluatePlayerMovedAndAdvance()
     {
-        // TODO: some game handling here :-)
         switch (CurrentGameState.CurrentPhase)
         {
-            case GamePhase.WaitingForStart:
-                CurrentGameState.CurrentPhase = GamePhase.Planning;
-                break;
             case GamePhase.Planning:
-                CurrentGameState.CurrentPhase = GamePhase.Revision;
+                EvaluatePlanningPhase();
                 break;
             case GamePhase.Revision:
-                CurrentGameState.CurrentPhase = new System.Random().Next() % 4 == 0
-                    ? GamePhase.Finished
-                    : GamePhase.Planning;
+                EvaluateRevisionPhase();
+                break;
+            default:
+                Debug.LogError("Tried to evaluate invalid game phase: " + CurrentGameState.CurrentPhase);
                 break;
         }
+    }
+
+    private void EvaluateRevisionPhase()
+    {
+        CurrentGameState = ProcessPlayerActions();
+        CurrentGameState.CurrentPhase = GamePhase.Planning;
+
+/*
+        CurrentGameState.CurrentPhase = new System.Random().Next() % 4 == 0
+            ? GamePhase.Finished
+            : GamePhase.Planning;
+*/
+    }
+
+    private void EvaluatePlanningPhase()
+    {
+        var newGameState = ProcessPlayerActions();
+        CurrentGameState.ResultsFromLastPhase = newGameState.ResultsFromLastPhase;
+        CurrentGameState.CurrentPhase = GamePhase.Revision;
+    }
+
+    private GameState ProcessPlayerActions()
+    {
+        var newGameState = GameState.Clone(CurrentGameState);
+
+        newGameState.ResultsFromLastPhase = new List<GameResultAction>();
+
+        // DEBUG
+        newGameState.ResultsFromLastPhase.Add(new GameAttackResultAction(1, new Position(1, 2)));
+        newGameState.ResultsFromLastPhase.Add(new GameUnitDeathResultAction(2));
+        // END DEBUG
+
+        return newGameState;
     }
 
     private void GameStateHasUpdated()
