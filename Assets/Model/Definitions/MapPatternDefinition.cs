@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 [CreateAssetMenu(fileName = "ScriptableObject", menuName = "Assets/MapPattern", order = 1)]
 public class MapPatternDefinition : ScriptableObject
@@ -7,9 +6,9 @@ public class MapPatternDefinition : ScriptableObject
     public int Width = 1;
     public int Height = 1;
     [SerializeField]
-    private int[] Data = new int[1];
+    private string[] Data = new string[1];
 
-    public void SetData(uint x, uint y, int value)
+    public void SetData(uint x, uint y, string value)
     {
         if (x < Width && y < Height)
         {
@@ -17,13 +16,13 @@ public class MapPatternDefinition : ScriptableObject
         }
     }
 
-    public int GetData(uint x, uint y)
+    public string GetData(uint x, uint y)
     {
         if (x < Width && y < Height)
         {
             return Data[Index(x,y)];
         }
-        return 0;
+        return "";
     }
 
     public void Resize(int width, int height)
@@ -31,7 +30,7 @@ public class MapPatternDefinition : ScriptableObject
         width = Mathf.Max(width, 1);
         height = Mathf.Max(height, 1);
 
-        int[] newData = new int[width * height];
+        string[] newData = new string[width * height];
         for (uint x = 0; x < Width && x < width; x++)
         {
             for (uint y = 0; y < Height && y < height; y++)
@@ -42,11 +41,6 @@ public class MapPatternDefinition : ScriptableObject
         Width = width;
         Height = height;
         Data = newData;
-    }
-
-    public int GetMax()
-    {
-        return Mathf.Max(Data);
     }
 
     private int Index(uint x, uint y)
