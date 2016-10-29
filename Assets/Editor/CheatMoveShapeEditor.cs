@@ -1,13 +1,13 @@
 ﻿using UnityEngine;
 using UnityEditor;
 
-[CustomEditor(typeof(MovePatternDefinition)), CanEditMultipleObjects]
-public class MoveShapeEditor : Editor
+[CustomEditor(typeof(CheatMovePatternDefinition)), CanEditMultipleObjects]
+public class CheatMoveShapeEditor : Editor
 {
 
     private const int RED_COLOR = 0;
     private const int GREEN_COLOR = 200;
-    private const int BLUE_COLOR = 0;
+    private const int BLUE_COLOR = 150;
 
     public override void OnInspectorGUI()
     {
@@ -25,13 +25,13 @@ public class MoveShapeEditor : Editor
                 continue;
             }
 
-            MovePatternDefinition movePattern = item as MovePatternDefinition;
-            float usedHeight = InspectMovePattern(position, movePattern);
+            CheatMovePatternDefinition movePattern = item as CheatMovePatternDefinition;
+            float usedHeight = InspectCheatMovePattern(position, movePattern);
             position.y += usedHeight;
         }
     }
 
-    public static float InspectMovePattern(Rect position, MovePatternDefinition movePatternDefinition)
+    public static float InspectCheatMovePattern(Rect position, CheatMovePatternDefinition cheatMovePatternDefinition)
     {
         float usedHeight = 0f;
         float halfPositionX = position.width * 0.5f;
@@ -39,22 +39,22 @@ public class MoveShapeEditor : Editor
         int newWidth = EditorGUI.IntField(
             new Rect(position.x, position.y, halfPositionX, EditorGUIUtility.singleLineHeight),
             "Width:",
-            movePatternDefinition.Width
+            cheatMovePatternDefinition.Width
         );
 
         int newHeight = EditorGUI.IntField(
             new Rect(position.x + halfPositionX, position.y, halfPositionX, EditorGUIUtility.singleLineHeight),
             "Height:",
-            movePatternDefinition.Height
+            cheatMovePatternDefinition.Height
         );
 
         position.y += EditorGUIUtility.singleLineHeight;
         usedHeight += EditorGUIUtility.singleLineHeight;
 
-        if (newWidth != movePatternDefinition.Width || newHeight != movePatternDefinition.Height)
+        if (newWidth != cheatMovePatternDefinition.Width || newHeight != cheatMovePatternDefinition.Height)
         {
             GUI.changed = true;
-            movePatternDefinition.Resize(newWidth, newHeight);
+            cheatMovePatternDefinition.Resize(newWidth, newHeight);
         }
         else
         {
@@ -62,16 +62,16 @@ public class MoveShapeEditor : Editor
         }
 
         float xWidth = Mathf.Min(
-            position.width / Mathf.Max(1, movePatternDefinition.Width),
-            position.width / Mathf.Max(1, movePatternDefinition.Height)
+            position.width / Mathf.Max(1, cheatMovePatternDefinition.Width),
+            position.width / Mathf.Max(1, cheatMovePatternDefinition.Height)
         );
         xWidth = Mathf.Min(xWidth, 40);
 
-        for (uint x = 0; x < movePatternDefinition.Width; x++)
+        for (uint x = 0; x < cheatMovePatternDefinition.Width; x++)
         {
-            for (uint y = 0; y < movePatternDefinition.Height; y++)
+            for (uint y = 0; y < cheatMovePatternDefinition.Height; y++)
             {
-                if (!movePatternDefinition.IsCenter(x,y))
+                if (!cheatMovePatternDefinition.IsCenter(x,y))
                 {
                     int res = EditorGUI.Toggle(
                         new Rect(
@@ -80,19 +80,19 @@ public class MoveShapeEditor : Editor
                             xWidth,
                             xWidth
                         ),
-                        movePatternDefinition.GetData(x, y) != 0
+                        cheatMovePatternDefinition.GetData(x, y) != 0
                     ) ? 1 : 0;
 
-                    movePatternDefinition.SetData(x, y, res);
+                    cheatMovePatternDefinition.SetData(x, y, res);
                 }
             }
         }
 
-        usedHeight += movePatternDefinition.Height * xWidth;
+        usedHeight += cheatMovePatternDefinition.Height * xWidth;
 
         if (GUI.changed)
         {
-            EditorUtility.SetDirty(movePatternDefinition);
+            EditorUtility.SetDirty(cheatMovePatternDefinition);
         }
 
         return usedHeight;
@@ -105,7 +105,7 @@ public class MoveShapeEditor : Editor
 
     public override void OnPreviewGUI(Rect targetRect, GUIStyle background)
     {
-        MovePatternDefinition movePattern = target as MovePatternDefinition;
+        CheatMovePatternDefinition movePattern = target as CheatMovePatternDefinition;
         if (movePattern == null)
         {
             return;
@@ -158,7 +158,7 @@ public class MoveShapeEditor : Editor
 
     public override Texture2D RenderStaticPreview(string assetPath, Object[] subAssets, int texWidth, int texHeight)
     {
-        MovePatternDefinition movePattern = target as MovePatternDefinition;
+        CheatMovePatternDefinition movePattern = target as CheatMovePatternDefinition;
         if (movePattern == null)
         {
             return null;

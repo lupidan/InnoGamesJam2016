@@ -20,5 +20,6 @@ public class UnitDefinition : ScriptableObject
 
     public AttackPatternDefinition attackPattern;
     public MovePatternDefinition movePattern;
+    public CheatMovePatternDefinition cheatMovePattern;
 
 }
