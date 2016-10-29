@@ -17,7 +17,6 @@ public class UnitDefinition : ScriptableObject
     public string unitName;
     public Type type;
     public int maxHealth;
-    public int attack;
     public int heavyDefense;
     public int meeleDefense;
     public int rangeDefense;
