@@ -56,6 +56,8 @@ public class MapGenerator : MonoBehaviour {
 		tileController.tileData = tile;
 		tileController.transform.position = new Vector3(tile.position.x, tile.position.y, 0.0f);
 		tileController.name = "tile_" + tile.position.x + "_" + tile.position.y;
+
+	    tileController.transform.parent = gameObject.transform;
 		return tileController;
 	}
 
