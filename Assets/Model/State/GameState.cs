@@ -108,6 +108,7 @@ public class GameState
         PlayerGameActions = new List<List<GameAction>>();
         for (var i = 0; i < PlayerCount; i++)
         {
+            if (i==0)
             PendingPlayerIDs.Add(i);
             PlayerGameActions.Add(new List<GameAction>());
         }

@@ -38,7 +38,7 @@ public class ServerGameLogicManager : MonoBehaviour
 
     public void InitializeNewSinglePlayerGame()
     {
-        CurrentGameState = new GameState(1, mapPattern);
+        CurrentGameState = new GameState(2, mapPattern);
     }
 
     public void PlayerHasJoined(int playerId)
@@ -101,7 +101,8 @@ public class ServerGameLogicManager : MonoBehaviour
         var remainingAlivePlayers = new List<int>(CurrentGameState.players.Keys);
         foreach (var player in CurrentGameState.players.Values)
         {
-            if (!player.units.Values.Any(unit => unit.Definition.identifier.Equals(king.identifier)))
+            
+			if (player.units.Values.Any(unit => unit.Definition.type.Equals(UnitDefinition.Type.King) && unit.healthPoints<=0))
             {
                 remainingAlivePlayers.Remove(player.id);
             }
@@ -282,7 +283,10 @@ public class ServerGameLogicManager : MonoBehaviour
     public int[] CalculateDamage(Unit fighterLeft, Unit fighterRight)
     {
         var result = new int[2] {0, 0};
-
+        if (fighterLeft.healthPoints <= 0 || fighterRight.healthPoints <= 0)
+        {
+            return result;
+        }
         result[0] = Math.Max(
             GetAttackStrengthAtPosition(
                 fighterLeft.Definition.attackPattern,
