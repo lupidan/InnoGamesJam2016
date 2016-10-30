@@ -13,7 +13,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   identifier: meele_unit
   unitName: Meele unit
-  type: 0
+  type: 1
   maxHealth: 10
   heavyDefense: 3
   meeleDefense: 5
