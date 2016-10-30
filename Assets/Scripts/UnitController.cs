@@ -239,11 +239,12 @@ public class UnitController :
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (ClientNetworkingManager.GetClientNetworkingManager().PlayerId == unitData.owningPlayerId)
+        if (!IngameSubmitButtonManager.GetIngameSubmitButtonManager().IsWaiting()
+            && ClientNetworkingManager.GetClientNetworkingManager().PlayerId == unitData.owningPlayerId)
         {
             if (destination == null)
             {
-                UnitController.SelectedUnit = this;
+                SelectedUnit = this;
             }
             else
             {

@@ -31,7 +31,9 @@ public class AnnouncementDelegate : MonoBehaviour
                 textField.text = "Cheat time!";
                 break;
             case GamePhase.Finished:
-                textField.text = "Player " + clientGameLogicManager.CurrentServerSideState.WinningPlayerId + " won!";
+                bool hasBlueWon = clientGameLogicManager.CurrentServerSideState.WinningPlayerId == 0;
+                textField.color = hasBlueWon ? new Color(0.6f, 0.6f, 1f, 1f) : new Color(1f, 0.4f, 0.4f, 1f);
+                textField.text = "Player " + (hasBlueWon? "blue" : "red") + " won!";
                 textField.fontSize = 24;
                 break;
             default:

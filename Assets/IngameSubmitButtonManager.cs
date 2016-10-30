@@ -7,6 +7,16 @@ public class IngameSubmitButtonManager : MonoBehaviour {
     private Button advanceButton;
     private Text advanceButtonText;
 
+    public static IngameSubmitButtonManager GetIngameSubmitButtonManager()
+    {
+        return GameObject.Find("AdvanceButton").GetComponent<IngameSubmitButtonManager>();
+    }
+
+    public bool IsWaiting()
+    {
+        return !advanceButton.interactable;
+    }
+
     void Start()
     {
         advanceButton = GameObject.Find("AdvanceButton").GetComponent<Button>();
@@ -16,14 +26,15 @@ public class IngameSubmitButtonManager : MonoBehaviour {
 
     private void UnlockButton()
     {
-        advanceButton.enabled = true;
+        advanceButton.interactable = true;
         advanceButtonText.text = "Next";
     }
 
     public void SubmitTurn()
     {
-        advanceButton.enabled = false;
+        advanceButton.interactable = false;
         advanceButtonText.text = "Wait";
+
 
         var actions = ClientGameLogicManager.GetClientLogicFromScene().QueuedGameActions;
         ClientNetworkingManager.GetClientNetworkingManager().SendActions(actions);
