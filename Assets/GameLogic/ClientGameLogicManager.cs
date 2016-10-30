@@ -22,7 +22,9 @@ public class ClientGameLogicManager : MonoBehaviour
 
     private List<GameResultAction> _resultActionQueue;
 
-    public List<GameAction> QueuedGameActions;
+    public List<GameAction> QueuedGameActionsPlanning;
+    public List<GameAction> QueuedGameActionsRevision;
+
     private bool didInitializeUnits = false;
 
     public static ClientGameLogicManager GetClientLogicFromScene()
@@ -37,15 +39,15 @@ public class ClientGameLogicManager : MonoBehaviour
 
     public void ClearQueuedActions()
     {
-        QueuedGameActions = new List<GameAction>();
+        QueuedGameActionsPlanning = new List<GameAction>();
     }
 
-    public void RemoveQueuedActionForUnitId(int unitId)
+    public void RemoveQueuedActionForUnitIdFromPlanning(int unitId)
     {
-        var toDelete = QueuedGameActions.Where(action => action.UnitId == unitId).ToList();
+        var toDelete = QueuedGameActionsPlanning.Where(action => action.UnitId == unitId).ToList();
         foreach (var action in toDelete)
         {
-            QueuedGameActions.Remove(action);
+            QueuedGameActionsPlanning.Remove(action);
         }
     }
 
@@ -180,8 +182,8 @@ public class ClientGameLogicManager : MonoBehaviour
         _resultActionQueue.RemoveAt(0);
     }
 
-    public void AddQueuedActionForUnitId(int unitDataUnitId, List<Position> pathToDestination)
+    public void AddQueuedActionForUnitIdToPlanning(int unitDataUnitId, List<Position> pathToDestination)
     {
-        QueuedGameActions.Add(new GameAction(unitDataUnitId, pathToDestination));
+        QueuedGameActionsPlanning.Add(new GameAction(unitDataUnitId, pathToDestination));
     }
 }

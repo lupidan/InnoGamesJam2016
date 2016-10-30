@@ -63,7 +63,7 @@ public class UnitController :
     private ClientGameLogicManager _clientLogic;
 
     // checks if the death animation has been played to revive them
-    private bool isDed = false;
+    private bool isDead = false;
 
     public enum UnitAnimationEvents
     {
@@ -116,9 +116,9 @@ public class UnitController :
                 UpdateHitpointsInTextMesh(unitData.healthPoints);
             });
 
-        if (isDed && unitData.healthPoints > 0) {
+        if (isDead && unitData.healthPoints > 0) {
             animator.SetTrigger(UnitAnimationEvents.Revive.ToString());
-            isDed = false;
+            isDead = false;
         }
 
     }
@@ -222,7 +222,8 @@ public class UnitController :
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (!IngameSubmitButtonManager.GetIngameSubmitButtonManager().IsWaiting()
+        if (!isDead
+        && !IngameSubmitButtonManager.GetIngameSubmitButtonManager().IsWaiting()
             && ClientNetworkingManager.GetClientNetworkingManager().PlayerId == unitData.owningPlayerId)
         {
             ClientGameLogicManager logicManager = ClientGameLogicManager.GetClientLogicFromScene();
@@ -240,7 +241,7 @@ public class UnitController :
             }
             else if (logicManager.CurrentServerSideState.CurrentPhase == GamePhase.Revision)
             {
-                List<GameAction> gameActions = logicManager.QueuedGameActions;
+                List<GameAction> gameActions = logicManager.QueuedGameActionsRevision;
                 for (int i = 0; i < gameActions.Count; i++)
                 {
                     if (gameActions[i].UnitId == unitData.unitId) {
@@ -263,12 +264,12 @@ public class UnitController :
             Position destiny = new Position(tileController.tileData.position.x,
                 tileController.tileData.position.y);
             pathToDestination = TileController.PathFromPositionToPosition(current, destiny);
-            _clientLogic.AddQueuedActionForUnitId(unitData.unitId, pathToDestination);
+            _clientLogic.AddQueuedActionForUnitIdToPlanning(unitData.unitId, pathToDestination);
         }
         else
         {
             pathToDestination = null;
-            _clientLogic.RemoveQueuedActionForUnitId(unitData.unitId);
+            _clientLogic.RemoveQueuedActionForUnitIdFromPlanning(unitData.unitId);
         }
         SetupLine();
     }
@@ -334,15 +335,13 @@ public class UnitController :
     {
         if (toDirection == Unit.Direction.Left)
         {
-            Vector3 scale = transform.localScale;
-            scale.x = -1.0f;
-            transform.localScale = scale;
+            var sprite = GetComponent<SpriteRenderer>();
+            sprite.flipX = true;
         }
-        else if (toDirection == Unit.Direction.Left)
+        else if (toDirection == Unit.Direction.Right)
         {
-            Vector3 scale = transform.localScale;
-            scale.x = 1.0f;
-            transform.localScale = scale;
+            var sprite = GetComponent<SpriteRenderer>();
+            sprite.flipX = false;
         }
         onFinished();
     }
@@ -400,7 +399,7 @@ public class UnitController :
         playDyingSound();
         animator.SetTrigger(UnitAnimationEvents.StartDying.ToString());
         StartCoroutine(ExecuteActionAfterTime(onFinished, 1.0f));
-        isDed = true;
+        isDead = true;
     }
 
 
@@ -422,16 +421,22 @@ public class UnitController :
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        var attackPatternGameObject = GameObject.Find("AttackPatternRenderer");
-        var attackPatternRenderer = attackPatternGameObject.GetComponent<AttackPatternRenderer>();
-        attackPatternRenderer.SetPattern(unitData.position, transform,
-            unitData.Definition.attackPattern);
+        if (!isDead)
+        {
+            var attackPatternGameObject = GameObject.Find("AttackPatternRenderer");
+            var attackPatternRenderer = attackPatternGameObject.GetComponent<AttackPatternRenderer>();
+            attackPatternRenderer.SetPattern(unitData.position, transform,
+                unitData.Definition.attackPattern);
+        }
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        var attackPatternGameObject = GameObject.Find("AttackPatternRenderer");
-        var attackPatternRenderer = attackPatternGameObject.GetComponent<AttackPatternRenderer>();
-        attackPatternRenderer.HidePattern();
+        if (!isDead)
+        {
+            var attackPatternGameObject = GameObject.Find("AttackPatternRenderer");
+            var attackPatternRenderer = attackPatternGameObject.GetComponent<AttackPatternRenderer>();
+            attackPatternRenderer.HidePattern();
+        }
     }
 }

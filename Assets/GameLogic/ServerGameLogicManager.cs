@@ -38,7 +38,7 @@ public class ServerGameLogicManager : MonoBehaviour
 
     public void InitializeNewSinglePlayerGame()
     {
-        CurrentGameState = new GameState(2, mapPattern);
+        CurrentGameState = new GameState(1, mapPattern);
     }
 
     public void PlayerHasJoined(int playerId)
@@ -195,6 +195,17 @@ public class ServerGameLogicManager : MonoBehaviour
                     continue;
                 }
 
+                if (desiredDestinationPosition.x < movingUnit.position.x && movingUnit.facingDirection != Unit.Direction.Left)
+                {
+                    movingUnit.facingDirection = Unit.Direction.Left;
+                    gameActionResults.Add(new GameRotateResultAction(movingUnitId, Unit.Direction.Left));
+                }
+                else if (desiredDestinationPosition.x > movingUnit.position.x && movingUnit.facingDirection != Unit.Direction.Right)
+                {
+                    movingUnit.facingDirection = Unit.Direction.Right;
+                    gameActionResults.Add(new GameRotateResultAction(movingUnitId, Unit.Direction.Right));
+                }
+
                 gameActionResults.Add(new GameMoveResultAction(movingUnitId, gameAction.moveToPositions));
                 movingUnit.position = desiredDestinationPosition;
             }
@@ -283,18 +294,21 @@ public class ServerGameLogicManager : MonoBehaviour
     public int[] CalculateDamage(Unit fighterLeft, Unit fighterRight)
     {
         var result = new int[2] {0, 0};
+
         if (fighterLeft.healthPoints <= 0 || fighterRight.healthPoints <= 0)
         {
             return result;
         }
-        result[0] = Math.Max(
+
+        result[1] = Math.Max(
+
             GetAttackStrengthAtPosition(
                 fighterLeft.Definition.attackPattern,
                 fighterLeft.position,
                 fighterRight.position) - fighterRight.Definition.DefenseAgainst(fighterLeft.Definition.type),
             0);
 
-        result[1] = Math.Max(
+        result[0] = Math.Max(
             GetAttackStrengthAtPosition(
                 fighterRight.Definition.attackPattern,
                 fighterRight.position,
