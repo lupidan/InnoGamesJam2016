@@ -21,4 +21,4 @@ MonoBehaviour:
   kingDefense: 0
   maxMovements: 4
   maxCheatingMovements: 3
-  attackPattern: {fileID: 0}
+  attackPattern: {fileID: 11400000, guid: 600e704412362402daf814d2408692ed, type: 2}
