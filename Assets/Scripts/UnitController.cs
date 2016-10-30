@@ -242,15 +242,31 @@ public class UnitController :
         if (!IngameSubmitButtonManager.GetIngameSubmitButtonManager().IsWaiting()
             && ClientNetworkingManager.GetClientNetworkingManager().PlayerId == unitData.owningPlayerId)
         {
-            if (destination == null)
+            ClientGameLogicManager logicManager = ClientGameLogicManager.GetClientLogicFromScene();
+            if (logicManager.CurrentServerSideState.CurrentPhase == GamePhase.Planning)
             {
-                SelectedUnit = this;
+                if (destination == null)
+                {
+                    SelectedUnit = this;
+                }
+                else
+                {
+                    SetDestinationTileController(null);
+                }
+                playClickedSound();
             }
-            else
+            else if (logicManager.CurrentServerSideState.CurrentPhase == GamePhase.Revision)
             {
-                SetDestinationTileController(null);
+                List<GameAction> gameActions = logicManager.QueuedGameActions;
+                for (int i = 0; i < gameActions.Count; i++)
+                {
+                    if (gameActions[i].UnitId == unitData.unitId) {
+                        gameActions[i].moveToPositions.Clear();
+                    }
+                }
+                
             }
-            playClickedSound();
+            
         }
     }
 
