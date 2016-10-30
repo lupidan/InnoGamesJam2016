@@ -309,26 +309,28 @@ public class UnitController :
 
     public void PlayMoveAnimation(Position toPosition, Action onFinished)
     {
-        float time = 0.2f;
-        startPlayingMovingSound();
-        animator.SetTrigger(UnitAnimationEvents.StartMoving.ToString());
-        Vector3 newPosition = transform.position;
-        newPosition.x = toPosition.x;
-        newPosition.y = toPosition.y;
-        LeanTween.move(gameObject, newPosition, time)
-            .setEaseLinear()
-            .setOnComplete(() =>
-            {
-                transform.position = newPosition;
-                animator.SetTrigger(UnitAnimationEvents.StopMoving.ToString());
-                onFinished.Invoke();
-            });
+        ZoomOutAnd(() => {
+            float time = 0.2f;
+            startPlayingMovingSound();
+            animator.SetTrigger(UnitAnimationEvents.StartMoving.ToString());
+            Vector3 newPosition = transform.position;
+            newPosition.x = toPosition.x;
+            newPosition.y = toPosition.y;
+            LeanTween.move(gameObject, newPosition, time)
+                .setEaseLinear()
+                .setOnComplete(() =>
+                {
+                    transform.position = newPosition;
+                    animator.SetTrigger(UnitAnimationEvents.StopMoving.ToString());
+                    onFinished.Invoke();
+                });
 
-        Vector3 newCameraPosition = Camera.main.transform.position;
-        newCameraPosition.x = toPosition.x;
-        newCameraPosition.y = toPosition.y;
-        LeanTween.move(Camera.main.gameObject, newCameraPosition, time)
-            .setEaseLinear();
+            Vector3 newCameraPosition = Camera.main.transform.position;
+            newCameraPosition.x = toPosition.x;
+            newCameraPosition.y = toPosition.y;
+            LeanTween.move(Camera.main.gameObject, newCameraPosition, time)
+                .setEaseLinear();
+        });        
     }
 
     public void PlayRotateAnimation(Unit.Direction toDirection, Action onFinished)
@@ -346,32 +348,76 @@ public class UnitController :
         onFinished();
     }
 
+    private void MoveAnd(Action onFinished) {
+        Vector3 newPosition = Camera.main.transform.position;
+        newPosition.x = transform.position.x;
+        newPosition.y = transform.position.y;
+
+        LeanTween.move(Camera.main.gameObject, newPosition, 0.5f)
+            .setEaseInOutSine()
+            .setOnComplete(onFinished);
+    }
+
+    private void ZoomInAnd(Action onFinished) {
+        if (Camera.main.orthographicSize > 2.0f) {
+            LeanTween.value(Camera.main.gameObject, Camera.main.orthographicSize, 2.0f, 0.5f)
+                .setEaseInOutSine()
+                .setOnUpdate((newValue) => {
+                    Camera.main.orthographicSize = newValue;
+                })
+                .setOnComplete(onFinished);
+        } else {
+            onFinished.Invoke();
+        }
+    }
+
+    private void ZoomOutAnd(Action onFinished) {
+        if (Camera.main.orthographicSize < 6.0f) {
+            LeanTween.value(Camera.main.gameObject, Camera.main.orthographicSize, 6.0f, 0.5f)
+                .setEaseInOutSine()
+                .setOnUpdate((newValue) => {
+                    Camera.main.orthographicSize = newValue;
+                })
+                .setOnComplete(onFinished);
+        } else {
+            onFinished.Invoke();
+        }
+    }
+
     public void PlayAttackAnimation(Position targetPosition, Action onFinished)
     {
-        playAttackSound();
-        animator.SetTrigger(UnitAnimationEvents.StartAttacking.ToString());
-        StartCoroutine(ExecuteActionAfterTime(onFinished, 1.0f));
+        MoveAnd(() => {
+            ZoomInAnd(() => {
+                playAttackSound();
+                animator.SetTrigger(UnitAnimationEvents.StartAttacking.ToString());
+                onFinished.Invoke();
+            });
+        });
     }
 
     public void PlayHitpointChange(int oldHitpoints, int newHitpoints, Action onFinished)
     {
-        LeanTween.value(gameObject, Color.white, Color.red, 0.5f)
-                 .setLoopOnce()
-                 .setEaseInOutCubic()
-                 .setOnUpdate((color) => {
-                     GetComponent<SpriteRenderer>().color = color;
-                 })
-                 .setOnComplete(RemoveHitpointColorAnimation);
+        MoveAnd(() => {
+            ZoomInAnd(() => {
+                playDamagedSound();
+                LeanTween.value(gameObject, Color.white, Color.red, 0.5f)
+                    .setLoopOnce()
+                    .setEaseInOutCubic()
+                    .setOnUpdate((color) => {
+                        GetComponent<SpriteRenderer>().color = color;
+                    })
+                    .setOnComplete(RemoveHitpointColorAnimation);
 
-        LeanTween.value(gameObject, (float)oldHitpoints, (float)newHitpoints, 0.5f)
-            .setLoopOnce()
-            .setEaseInOutCubic()
-            .setOnUpdate((value) =>
-            {
-                var hitpoints = (int)Math.Round(value);
-                UpdateHitpointsInTextMesh(hitpoints);
-            })
-            .setOnComplete(onFinished);
+                LeanTween.value(gameObject, (float)oldHitpoints, (float)newHitpoints, 0.5f)
+                    .setLoopOnce()
+                    .setEaseInOutCubic()
+                    .setOnUpdate((value) => {
+                        var hitpoints = (int)Math.Round(value);
+                        UpdateHitpointsInTextMesh(hitpoints);
+                    })
+                    .setOnComplete(onFinished);
+            });
+        });
     }
 
     private void UpdateHitpointsInTextMesh(int hitpoints)
