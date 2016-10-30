@@ -33,6 +33,6 @@ public class MenuButtonManager : MonoBehaviour {
     }
 
     public void ExitGame () {
-	
+	    Application.Quit();
 	}
 }

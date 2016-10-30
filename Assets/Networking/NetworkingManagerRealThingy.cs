@@ -7,6 +7,7 @@ public class NetworkingManagerRealThingy : MonoBehaviour {
     private bool _isWaiting;
 
     private bool _amIHost;
+    private bool _isPlayingSolo;
 
     public ServerNetworkingManager Server;
     public ClientNetworkingManager Client;
@@ -22,12 +23,20 @@ public class NetworkingManagerRealThingy : MonoBehaviour {
 
         // Find connector on scene
         var hostAddressKeeper = FindObjectOfType<HostAddressKeeper>();
-        _amIHost = hostAddressKeeper.AmIHost();
-        if (!_amIHost)
+        if (hostAddressKeeper == null)
         {
-            ServerHostname = hostAddressKeeper.HostAddress;
+            _isPlayingSolo = true;
         }
-        Destroy(hostAddressKeeper);
+        else
+        {
+            _amIHost = hostAddressKeeper.AmIHost();
+            if (!_amIHost)
+            {
+                ServerHostname = hostAddressKeeper.HostAddress;
+            }
+            Destroy(hostAddressKeeper);
+        }
+
         Debug.Log("Awaked!");
     }
 
@@ -54,6 +63,12 @@ public class NetworkingManagerRealThingy : MonoBehaviour {
     {
         if (_isAtStartup)
         {
+            if (_isPlayingSolo)
+            {
+                Server.StartSinglePlayerServer();
+                Client.ConnectLocally();
+                _isAtStartup = false;
+            }
             if (_amIHost)
             {
                 Server.StartServer();
