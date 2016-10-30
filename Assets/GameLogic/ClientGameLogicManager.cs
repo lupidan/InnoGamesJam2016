@@ -123,8 +123,9 @@ public class ClientGameLogicManager : MonoBehaviour
         else if (resultAction is GameHitpointChangeResultAction)
         {
             RemoveFirstActionQueueElement();
+            var oldHitpointValue = ((GameHitpointChangeResultAction) resultAction).oldHitpointValue;
             var newHitpointValue = ((GameHitpointChangeResultAction) resultAction).newHitpointValue;
-            unitController.PlayHitpointChange(newHitpointValue, PlayNextAnimation);
+            unitController.PlayHitpointChange(oldHitpointValue, newHitpointValue, PlayNextAnimation);
         }
         else if (resultAction is GameUnitDeathResultAction)
         {

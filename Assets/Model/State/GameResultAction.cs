@@ -47,10 +47,12 @@ public class GameAttackResultAction : GameResultAction
 [System.Serializable]
 public class GameHitpointChangeResultAction : GameResultAction
 {
+    public int oldHitpointValue;
     public int newHitpointValue;
 
-    public GameHitpointChangeResultAction(int unitId, int newHitpointValue) : base(unitId)
+    public GameHitpointChangeResultAction(int unitId, int oldHitpointValue, int newHitpointValue) : base(unitId)
     {
+        this.oldHitpointValue = oldHitpointValue;
         this.newHitpointValue = newHitpointValue;
     }
 }

@@ -217,6 +217,8 @@ public class ServerGameLogicManager : MonoBehaviour
     {
         var leftUnit = battlePairing[0];
         var rightUnit = battlePairing[1];
+        var leftOldHitpoints = leftUnit.healthPoints;
+        var rightOldHitpoints = rightUnit.healthPoints;
 
         if (leftUnit.healthPoints <= 0 || rightUnit.healthPoints <= 0)
         {
@@ -234,9 +236,9 @@ public class ServerGameLogicManager : MonoBehaviour
         if (rightDamage > 0)
             gameActionResults.Add(new GameAttackResultAction(leftUnit.unitId, rightUnit.position));
         if (leftDamage > 0)
-            gameActionResults.Add(new GameHitpointChangeResultAction(leftUnit.unitId, leftUnit.healthPoints));
+            gameActionResults.Add(new GameHitpointChangeResultAction(leftUnit.unitId, leftOldHitpoints, leftUnit.healthPoints));
         if (rightDamage > 0)
-            gameActionResults.Add(new GameHitpointChangeResultAction(rightUnit.unitId, rightUnit.healthPoints));
+            gameActionResults.Add(new GameHitpointChangeResultAction(rightUnit.unitId, rightOldHitpoints, rightUnit.healthPoints));
         if (leftUnit.healthPoints <= 0)
             gameActionResults.Add(new GameUnitDeathResultAction(leftUnit.unitId));
         if (rightUnit.healthPoints <= 0)
