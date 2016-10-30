@@ -87,6 +87,11 @@ public class UnitController :
         _clientLogic.PlayerMayInteractHandler += OnAnimationsFinished;
     }
 
+    void OnDisable()
+    {
+        _clientLogic.PlayerMayInteractHandler -= OnAnimationsFinished;
+    }
+
     private void OnAnimationsFinished()
     {
         // resync with actual unit state
@@ -242,9 +247,10 @@ public class UnitController :
                         gameActions[i].moveToPositions.Clear();
                     }
                 }
-                
+
+                // CLICK IT!
+                FindObjectOfType<IngameSubmitButtonManager>().SubmitTurn();
             }
-            
         }
     }
 

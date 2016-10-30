@@ -50,7 +50,6 @@ public class IngameSubmitButtonManager : MonoBehaviour {
             advanceButton.interactable = false;
             advanceButtonText.text = "Wait";
 
-
             var actions = ClientGameLogicManager.GetClientLogicFromScene().QueuedGameActions;
             ClientNetworkingManager.GetClientNetworkingManager().SendActions(actions);
 
