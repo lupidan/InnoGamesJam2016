@@ -193,18 +193,22 @@ public class UnitController :
 
     private void DisplayHeavyShotRelative()
     {
-        GameObject gameObject = FindObjectOfType<MapGenerator>().InstantiatePrefab("HeavyEffect");
-        gameObject.transform.SetParent(this.transform);
-        Vector3 localPosition = new Vector3(0.9f, 0.05f, -0.1f);
-        gameObject.transform.localPosition = localPosition;
+        bool isFlipped = GetComponent<SpriteRenderer>().flipX;
+        GameObject heavyEffect = FindObjectOfType<MapGenerator>().InstantiatePrefab("HeavyEffect");
+        heavyEffect.transform.SetParent(this.transform);
+        heavyEffect.GetComponent<SpriteRenderer>().flipX = isFlipped;
+        Vector3 localPosition = new Vector3(isFlipped ? -0.9f : 0.9f, 0.05f, -0.1f);
+        heavyEffect.transform.localPosition = localPosition;
     }
 
     private void DisplayRangeShotRelative()
     {
-        GameObject gameObject = FindObjectOfType<MapGenerator>().InstantiatePrefab("RangeEffect");
-        gameObject.transform.SetParent(this.transform);
-        Vector3 localPosition = new Vector3(0.737f, 0.521f, -0.1f);
-        gameObject.transform.localPosition = localPosition;
+        bool isFlipped = GetComponent<SpriteRenderer>().flipX;
+        GameObject rangeEffect = FindObjectOfType<MapGenerator>().InstantiatePrefab("RangeEffect");
+        rangeEffect.transform.SetParent(this.transform);
+        rangeEffect.GetComponent<SpriteRenderer>().flipX = isFlipped;
+        Vector3 localPosition = new Vector3(isFlipped ? -0.737f : 0.737f, 0.521f, -0.1f);
+        rangeEffect.transform.localPosition = localPosition;
     }
 
     public void OnPointerDown(PointerEventData eventData)
