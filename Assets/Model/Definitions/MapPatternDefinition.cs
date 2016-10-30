@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 
 [CreateAssetMenu(fileName = "ScriptableObject", menuName = "Assets/MapPattern", order = 1)]
-[System.Serializable]
 public class MapPatternDefinition : ScriptableObject
 {
     public int Width = 1;
