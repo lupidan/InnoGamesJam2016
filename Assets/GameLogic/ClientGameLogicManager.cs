@@ -52,7 +52,10 @@ public class ClientGameLogicManager : MonoBehaviour
     {
         CurrentServerSideState = gameState;
         _resultActionQueue = new List<GameResultAction>(CurrentServerSideState.ResultsFromLastPhase);
-        ClearQueuedActions();
+        if (CurrentServerSideState.CurrentPhase != GamePhase.Revision)
+        {
+            ClearQueuedActions();
+        }
 
         // Update unit controllers with new game state
         foreach (Player player in CurrentServerSideState.players.Values)
@@ -123,8 +126,9 @@ public class ClientGameLogicManager : MonoBehaviour
         else if (resultAction is GameHitpointChangeResultAction)
         {
             RemoveFirstActionQueueElement();
+            var oldHitpointValue = ((GameHitpointChangeResultAction) resultAction).oldHitpointValue;
             var newHitpointValue = ((GameHitpointChangeResultAction) resultAction).newHitpointValue;
-            unitController.PlayHitpointChange(newHitpointValue, PlayNextAnimation);
+            unitController.PlayHitpointChange(oldHitpointValue, newHitpointValue, PlayNextAnimation);
         }
         else if (resultAction is GameUnitDeathResultAction)
         {

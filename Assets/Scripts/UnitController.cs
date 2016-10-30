@@ -74,12 +74,16 @@ public class UnitController :
 
     private ClientGameLogicManager _clientLogic;
 
+    // checks if the death animation has been played to revive them
+    private bool isDed = false;
+
     public enum UnitAnimationEvents
     {
         StartMoving,
         StopMoving,
         StartAttacking,
-        StartDying
+        StartDying,
+        Revive
     }
 
     void Start()
@@ -115,7 +119,17 @@ public class UnitController :
                 var vect = gameObject.transform.position;
                 vect.y = position;
                 gameObject.transform.position = vect;
+            })
+            .setOnComplete(() =>
+            {
+                UpdateHitpointsInTextMesh(unitData.healthPoints);
             });
+
+        if (isDed && unitData.healthPoints > 0) {
+            animator.SetTrigger(UnitAnimationEvents.Revive.ToString());
+            isDed = false;
+        }
+
     }
 
     IEnumerator ExecuteActionAfterTime(Action action, float time)
@@ -337,17 +351,37 @@ public class UnitController :
         StartCoroutine(ExecuteActionAfterTime(onFinished, 1.0f));
     }
 
-    public void PlayHitpointChange(int newHitpoints, Action onFinished)
+    public void PlayHitpointChange(int oldHitpoints, int newHitpoints, Action onFinished)
     {
         LeanTween.value(gameObject, Color.white, Color.red, 0.5f)
+                 .setLoopOnce()
+                 .setEaseInOutCubic()
+                 .setOnUpdate((color) => {
+                     GetComponent<SpriteRenderer>().color = color;
+                 })
+                 .setOnComplete(RemoveHitpointColorAnimation);
+
+        LeanTween.value(gameObject, (float)oldHitpoints, (float)newHitpoints, 0.5f)
             .setLoopOnce()
             .setEaseInOutCubic()
-            .setOnUpdate((color) => { GetComponent<SpriteRenderer>().color = color; })
-            .setOnComplete(() =>
+            .setOnUpdate((value) =>
             {
-                RemoveHitpointColorAnimation();
-                onFinished();
-            });
+                var hitpoints = (int)Math.Round(value);
+                UpdateHitpointsInTextMesh(hitpoints);
+            })
+            .setOnComplete(onFinished);
+    }
+
+    private void UpdateHitpointsInTextMesh(int hitpoints)
+    {
+        if (hitpoints > 0)
+        {
+            GetComponentInChildren<TextMesh>().text = "" + hitpoints;
+        }
+        else
+        {
+            GetComponentInChildren<TextMesh>().text = "";
+        }
     }
 
     private void RemoveHitpointColorAnimation()
@@ -362,6 +396,7 @@ public class UnitController :
     {
         animator.SetTrigger(UnitAnimationEvents.StartDying.ToString());
         StartCoroutine(ExecuteActionAfterTime(onFinished, 1.0f));
+        isDed = true;
     }
 
 
