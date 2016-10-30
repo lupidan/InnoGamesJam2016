@@ -368,12 +368,13 @@ public class UnitController :
     private List<Position> GetMovementPositions()
     {
         List<Position> options = new List<Position>();
-
-        for (int row = unitData.position.y - 2; row <= unitData.position.y + 2; row++)
+        int length = unitData.Definition.maxMovements;
+        for (int row = unitData.position.y - length; row <= unitData.position.y + length; row++)
         {
-            for (int column = unitData.position.x - 2; column <= unitData.position.x + 2; column++)
+            for (int column = unitData.position.x - length; column <= unitData.position.x + length; column++)
             {
-                if (row != unitData.position.y || column != unitData.position.x)
+                int actualLength = Mathf.Abs(column - unitData.position.x) + Mathf.Abs(row - unitData.position.y);
+                if (actualLength <= length && (row != unitData.position.y || column != unitData.position.x))
                     options.Add(new Position(column, row));
             }
         }
