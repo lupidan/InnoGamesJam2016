@@ -34,6 +34,11 @@ public class ClientNetworkingManager : MonoBehaviour
 
     private ClientGameLogicManager _gameLogic;
 
+    public static ClientNetworkingManager GetClientNetworkingManager()
+    {
+        return GameObject.Find("NetworkClient").GetComponent<ClientNetworkingManager>();
+    }
+
     public void Awake()
     {
         _gameLogic = GetComponent<ClientGameLogicManager>();

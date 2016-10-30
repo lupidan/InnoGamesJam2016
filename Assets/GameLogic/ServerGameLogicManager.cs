@@ -265,7 +265,7 @@ public class ServerGameLogicManager : MonoBehaviour
         var gameActions = new List<GameAction>();
         for (var playerId = 0; playerId < CurrentGameState.PlayerCount; playerId++)
         {
-            var gameActionsFromPlayer = CurrentGameState.PlayerGameActions[turnNumber];
+            var gameActionsFromPlayer = CurrentGameState.PlayerGameActions[playerId];
             if (turnNumber < gameActionsFromPlayer.Count)
             {
                 gameActions.Add(gameActionsFromPlayer[turnNumber]);

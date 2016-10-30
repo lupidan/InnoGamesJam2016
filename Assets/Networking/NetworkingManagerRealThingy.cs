@@ -69,7 +69,7 @@ public class NetworkingManagerRealThingy : MonoBehaviour {
                 Client.ConnectLocally();
                 _isAtStartup = false;
             }
-            if (_amIHost)
+            else if (_amIHost)
             {
                 Server.StartServer();
                 Client.ConnectLocally();

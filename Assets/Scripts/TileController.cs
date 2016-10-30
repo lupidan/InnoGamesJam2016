@@ -62,5 +62,4 @@ public class TileController :
 		isReachable = reachable;
 		GetComponent<SpriteRenderer>().color = isReachable ? Color.black : Color.white;
 	}
-	
 }

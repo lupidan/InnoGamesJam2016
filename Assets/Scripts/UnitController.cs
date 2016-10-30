@@ -21,7 +21,6 @@ public class UnitController :
 {
     public static UnitController SelectedUnit { get; private set; }
 
-
     private Animator animator;
 
     private AudioSource audioSource;
@@ -46,8 +45,8 @@ public class UnitController :
     public AudioClip dyingSound;
 
     public AudioClip tombAppearSound;
-    
 
+    private ClientGameLogicManager _clientLogic;
 
     public enum UnitAnimationEvents
     {
@@ -63,6 +62,11 @@ public class UnitController :
         audioSource = GetComponent<AudioSource>();
 
         unitData = new Unit();
+    }
+
+    void Awake()
+    {
+        _clientLogic = GameObject.Find("NetworkClient").GetComponent<ClientGameLogicManager>();
     }
 
     IEnumerator ExecuteActionAfterTime(Action action, float time)
@@ -210,8 +214,11 @@ public class UnitController :
             Position destiny = new Position(tileController.tileData.position.x,
                                         tileController.tileData.position.y);
             pathToDestination = TileController.PathFromPositionToPosition(current, destiny);
+            _clientLogic.AddQueuedActionForUnitId(unitData.unitId, pathToDestination);
         } else {
             pathToDestination = null;
+            _clientLogic.RemoveQueuedActionForUnitId(unitData.unitId);
+
         }
         SetupLine();
     }

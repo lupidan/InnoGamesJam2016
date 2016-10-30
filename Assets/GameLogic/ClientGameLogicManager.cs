@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 
 public delegate void StateUpdatedHandler();
 
@@ -21,9 +22,31 @@ public class ClientGameLogicManager : MonoBehaviour
 
     private List<GameResultAction> _resultActionQueue;
 
+    public List<GameAction> QueuedGameActions;
+
+    public static ClientGameLogicManager GetClientLogicFromScene()
+    {
+        return GameObject.Find("NetworkClient").GetComponent<ClientGameLogicManager>();
+    }
+
     public void Start()
     {
+        ClearQueuedActions();
         generator = GetComponent<MapGenerator>();
+    }
+
+    public void ClearQueuedActions()
+    {
+        QueuedGameActions = new List<GameAction>();
+    }
+
+    public void RemoveQueuedActionForUnitId(int unitId)
+    {
+        var toDelete = QueuedGameActions.Where(action => action.UnitId == unitId).ToList();
+        foreach (var action in toDelete)
+        {
+            QueuedGameActions.Remove(action);
+        }
     }
 
     public void ReceivedNewGameState(GameState gameState)
@@ -48,6 +71,7 @@ public class ClientGameLogicManager : MonoBehaviour
         CurrentServerSideState = gameState;
         CurrentVisibleState = GameState.Clone(gameState);
         _resultActionQueue = new List<GameResultAction>(CurrentServerSideState.ResultsFromLastPhase);
+        ClearQueuedActions();
 
         // invoke the first animation which will go through the queue via callbacks
         PlayNextAnimation();
@@ -119,5 +143,10 @@ public class ClientGameLogicManager : MonoBehaviour
     private void RemoveFirstActionQueueElement()
     {
         _resultActionQueue.RemoveAt(0);
+    }
+
+    public void AddQueuedActionForUnitId(int unitDataUnitId, List<Position> pathToDestination)
+    {
+        QueuedGameActions.Add(new GameAction(unitDataUnitId, pathToDestination));
     }
 }

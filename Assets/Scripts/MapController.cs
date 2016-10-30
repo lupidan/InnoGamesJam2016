@@ -14,7 +14,6 @@ public class MapController : MonoBehaviour {
 		Vector3 newCameraPosition = Camera.main.transform.position;
 		newCameraPosition += movingVector;
 		Camera.main.transform.position = newCameraPosition;
-
 	}
 
 }
