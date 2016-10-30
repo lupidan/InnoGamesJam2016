@@ -91,6 +91,29 @@ public class UnitController :
     void Awake()
     {
         _clientLogic = GameObject.Find("NetworkClient").GetComponent<ClientGameLogicManager>();
+
+        _clientLogic.PlayerMayInteractHandler += OnAnimationsFinished;
+    }
+
+    private void OnAnimationsFinished()
+    {
+        // resync with actual unit state
+        LeanTween.value(gameObject, gameObject.transform.position.x, unitData.position.x, 2.0f)
+            .setEaseInOutCubic()
+            .setOnUpdate((position) =>
+            {
+                var vect = gameObject.transform.position;
+                vect.x = position;
+                gameObject.transform.position = vect;
+            });
+        LeanTween.value(gameObject, gameObject.transform.position.y, unitData.position.y, 2.0f)
+            .setEaseInOutCubic()
+            .setOnUpdate((position) => {
+                var vect = gameObject.transform.position;
+                vect.y = position;
+                gameObject.transform.position = vect;
+            });
+
     }
 
     IEnumerator ExecuteActionAfterTime(Action action, float time)

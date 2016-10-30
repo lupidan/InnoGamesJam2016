@@ -15,10 +15,7 @@ public delegate void PlayerMayInteractHandler();
 [RequireComponent(typeof(MapGenerator))]
 public class ClientGameLogicManager : MonoBehaviour
 {
-    private MapGenerator generator;
-
     public GameState CurrentServerSideState;
-    public GameState CurrentVisibleState;
 
     public event StateUpdatedHandler StateUpdatedHandler;
     public event PlayerMayInteractHandler PlayerMayInteractHandler;
@@ -35,7 +32,6 @@ public class ClientGameLogicManager : MonoBehaviour
     public void Start()
     {
         ClearQueuedActions();
-        generator = GetComponent<MapGenerator>();
     }
 
     public void ClearQueuedActions()
@@ -54,27 +50,19 @@ public class ClientGameLogicManager : MonoBehaviour
 
     public void ReceivedNewGameState(GameState gameState)
     {
-        if (CurrentServerSideState == null)
-        {
-//            var assetBaseName = "Assets/Prefabs/Units/";
-//
-//            for (int i = 0; i < gameState.PlayerCount; i++)
-//            {
-//                var assetUnitBasePath = assetBaseName + "Blue_";
-//                foreach (var unitsKey in gameState.players[i].units.Keys)
-//                {
-//                    var unit = gameState.players[i].units[unitsKey];
-//                    var prefabPath = assetUnitBasePath + unit.Definition.type + "_Unit";
-//
-//                    GameObject unitGO = (GameObject)Instantiate(AssetDatabase.LoadAssetAtPath(prefabPath,typeof(GameObject)));
-//                    unitGO.transform.position=new Vector2();
-//                }
-//            }
-        }
         CurrentServerSideState = gameState;
-        CurrentVisibleState = GameState.Clone(gameState);
         _resultActionQueue = new List<GameResultAction>(CurrentServerSideState.ResultsFromLastPhase);
         ClearQueuedActions();
+
+        // Update unit controllers with new game state
+        foreach (Player player in CurrentServerSideState.players.Values)
+        {
+            foreach (Unit unit in player.units.Values)
+            {
+                var unitController = FindUnitControllerById(unit.unitId);
+                unitController.unitData = unit;
+            }
+        }
 
         // invoke the first animation which will go through the queue via callbacks
         PlayNextAnimation();
