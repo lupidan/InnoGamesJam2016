@@ -34,6 +34,7 @@ This is a game in which it is important to anticipate the movements of your oppo
 
 # Engine used
  - Unity3D
+ - Created on 28th October at 19:00, finished the 30th at 14:28!
 
 # Contributors
  - Daniel Lupiañez
