@@ -234,20 +234,25 @@ public class ServerGameLogicManager : MonoBehaviour
                     continue;
                 }
 
-                if (desiredDestinationPosition.x < movingUnit.position.x && movingUnit.facingDirection != Unit.Direction.Left)
-                {
-                    movingUnit.facingDirection = Unit.Direction.Left;
-                    gameActionResults.Add(new GameRotateResultAction(movingUnitId, Unit.Direction.Left));
-                }
-                else if (desiredDestinationPosition.x > movingUnit.position.x && movingUnit.facingDirection != Unit.Direction.Right)
-                {
-                    movingUnit.facingDirection = Unit.Direction.Right;
-                    gameActionResults.Add(new GameRotateResultAction(movingUnitId, Unit.Direction.Right));
-                }
+                HandleUnitLookingAt(gameActionResults, movingUnit, desiredDestinationPosition);
 
                 gameActionResults.Add(new GameMoveResultAction(movingUnitId, gameAction.moveToPositions));
                 movingUnit.position = desiredDestinationPosition;
             }
+        }
+    }
+
+    private static void HandleUnitLookingAt(List<GameResultAction> gameActionResults, Unit movingUnit, Position desiredDestinationPosition)
+    {
+        if (desiredDestinationPosition.x < movingUnit.position.x && movingUnit.facingDirection != Unit.Direction.Left)
+        {
+            movingUnit.facingDirection = Unit.Direction.Left;
+            gameActionResults.Add(new GameRotateResultAction(movingUnit.unitId, Unit.Direction.Left));
+        }
+        else if (desiredDestinationPosition.x > movingUnit.position.x && movingUnit.facingDirection != Unit.Direction.Right)
+        {
+            movingUnit.facingDirection = Unit.Direction.Right;
+            gameActionResults.Add(new GameRotateResultAction(movingUnit.unitId, Unit.Direction.Right));
         }
     }
 
@@ -284,9 +289,17 @@ public class ServerGameLogicManager : MonoBehaviour
         rightUnit.healthPoints = Math.Max(0, rightUnit.healthPoints - rightDamage);
 
         if (leftDamage > 0)
+        {
             gameActionResults.Add(new GameAttackResultAction(rightUnit.unitId, leftUnit.position));
+            HandleUnitLookingAt(gameActionResults, leftUnit, rightUnit.position);
+            HandleUnitLookingAt(gameActionResults, rightUnit, leftUnit.position);
+        }
         if (rightDamage > 0)
+        {
             gameActionResults.Add(new GameAttackResultAction(leftUnit.unitId, rightUnit.position));
+            HandleUnitLookingAt(gameActionResults, leftUnit, rightUnit.position);
+            HandleUnitLookingAt(gameActionResults, rightUnit, leftUnit.position);
+        }
         if (leftDamage > 0)
             gameActionResults.Add(new GameHitpointChangeResultAction(leftUnit.unitId, leftOldHitpoints, leftUnit.healthPoints));
         if (rightDamage > 0)
