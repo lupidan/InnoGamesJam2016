@@ -157,6 +157,45 @@ public class ServerGameLogicManager : MonoBehaviour
             ExecuteBattleForPairing(battlePairing, gameActionResults);
         }
 
+        // king loses health if left alone
+        var kings = newGameState.players.Values
+            .SelectMany(player =>
+                    player.units.Values
+                        .Where(unit => unit.Definition.type.Equals(UnitDefinition.Type.King)
+                                        && unit.healthPoints > 0).ToList())
+            .ToList();
+
+        foreach (var king in kings)
+        {
+            var kingPosX = king.position.x;
+            var kingPosY = king.position.y;
+            var playerId = king.owningPlayerId;
+            bool foundNeighbor = false;
+
+            foreach (Unit unit in allUnits)
+            {
+                if (unit.owningPlayerId != playerId || unit == king)
+                {
+                    continue;
+                }
+
+                var distance = Math.Abs(unit.position.x - kingPosX) + Math.Abs(unit.position.y - kingPosY);
+                if (distance <= 4)
+                {
+                    foundNeighbor = true;
+                }
+            }
+
+            if (!foundNeighbor)
+            {
+                var oldHitpoints = king.healthPoints;
+                king.healthPoints -= 1;
+                gameActionResults.Add(new GameHitpointChangeResultAction(king.unitId, oldHitpoints, king.healthPoints));
+                if (king.healthPoints <= 0)
+                    gameActionResults.Add(new GameUnitDeathResultAction(king.unitId));
+            }
+        }
+
         foreach (var unit in allUnits)
         {
             battlelog += ("after: unit " + unit.unitId + " h " + unit.healthPoints + " @ " + unit.position.x + ", " + unit.position.y + "\n");
@@ -195,20 +234,25 @@ public class ServerGameLogicManager : MonoBehaviour
                     continue;
                 }
 
-                if (desiredDestinationPosition.x < movingUnit.position.x && movingUnit.facingDirection != Unit.Direction.Left)
-                {
-                    movingUnit.facingDirection = Unit.Direction.Left;
-                    gameActionResults.Add(new GameRotateResultAction(movingUnitId, Unit.Direction.Left));
-                }
-                else if (desiredDestinationPosition.x > movingUnit.position.x && movingUnit.facingDirection != Unit.Direction.Right)
-                {
-                    movingUnit.facingDirection = Unit.Direction.Right;
-                    gameActionResults.Add(new GameRotateResultAction(movingUnitId, Unit.Direction.Right));
-                }
+                HandleUnitLookingAt(gameActionResults, movingUnit, desiredDestinationPosition);
 
                 gameActionResults.Add(new GameMoveResultAction(movingUnitId, gameAction.moveToPositions));
                 movingUnit.position = desiredDestinationPosition;
             }
+        }
+    }
+
+    private static void HandleUnitLookingAt(List<GameResultAction> gameActionResults, Unit movingUnit, Position desiredDestinationPosition)
+    {
+        if (desiredDestinationPosition.x < movingUnit.position.x && movingUnit.facingDirection != Unit.Direction.Left)
+        {
+            movingUnit.facingDirection = Unit.Direction.Left;
+            gameActionResults.Add(new GameRotateResultAction(movingUnit.unitId, Unit.Direction.Left));
+        }
+        else if (desiredDestinationPosition.x > movingUnit.position.x && movingUnit.facingDirection != Unit.Direction.Right)
+        {
+            movingUnit.facingDirection = Unit.Direction.Right;
+            gameActionResults.Add(new GameRotateResultAction(movingUnit.unitId, Unit.Direction.Right));
         }
     }
 
@@ -245,9 +289,17 @@ public class ServerGameLogicManager : MonoBehaviour
         rightUnit.healthPoints = Math.Max(0, rightUnit.healthPoints - rightDamage);
 
         if (leftDamage > 0)
+        {
             gameActionResults.Add(new GameAttackResultAction(rightUnit.unitId, leftUnit.position));
+            HandleUnitLookingAt(gameActionResults, leftUnit, rightUnit.position);
+            HandleUnitLookingAt(gameActionResults, rightUnit, leftUnit.position);
+        }
         if (rightDamage > 0)
+        {
             gameActionResults.Add(new GameAttackResultAction(leftUnit.unitId, rightUnit.position));
+            HandleUnitLookingAt(gameActionResults, leftUnit, rightUnit.position);
+            HandleUnitLookingAt(gameActionResults, rightUnit, leftUnit.position);
+        }
         if (leftDamage > 0)
             gameActionResults.Add(new GameHitpointChangeResultAction(leftUnit.unitId, leftOldHitpoints, leftUnit.healthPoints));
         if (rightDamage > 0)

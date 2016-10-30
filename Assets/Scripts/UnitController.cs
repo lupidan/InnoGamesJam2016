@@ -175,11 +175,6 @@ public class UnitController :
         audioSource.Play();
     }
 
-    private void PlaySound(string audioFilename)
-    {
-        SoundController.Instance.PlayAudioClip(audioFilename);
-    }
-
     private void DisplayPoof()
     {
         GameObject gameObject = FindObjectOfType<MapGenerator>().InstantiatePrefab("DeathPoof");
@@ -307,7 +302,7 @@ public class UnitController :
             .setOnComplete(() => { onFinished.Invoke(); });
     }
 
-    public void PlayMoveAnimation(Position toPosition, Action onFinished)
+    public void PlayMoveAnimation(Position toPosition, int moveNumber, int moveTotal, Action onFinished)
     {
         ZoomOutAnd(() => {
             float time = 0.2f;
@@ -442,6 +437,7 @@ public class UnitController :
 
     public void PlayDeathAnimation(Action onFinished)
     {
+        GetComponent<SpriteRenderer>().flipX = false;
         playDyingSound();
         animator.SetTrigger(UnitAnimationEvents.StartDying.ToString());
         StartCoroutine(ExecuteActionAfterTime(onFinished, 1.0f));
