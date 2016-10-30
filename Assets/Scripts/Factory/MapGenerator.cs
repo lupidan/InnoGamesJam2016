@@ -54,7 +54,7 @@ public class MapGenerator : MonoBehaviour {
 	{
 		UnitController unitController = InstantiatePrefab<UnitController>(unit.definitionId);
 		unitController.unitData = unit;
-		unitController.transform.position = new Vector3(unit.position.x, unit.position.y, 0.0f);
+		unitController.transform.position = new Vector3(unit.position.x, unit.position.y, -2.0f);
 		unitController.name = "unit_" + unit.unitId;
 		return unitController;
 	}
@@ -63,7 +63,7 @@ public class MapGenerator : MonoBehaviour {
 	{
 		TileController tileController = InstantiatePrefab<TileController>(tile.definitionId);
 		tileController.tileData = tile;
-		tileController.transform.position = new Vector3(tile.position.x, tile.position.y, 0.0f);
+		tileController.transform.position = new Vector3(tile.position.x, tile.position.y, -1.0f);
 		tileController.name = "tile_" + tile.position.x + "_" + tile.position.y;
 
 	    tileController.transform.parent = gameObject.transform;
