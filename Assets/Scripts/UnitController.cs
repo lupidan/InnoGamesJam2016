@@ -15,34 +15,36 @@ public class UnitController :
     MonoBehaviour,
     IPointerDownHandler,
     IPointerClickHandler,
-    IPointerUpHandler
+    IPointerUpHandler,
+    IPointerEnterHandler,
+    IPointerExitHandler
 {
     public static UnitController _selectedUnit = null;
-    public static UnitController SelectedUnit {
-        get {
-            return _selectedUnit;
-        } 
-        set {
-            if (_selectedUnit != null) {
+
+    public static UnitController SelectedUnit
+    {
+        get { return _selectedUnit; }
+        set
+        {
+            if (_selectedUnit != null)
+            {
                 LeanTween.cancel(_selectedUnit.gameObject);
-			    _selectedUnit.gameObject.GetComponent<SpriteRenderer>().color = Color.white;
+                _selectedUnit.gameObject.GetComponent<SpriteRenderer>().color = Color.white;
                 TileController.SetAllTilesUnreachable();
             }
 
-            if (value != null) {
+            if (value != null)
+            {
                 LeanTween.value(value.gameObject, Color.white, Color.green, 0.25f)
-                         .setLoopPingPong()
-                         .setEaseOutBack()
-                         .setOnUpdate((color) => {
-                            value.gameObject.GetComponent<SpriteRenderer>().color = color;
-                         });
-                
+                    .setLoopPingPong()
+                    .setEaseOutBack()
+                    .setOnUpdate((color) => { value.gameObject.GetComponent<SpriteRenderer>().color = color; });
+
                 List<Position> availablePositions = value.GetMovementPositions();
                 TileController.SetTilesAtPositionsReachable(availablePositions);
             }
             _selectedUnit = value;
         }
-        
     }
 
     private Animator animator;
@@ -117,7 +119,8 @@ public class UnitController :
 
     private void playClickedSound()
     {
-        if (clickedSound) {
+        if (clickedSound)
+        {
             audioSource.clip = clickedSound;
             audioSource.Play();
         }
@@ -190,50 +193,63 @@ public class UnitController :
         gameObject.transform.localPosition = localPosition;
     }
 
-    public void OnPointerDown(PointerEventData eventData) { }
-    public void OnPointerUp(PointerEventData eventData) { }
+    public void OnPointerDown(PointerEventData eventData)
+    {
+    }
+
+    public void OnPointerUp(PointerEventData eventData)
+    {
+    }
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (destination == null) {
+        if (destination == null)
+        {
             UnitController.SelectedUnit = this;
-        } else {
+        }
+        else
+        {
             SetDestinationTileController(null);
         }
         playClickedSound();
     }
 
-    public void SetDestinationTileController(TileController tileController) {
+    public void SetDestinationTileController(TileController tileController)
+    {
         destination = tileController;
-        if (destination) {
+        if (destination)
+        {
             Position current = new Position(unitData.position.x, unitData.position.y);
             Position destiny = new Position(tileController.tileData.position.x,
-                                        tileController.tileData.position.y);
+                tileController.tileData.position.y);
             pathToDestination = TileController.PathFromPositionToPosition(current, destiny);
             _clientLogic.AddQueuedActionForUnitId(unitData.unitId, pathToDestination);
-        } else {
+        }
+        else
+        {
             pathToDestination = null;
             _clientLogic.RemoveQueuedActionForUnitId(unitData.unitId);
-
         }
         SetupLine();
     }
 
-    private void SetupLine() {
-        for (int i = visiblePathObjects.Count - 1; i >= 0 ; i--)
+    private void SetupLine()
+    {
+        for (int i = visiblePathObjects.Count - 1; i >= 0; i--)
         {
             Destroy(visiblePathObjects[i]);
             visiblePathObjects.RemoveAt(i);
         }
 
-        if (pathToDestination != null && pathToDestination.Count > 0) {
+        if (pathToDestination != null && pathToDestination.Count > 0)
+        {
             visiblePathObjects = new List<GameObject>();
             for (int i = 0; i < pathToDestination.Count; i++)
             {
                 SpriteRenderer renderer = Instantiate(pathObjectPrefab);
                 renderer.transform.position = new Vector3(pathToDestination[i].x,
-                                                            pathToDestination[i].y,
-                                                            transform.position.z + 0.001f);
+                    pathToDestination[i].y,
+                    transform.position.z + 0.001f);
                 renderer.sprite = pathSprite;
                 visiblePathObjects.Add(renderer.gameObject);
             }
@@ -246,10 +262,8 @@ public class UnitController :
         newCameraPosition.x = toPosition.x;
         newCameraPosition.y = toPosition.y;
         LeanTween.move(Camera.main.gameObject, newCameraPosition, 0.2f)
-        .setEaseLinear()
-        .setOnComplete(() => {
-            onFinished.Invoke();
-        });
+            .setEaseLinear()
+            .setOnComplete(() => { onFinished.Invoke(); });
     }
 
     public void PlayMoveAnimation(Position toPosition, Action onFinished)
@@ -260,31 +274,35 @@ public class UnitController :
         newPosition.x = toPosition.x;
         newPosition.y = toPosition.y;
         LeanTween.move(gameObject, newPosition, time)
-                 .setEaseLinear()
-                 .setOnComplete(() => {
-                     transform.position = newPosition;
-                     animator.SetTrigger(UnitAnimationEvents.StopMoving.ToString());
-                     onFinished.Invoke();
-                 });
-        
+            .setEaseLinear()
+            .setOnComplete(() =>
+            {
+                transform.position = newPosition;
+                animator.SetTrigger(UnitAnimationEvents.StopMoving.ToString());
+                onFinished.Invoke();
+            });
+
         Vector3 newCameraPosition = Camera.main.transform.position;
         newCameraPosition.x = toPosition.x;
         newCameraPosition.y = toPosition.y;
         LeanTween.move(Camera.main.gameObject, newCameraPosition, time)
-        .setEaseLinear();
+            .setEaseLinear();
     }
 
     public void PlayRotateAnimation(Unit.Direction toDirection, Action onFinished)
     {
-        if (toDirection == Unit.Direction.Left) {
+        if (toDirection == Unit.Direction.Left)
+        {
             Vector3 scale = transform.localScale;
             scale.x = -1.0f;
             transform.localScale = scale;
-        } else if (toDirection == Unit.Direction.Left) {
+        }
+        else if (toDirection == Unit.Direction.Left)
+        {
             Vector3 scale = transform.localScale;
             scale.x = 1.0f;
             transform.localScale = scale;
-        }        
+        }
         onFinished();
     }
 
@@ -297,14 +315,10 @@ public class UnitController :
     public void PlayHitpointChange(int newHitpoints, Action onFinished)
     {
         LeanTween.value(gameObject, Color.white, Color.red, 0.5f)
-                 .setLoopOnce()
-                 .setEaseInOutCubic()
-                 .setOnUpdate((color) => {
-                     GetComponent<SpriteRenderer>().color = color;
-                 })
-                 .setOnComplete(() => {
-                     onFinished();
-                 });
+            .setLoopOnce()
+            .setEaseInOutCubic()
+            .setOnUpdate((color) => { GetComponent<SpriteRenderer>().color = color; })
+            .setOnComplete(() => { onFinished(); });
     }
 
     public void PlayDeathAnimation(Action onFinished)
@@ -314,7 +328,8 @@ public class UnitController :
     }
 
 
-    private List<Position> GetMovementPositions() {
+    private List<Position> GetMovementPositions()
+    {
         List<Position> options = new List<Position>();
 
         for (int row = unitData.position.y - 2; row <= unitData.position.y + 2; row++)
@@ -326,7 +341,20 @@ public class UnitController :
             }
         }
         return options;
-        
     }
 
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        var attackPatternGameObject = GameObject.Find("AttackPatternRenderer");
+        var attackPatternRenderer = attackPatternGameObject.GetComponent<AttackPatternRenderer>();
+        attackPatternRenderer.SetPattern(unitData.position, transform,
+            unitData.Definition.attackPattern);
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        var attackPatternGameObject = GameObject.Find("AttackPatternRenderer");
+        var attackPatternRenderer = attackPatternGameObject.GetComponent<AttackPatternRenderer>();
+        attackPatternRenderer.HidePattern();
+    }
 }

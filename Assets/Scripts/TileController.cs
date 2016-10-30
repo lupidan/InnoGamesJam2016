@@ -51,10 +51,10 @@ public class TileController :
 	public bool isReachable { get; private set; }
 
 	public void OnPointerEnter(PointerEventData eventData) {
-
+        Debug.Log("Enter");
 	    if (isReachable)
 	    {
-	        var currentCurrentSelectedGameObject = EventSystem.current.currentSelectedGameObject;
+    	        var currentCurrentSelectedGameObject = UnitController.SelectedUnit;
 	        if (currentCurrentSelectedGameObject)
 	        {
 	            var attackPatternGameObject = GameObject.Find("AttackPatternRenderer");
@@ -69,13 +69,12 @@ public class TileController :
 	public void OnPointerExit(PointerEventData eventData) {
 	    if (isReachable)
 	    {
-	        var currentCurrentSelectedGameObject = EventSystem.current.currentSelectedGameObject;
+	        var currentCurrentSelectedGameObject = UnitController.SelectedUnit;
 	        if (currentCurrentSelectedGameObject)
 	        {
 	            var attackPatternGameObject = GameObject.Find("AttackPatternRenderer");
 	            var attackPatternRenderer = attackPatternGameObject.GetComponent<AttackPatternRenderer>();
-	            attackPatternRenderer.HidePattern(tileData.position,
-	                currentCurrentSelectedGameObject.GetComponent<UnitController>().unitData.Definition.attackPattern);
+	            attackPatternRenderer.HidePattern();
 	        }
 	    }
 	}
@@ -91,7 +90,9 @@ public class TileController :
             if (isReachable)
             {
                 selectedUnit.SetDestinationTileController(this);
-
+                var attackPatternGameObject = GameObject.Find("AttackPatternRenderer");
+                var attackPatternRenderer = attackPatternGameObject.GetComponent<AttackPatternRenderer>();
+                attackPatternRenderer.HidePattern();
             }
         }
         UnitController.SelectedUnit = null;

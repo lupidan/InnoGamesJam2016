@@ -1,23 +1,28 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class AttackPatternRenderer : MonoBehaviour
 {
 
     private Position lastPosition = new Position(-1, -1);
 
+    private List<GameObject> quads = new List<GameObject>();
+
     public void SetPattern(Position tileDataPosition, Transform transform1, AttackPatternDefinition definitionAttackPattern)
     {
+
         if (!tileDataPosition.Equals(lastPosition))
         {
             lastPosition = tileDataPosition;
 
-            if (transform.childCount > 0)
+            if (quads.Count > 0)
             {
-                for (int i = 0; i < transform.childCount; i++)
+                foreach (var quad in quads)
                 {
-                    Destroy(transform.GetChild(i));
+                    Destroy(quad);
                 }
-                transform.DetachChildren();
+                quads.Clear();
+
             }
 
 
@@ -34,32 +39,26 @@ public class AttackPatternRenderer : MonoBehaviour
                     {
                         //create a square and color it according to attack strength
                         GameObject quad = GameObject.CreatePrimitive(PrimitiveType.Quad);
-                        quad.transform.position = new Vector3(x - xOffset, y - yOffset);
+                        quad.transform.position = new Vector3(transform1.position.x+x - xOffset,transform1.position.y+ y - yOffset, -0.5f);
                         var material = quad.GetComponent<Renderer>().material;
                         material.color = new Color(1f, 0f, 0f, attackStrength * divisor);
                         material.shader = Shader.Find("Transparent/Diffuse");
                         quad.transform.parent = gameObject.transform;
+                        quads.Add(quad);
                     }
                 }
             }
 
-            transform.position = new Vector3(transform1.position.x, transform1.position.y, transform.position.z);
+            //transform.position = new Vector3(transform1.position.x, transform1.position.y, transform.position.z);
         }
     }
 
-    public void HidePattern(Position tileDataPosition, AttackPatternDefinition definitionAttackPattern)
+    public void HidePattern()
     {
-        if (tileDataPosition.Equals(lastPosition))
+        foreach (var quad in quads)
         {
-            lastPosition = new Position(-1, -1);
-            if (transform.childCount > 0)
-            {
-                for (int i = 0; i < transform.childCount; i++)
-                {
-                    Destroy(transform.GetChild(i));
-                }
-                transform.DetachChildren();
-            }
+            Destroy(quad);
         }
+        quads.Clear();
     }
 }
