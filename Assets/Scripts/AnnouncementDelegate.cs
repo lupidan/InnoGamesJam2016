@@ -8,6 +8,7 @@ public class AnnouncementDelegate : MonoBehaviour
 
     private ClientGameLogicManager clientGameLogicManager;
     private Text textField;
+    private bool hasGameFinished;
 
     // Use this for initialization
 	void Start ()
@@ -19,18 +20,24 @@ public class AnnouncementDelegate : MonoBehaviour
 
     public void OnStateChanged()
     {
+        if (hasGameFinished)
+        {
+            return;
+        }
+
         switch (clientGameLogicManager.CurrentServerSideState.CurrentPhase)
         {
             case GamePhase.WaitingForStart:
                 textField.text = "Waiting for player...";
                 break;
             case GamePhase.Planning:
-                textField.text = "Preview your movement";
+                textField.text = "Plan your attack";
                 break;
             case GamePhase.Revision:
-                textField.text = "Tap to rewind or pass";
+                textField.text = "Choose your cheating monkey";
                 break;
             case GamePhase.Finished:
+                hasGameFinished = true;
                 bool hasBlueWon = clientGameLogicManager.CurrentServerSideState.WinningPlayerId == 0;
                 textField.color = hasBlueWon ? new Color(0.6f, 0.6f, 1f, 1f) : new Color(1f, 0.4f, 0.4f, 1f);
                 textField.text = "Player " + (hasBlueWon? "blue" : "red") + " won!";

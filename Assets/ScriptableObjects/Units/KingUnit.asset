@@ -15,9 +15,9 @@ MonoBehaviour:
   unitName: King Unit
   type: 4
   maxHealth: 10
-  heavyDefense: 7
-  meeleDefense: 5
-  rangeDefense: 7
+  heavyDefense: 6
+  meeleDefense: 7
+  rangeDefense: 6
   kingDefense: 0
   maxMovements: 5
   maxCheatingMovements: 4
