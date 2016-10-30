@@ -47,3 +47,7 @@ This is a game in which it is important to anticipate the movements of your oppo
  - Sergio R. Lumley
 
  [logo]: relative/path/to/img.jpg?raw=true
+ 
+ # Binaries for Download
+ - [OSX](Binaries/CheetingMonkey1.0.0-osx.app.zip)
+ - [Windows](Binaries/Cheating monkey windows x86_64.zip)
