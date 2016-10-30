@@ -15,6 +15,7 @@ public class GameResultAction
 public class GameMoveResultAction : GameResultAction
 {
     public List<Position> movements;
+    public int stepCounter = 0;
 
     public GameMoveResultAction(int unitId, List<Position> movements) : base(unitId)
     {

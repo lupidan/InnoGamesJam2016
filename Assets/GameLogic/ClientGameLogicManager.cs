@@ -142,13 +142,15 @@ public class ClientGameLogicManager : MonoBehaviour
         if (resultAction is GameMoveResultAction)
         {
             var moveAction = (GameMoveResultAction) resultAction;
-            var toPosition = moveAction.movements[0];
-            moveAction.movements.RemoveAt(0);
-            if (moveAction.movements.Count == 0)
+
+            var toPosition = moveAction.movements[moveAction.stepCounter];
+            if ((moveAction.movements.Count - 1) == moveAction.stepCounter)
             {
                 RemoveFirstActionQueueElement();
             }
-            unitController.PlayMoveAnimation(toPosition, PlayNextAnimation);
+            unitController.PlayMoveAnimation(toPosition, moveAction.stepCounter, moveAction.movements.Count - 1, PlayNextAnimation);
+
+            moveAction.stepCounter += 1;
         }
         else if (resultAction is GameRotateResultAction)
         {

@@ -38,6 +38,11 @@ public class IngameSubmitButtonManager : MonoBehaviour {
     {
         advanceButton.interactable = true;
         advanceButtonText.text = "Next";
+        LeanTween.value(Camera.main.gameObject, Camera.main.orthographicSize, 6.0f, 0.5f)
+                .setEaseInOutSine()
+                .setOnUpdate((newValue) => {
+                    Camera.main.orthographicSize = newValue;
+                });
     }
 
     public void SubmitTurn()
