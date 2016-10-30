@@ -4,6 +4,8 @@ using System.Linq;
 
 public delegate void StateUpdatedHandler();
 
+public delegate void PlayerMayInteractHandler();
+
 /// <summary>
 /// Basic game logic manager for the client-side behaviour,
 /// allowing for simulation and holding of a game state
@@ -19,6 +21,7 @@ public class ClientGameLogicManager : MonoBehaviour
     public GameState CurrentVisibleState;
 
     public event StateUpdatedHandler StateUpdatedHandler;
+    public event PlayerMayInteractHandler PlayerMayInteractHandler;
 
     private List<GameResultAction> _resultActionQueue;
 
@@ -96,7 +99,10 @@ public class ClientGameLogicManager : MonoBehaviour
     {
         if (_resultActionQueue.Count == 0)
         {
-            // FIXME: inform UI about finished phase
+            if (PlayerMayInteractHandler != null)
+            {
+                PlayerMayInteractHandler();
+            }
             return;
         }
 
