@@ -26,7 +26,14 @@ public class UnitController :
 
     private AudioSource audioSource;
 
+    private TileController destination = null;
+    private List<Position> pathToDestination = null;
+    private List<GameObject> visiblePathObjects = new List<GameObject>();
+
     public Unit unitData;
+
+    public SpriteRenderer pathObjectPrefab;
+    public Sprite pathSprite;
 
     public AudioClip clickedSound;
 
@@ -39,6 +46,7 @@ public class UnitController :
     public AudioClip dyingSound;
 
     public AudioClip tombAppearSound;
+    
 
 
     public enum UnitAnimationEvents
@@ -168,31 +176,68 @@ public class UnitController :
     }
 
     public void OnSelect(BaseEventData eventData) {
-        UnitController.SelectedUnit = this;
-        LeanTween.value(gameObject, Color.white, Color.green, 0.25f)
-                 .setLoopPingPong()
-                 .setEaseOutBack()
-                 .setOnUpdate((color) => {
-                     GetComponent<SpriteRenderer>().color = color;
-                 });
+        if (destination == null) {
+            UnitController.SelectedUnit = this;
+            LeanTween.value(gameObject, Color.white, Color.green, 0.25f)
+                    .setLoopPingPong()
+                    .setEaseOutBack()
+                    .setOnUpdate((color) => {
+                        GetComponent<SpriteRenderer>().color = color;
+                    });
 
-        List<Position> availablePositions = GetMovementPositions();
-        TileController.SetTilesAtPositionsReachable(availablePositions);
+            List<Position> availablePositions = GetMovementPositions();
+            TileController.SetTilesAtPositionsReachable(availablePositions);
+        } else {
+            EventSystem.current.SetSelectedGameObject(null, eventData);
+            SetDestinationTileController(null);
+        }
     }
 
     public void OnDeselect(BaseEventData eventData) {
         LeanTween.cancel(gameObject);
         gameObject.GetComponent<SpriteRenderer>().color = Color.white;
-        if (UnitController.SelectedUnit == this &&
-            TileController.HighlightedTile != null) {
-            Vector3 pos = UnitController.SelectedUnit.transform.position;
-            pos.x = TileController.HighlightedTile.transform.position.x;
-            pos.y = TileController.HighlightedTile.transform.position.y;
-            UnitController.SelectedUnit.transform.position = pos;
+        if (UnitController.SelectedUnit == this && TileController.HighlightedTile != null) {
+            SetDestinationTileController(TileController.HighlightedTile);
         }
-
+        UnitController.SelectedUnit = null;
         TileController.SetAllTilesUnreachable();
     }
+
+    private void SetDestinationTileController(TileController tileController) {
+        destination = tileController;
+        if (destination) {
+            Position current = new Position(unitData.position.x, unitData.position.y);
+            Position destiny = new Position(tileController.tileData.position.x,
+                                        tileController.tileData.position.y);
+            pathToDestination = TileController.PathFromPositionToPosition(current, destiny);
+        } else {
+            pathToDestination = null;
+        }
+        SetupLine();
+    }
+
+    private void SetupLine() {
+        for (int i = visiblePathObjects.Count - 1; i >= 0 ; i--)
+        {
+            Destroy(visiblePathObjects[i]);
+            visiblePathObjects.RemoveAt(i);
+        }
+
+        if (pathToDestination != null && pathToDestination.Count > 0) {
+            visiblePathObjects = new List<GameObject>();
+            for (int i = 0; i < pathToDestination.Count; i++)
+            {
+                SpriteRenderer renderer = Instantiate(pathObjectPrefab);
+                renderer.transform.position = new Vector3(pathToDestination[i].x,
+                                                            pathToDestination[i].y,
+                                                            transform.position.z + 0.001f);
+                renderer.sprite = pathSprite;
+                visiblePathObjects.Add(renderer.gameObject);
+            }
+        }
+    }
+
+
 
     public void PlayMoveAnimation(Position toPosition, Action onFinished)
     {
