@@ -335,15 +335,13 @@ public class UnitController :
     {
         if (toDirection == Unit.Direction.Left)
         {
-            Vector3 scale = transform.localScale;
-            scale.x = -1.0f;
-            transform.localScale = scale;
+            var sprite = GetComponent<SpriteRenderer>();
+            sprite.flipX = true;
         }
-        else if (toDirection == Unit.Direction.Left)
+        else if (toDirection == Unit.Direction.Right)
         {
-            Vector3 scale = transform.localScale;
-            scale.x = 1.0f;
-            transform.localScale = scale;
+            var sprite = GetComponent<SpriteRenderer>();
+            sprite.flipX = false;
         }
         onFinished();
     }

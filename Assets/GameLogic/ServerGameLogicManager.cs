@@ -194,6 +194,17 @@ public class ServerGameLogicManager : MonoBehaviour
                     continue;
                 }
 
+                if (desiredDestinationPosition.x < movingUnit.position.x && movingUnit.facingDirection != Unit.Direction.Left)
+                {
+                    movingUnit.facingDirection = Unit.Direction.Left;
+                    gameActionResults.Add(new GameRotateResultAction(movingUnitId, Unit.Direction.Left));
+                }
+                else if (desiredDestinationPosition.x > movingUnit.position.x && movingUnit.facingDirection != Unit.Direction.Right)
+                {
+                    movingUnit.facingDirection = Unit.Direction.Right;
+                    gameActionResults.Add(new GameRotateResultAction(movingUnitId, Unit.Direction.Right));
+                }
+
                 gameActionResults.Add(new GameMoveResultAction(movingUnitId, gameAction.moveToPositions));
                 movingUnit.position = desiredDestinationPosition;
             }
