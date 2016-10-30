@@ -122,7 +122,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 4f39f8df66d124b8ca086d34705d983b, type: 2}
   - {fileID: 11400000, guid: c74be25311dd1469cb5939f2b83fd2a6, type: 2}
   - {fileID: 11400000, guid: 4d1aa183b748d4292a6249a53cb63d4b, type: 2}
-  tiles: []
+  tiles:
+  - {fileID: 11400000, guid: 41ccd328d077640758007763fc0754f0, type: 2}
+  - {fileID: 11400000, guid: 30db5055467ec4d32b3352b200a58173, type: 2}
+  - {fileID: 11400000, guid: 1beee449bbce24abf8ab524ea061f889, type: 2}
 --- !u!4 &46778386
 Transform:
   m_ObjectHideFlags: 0
