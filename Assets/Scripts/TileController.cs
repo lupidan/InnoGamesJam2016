@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
+using System;
 
 public class TileController :
 	MonoBehaviour,
@@ -28,21 +29,33 @@ public class TileController :
         }
 	}
 
-	public static List<Position> PathFromPositionToPosition(Position origin, Position destiny) {
+	public static List<Position> PathFromPositionToPosition(Position origin, Position destination) {
 		List<Position> path = new List<Position>();
-		Position iterator = origin;
-		while (destiny.x != iterator.x || destiny.y != iterator.y) {
-			if (iterator.x < destiny.x)
-				iterator.x += 1;
-			else if (iterator.x > destiny.x)
-				iterator.x -= 1;
-			else if (iterator.y < destiny.y)
-				iterator.y += 1;
-			else if (iterator.y > destiny.y)
-				iterator.y -= 1;
-
-			Position copy = new Position(iterator.x, iterator.y);
-			path.Add(copy);
+		Position current = origin;
+		while (!current.Equals(destination)) {
+			//yDistance, xDistance. Reduce what is higher
+			int absoluteHorizontalDistance = Math.Abs(current.x - destination.x);
+			int absoluteVerticalDistance = Math.Abs (current.y - destination.y);
+			int nextX = current.x;
+			int nextY = current.y;
+			if (absoluteHorizontalDistance >= absoluteVerticalDistance) {
+				//reduce horizontal distance
+				if (current.x < destination.x) {
+					nextX = current.x + 1;
+				} else {
+					nextX = current.x - 1;
+				}
+			} else {
+				//reduce vertical distance
+				if (current.y < destination.y) {
+					nextY = current.y + 1;
+				} else {
+					nextY = current.y - 1;
+				}
+			}
+			Position next = new Position (nextX, nextY);
+			path.Add(next);
+			current = next;
 		}
 		return path;
 	}
