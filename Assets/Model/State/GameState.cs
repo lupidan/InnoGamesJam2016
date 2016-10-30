@@ -20,14 +20,19 @@ public class GameState
 
     public GamePhase CurrentPhase;
     public List<int> PendingPlayerIDs;
+
     public Dictionary<int, Player> players;
     public List<GameResultAction> ResultsFromLastPhase;
     public List<List<GameAction>> PlayerGameActions;
-    public MapPatternDefinition MapPattern;
     public int WinningPlayerId;
+
+    [System.NonSerialized]
+    public MapPatternDefinition MapPattern;
 
     public GameState(int desiredPlayerCount, MapPatternDefinition mapPattern)
     {
+        MapPattern = mapPattern;
+
         WinningPlayerId = -1;
         MapPattern = mapPattern;
         PlayerCount = desiredPlayerCount;
