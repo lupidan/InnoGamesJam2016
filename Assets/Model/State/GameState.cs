@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
+using UnityEngine;
 
 public enum GamePhase
 {
@@ -37,25 +38,35 @@ public class GameState
         // manually deploy units
         players= new Dictionary<int, Player>();
 
-        var unitCounter = 0;
         for (var i = 0; i < PlayerCount; i++)
         {
-            var player = new Player { name = "Player " + (i + 1), id = i };
-
-            // FIXME: unit initialization
-            var heavy = new Unit
-            {
-                unitId = unitCounter++,
-                owningPlayerId = i,
-                facingDirection = Unit.Direction.Right,
-                position = new Position(2, 2)
-            };
-
-            player.units = new Dictionary<int, Unit> {{heavy.unitId, heavy}};
-
+            var player = new Player {name = "Player " + (i + 1), id = i};
+            player.units = new Dictionary<int, Unit>();
             players.Add(i, player);
         }
 
+        var unitCounter = 0;
+        var unitContainerGameObject = GameObject.Find("UnitContainer");
+        var unitContainerTransform = unitContainerGameObject.gameObject.transform;
+        for (int i = 0; i < unitContainerTransform.childCount; i++)
+        {
+            var unitTransform = unitContainerTransform.GetChild(i);
+            var unitTransformGameObject = unitTransform.gameObject;
+            var unitController = unitTransformGameObject.GetComponent<UnitController>();
+
+            if (unitTransformGameObject.name.Contains("Red") && PlayerCount > 1)
+            {
+                unitController.unitData.owningPlayerId = 1;
+                unitController.unitData.unitId = unitCounter++;
+                players[1].units.Add(unitController.unitData.unitId, unitController.unitData);
+            }
+            else
+            {
+                unitController.unitData.owningPlayerId = 0;
+                unitController.unitData.unitId = unitCounter++;
+                players[0].units.Add(unitController.unitData.unitId, unitController.unitData);
+            }
+        }
     }
 
     public static GameState Clone(GameState other)

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
+using System.Collections.Generic;
 
 public class TileController :
 	MonoBehaviour,
@@ -8,16 +9,38 @@ public class TileController :
 
 	public static TileController HighlightedTile { get; private set; }
 
+	public static void SetTilesAtPositionsReachable(List<Position> positions) {
+		for (int i = 0; i < positions.Count; i++)
+		{
+			GameObject tileGameObject = GameObject.Find("tile_" + positions[i].x + "_" + positions[i].y);
+            tileGameObject.GetComponent<TileController>().SetReachable(true);
+		}
+	}
+
+	public static void SetAllTilesUnreachable() {
+		TileController[] tileControllers = FindObjectsOfType<TileController>();
+        for (int i = 0; i < tileControllers.Length; i++)
+        {
+            tileControllers[i].SetReachable(false);
+        }
+	}
+
 	public Tile tileData;
+	public bool isReachable { get; private set; }
 
 	public void OnPointerEnter(PointerEventData eventData) {
-		if (HighlightedTile != this)
+		if (HighlightedTile != this && isReachable)
 			HighlightedTile = this;
 	}
 
 	public void OnPointerExit(PointerEventData eventData) {
-		if (HighlightedTile == this)
+		if (HighlightedTile == this && isReachable)
 			HighlightedTile = null;
+	}
+
+	public void SetReachable(bool reachable) {
+		isReachable = reachable;
+		GetComponent<SpriteRenderer>().color = isReachable ? Color.black : Color.white;
 	}
 	
 }

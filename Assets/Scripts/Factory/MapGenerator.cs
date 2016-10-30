@@ -30,13 +30,22 @@ public class MapGenerator : MonoBehaviour {
 		return cache;
 	}
 
-	private T InstantiatePrefab<T>(string identifier) where T : Component
+	public T InstantiatePrefab<T>(string identifier) where T : Component
+	{
+		GameObject prefab = InstantiatePrefab(identifier);
+		if (prefab != null)
+		{
+			return prefab.GetComponent<T>();
+		}
+		return null;
+	}
+
+	public GameObject InstantiatePrefab(string identifier)
 	{
 		GameObject prefab;
 		if (unitPrefabCache.TryGetValue(identifier, out prefab))
 		{
-			GameObject instantiatedGameObject = Instantiate(prefab);
-			return instantiatedGameObject.GetComponent<T>();
+			return Instantiate(prefab);
 		}
 		return null;
 	}
@@ -56,6 +65,8 @@ public class MapGenerator : MonoBehaviour {
 		tileController.tileData = tile;
 		tileController.transform.position = new Vector3(tile.position.x, tile.position.y, 0.0f);
 		tileController.name = "tile_" + tile.position.x + "_" + tile.position.y;
+
+	    tileController.transform.parent = gameObject.transform;
 		return tileController;
 	}
 

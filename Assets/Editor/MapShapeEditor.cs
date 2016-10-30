@@ -8,7 +8,7 @@ public class MapShapeEditor : Editor
 {
 
     private static readonly string[] tileTypes = {
-        "normal_tile", "rock_tile", "swamp_tile"
+        "normal_tile", "block_tile", "swamp_tile"
     };
 
 
