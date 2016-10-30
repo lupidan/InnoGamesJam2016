@@ -226,7 +226,7 @@ public class UnitController :
             && ClientNetworkingManager.GetClientNetworkingManager().PlayerId == unitData.owningPlayerId)
         {
             ClientGameLogicManager logicManager = ClientGameLogicManager.GetClientLogicFromScene();
-            if (true)// (logicManager.CurrentServerSideState.CurrentPhase == GamePhase.Planning)
+            if (logicManager.CurrentServerSideState.CurrentPhase == GamePhase.Planning)
             {
                 if (destination == null)
                 {
