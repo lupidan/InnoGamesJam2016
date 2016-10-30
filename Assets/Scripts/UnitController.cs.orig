@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
@@ -110,12 +110,12 @@ public class UnitController :
             });
         LeanTween.value(gameObject, gameObject.transform.position.y, unitData.position.y, 2.0f)
             .setEaseInOutCubic()
-            .setOnUpdate((position) =>
-            {
+            .setOnUpdate((position) => {
                 var vect = gameObject.transform.position;
                 vect.y = position;
                 gameObject.transform.position = vect;
             });
+
     }
 
     IEnumerator ExecuteActionAfterTime(Action action, float time)
@@ -178,8 +178,7 @@ public class UnitController :
         audioSource.Play();
     }
 
-    private void PlaySound(string audioFilename)
-    {
+    private void PlaySound(string audioFilename) {
         SoundController.Instance.PlayAudioClip(audioFilename);
     }
 
@@ -337,14 +336,22 @@ public class UnitController :
     public void PlayHitpointChange(int newHitpoints, Action onFinished)
     {
         LeanTween.value(gameObject, Color.white, Color.red, 0.5f)
+<<<<<<< HEAD
             .setLoopOnce()
             .setEaseInOutCubic()
             .setOnUpdate((color) => { GetComponent<SpriteRenderer>().color = color; })
-            .setOnComplete(() =>
-            {
-                RemoveHitpointColorAnimation();
-                onFinished();
-            });
+            .setOnComplete(() => { onFinished(); });
+=======
+                 .setLoopOnce()
+                 .setEaseInOutCubic()
+                 .setOnUpdate((color) => {
+                     GetComponent<SpriteRenderer>().color = color;
+                 })
+                 .setOnComplete(() => {
+                    RemoveHitpointColorAnimation();
+                    onFinished();
+                 });
+>>>>>>> 9842cbdac35753dc497d8edb216305e3712ff90a
     }
 
     private void RemoveHitpointColorAnimation()
@@ -352,7 +359,10 @@ public class UnitController :
         LeanTween.value(gameObject, Color.red, Color.white, 0.1f)
             .setLoopOnce()
             .setEaseInOutCubic()
-            .setOnUpdate((color) => { GetComponent<SpriteRenderer>().color = color; });
+            .setOnUpdate((color) => {
+                GetComponent<SpriteRenderer>().color = color;
+            });
+
     }
 
     public void PlayDeathAnimation(Action onFinished)

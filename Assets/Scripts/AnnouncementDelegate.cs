@@ -19,7 +19,7 @@ public class AnnouncementDelegate : MonoBehaviour
 
     public void OnStateChanged()
     {
-        switch (clientGameLogicManager.CurrentVisibleState.CurrentPhase)
+        switch (clientGameLogicManager.CurrentServerSideState.CurrentPhase)
         {
             case GamePhase.WaitingForStart:
                 textField.text = "Waiting for player...";
@@ -31,7 +31,7 @@ public class AnnouncementDelegate : MonoBehaviour
                 textField.text = "Cheat time!";
                 break;
             case GamePhase.Finished:
-                textField.text = "Player " + clientGameLogicManager.CurrentVisibleState.WinningPlayerId + " won!";
+                textField.text = "Player " + clientGameLogicManager.CurrentServerSideState.WinningPlayerId + " won!";
                 textField.fontSize = 24;
                 break;
             default:

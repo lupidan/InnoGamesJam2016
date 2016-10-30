@@ -126,18 +126,24 @@ public class ServerGameLogicManager : MonoBehaviour
 
     private GameState ProcessPlayerActions()
     {
-        var allUnits = CurrentGameState.players.Values.SelectMany(player => player.units.Values).ToList();
+        var newGameState = GameState.Clone(CurrentGameState);
+
+        var allUnits = newGameState.players.Values.SelectMany(player => player.units.Values).ToList();
         var allUnitsById = new Dictionary<int, Unit>();
         foreach (var unit in allUnits)
         {
             allUnitsById[unit.unitId] = unit;
         }
 
-        var newGameState = GameState.Clone(CurrentGameState);
         var gameActionsByTurn = GetGameActionsPerTurn(allUnitsById);
         var gameActionResults = new List<GameResultAction>();
 
         var blockedUnitIds = new List<int>();
+        string battlelog = "";
+        foreach (var unit in allUnits)
+        {
+            battlelog += ("before: unit " + unit.unitId + " h " + unit.healthPoints + " @ " + unit.position.x + ", " + unit.position.y + "\n");
+        }
         foreach (var gameActions in gameActionsByTurn)
         {
             // move all units
@@ -149,23 +155,13 @@ public class ServerGameLogicManager : MonoBehaviour
                 ExecuteBattleForPairing(battlePairing, gameActionResults);
             }
         }
+        foreach (var unit in allUnits)
+        {
+            battlelog += ("after: unit " + unit.unitId + " h " + unit.healthPoints + " @ " + unit.position.x + ", " + unit.position.y + "\n");
+        }
+        Debug.Log(battlelog);
 
         newGameState.ResultsFromLastPhase = gameActionResults;
-
-        // DEBUG
-//        newGameState.ResultsFromLastPhase.Add(new GameAttackResultAction(3, new Position(1, 2)));
-//        List<Position> positions = new List<Position>();
-//        positions.Add(new Position(0,0));
-//        positions.Add(new Position(1,0));
-//        positions.Add(new Position(2,0));
-//        positions.Add(new Position(3,0));
-//        positions.Add(new Position(4,0));
-//        positions.Add(new Position(5,0));
-//        positions.Add(new Position(6,0));
-//        newGameState.ResultsFromLastPhase.Add(new GameMoveResultAction(3, positions));
-//        newGameState.ResultsFromLastPhase.Add(new GameAttackResultAction(3, new Position(1, 2)));
-//        newGameState.ResultsFromLastPhase.Add(new GameUnitDeathResultAction(3));
-        // END DEBUG
 
         return newGameState;
     }
@@ -221,6 +217,12 @@ public class ServerGameLogicManager : MonoBehaviour
     {
         var leftUnit = battlePairing[0];
         var rightUnit = battlePairing[1];
+
+        if (leftUnit.healthPoints <= 0 || rightUnit.healthPoints <= 0)
+        {
+            return;
+        }
+
         var takenDamage = CalculateDamage(leftUnit, rightUnit);
         var leftDamage = takenDamage[0];
         var rightDamage = takenDamage[1];

@@ -1,10 +1,30 @@
 ﻿using UnityEngine;
-using System.Collections;
+using UnityEngine.UI;
 
 public class IngameSubmitButtonManager : MonoBehaviour {
 
+    private ClientNetworkingManager clientNetworkingManager;
+    private Button advanceButton;
+    private Text advanceButtonText;
+
+    void Start()
+    {
+        advanceButton = GameObject.Find("AdvanceButton").GetComponent<Button>();
+        advanceButtonText = advanceButton.GetComponentInChildren<Text>();
+        ClientGameLogicManager.GetClientLogicFromScene().PlayerMayInteractHandler += UnlockButton;
+    }
+
+    private void UnlockButton()
+    {
+        advanceButton.enabled = true;
+        advanceButtonText.text = "Next";
+    }
+
     public void SubmitTurn()
     {
+        advanceButton.enabled = false;
+        advanceButtonText.text = "Wait";
+
         var actions = ClientGameLogicManager.GetClientLogicFromScene().QueuedGameActions;
         ClientNetworkingManager.GetClientNetworkingManager().SendActions(actions);
 
