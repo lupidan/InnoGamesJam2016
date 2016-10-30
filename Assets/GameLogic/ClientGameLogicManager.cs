@@ -56,10 +56,6 @@ public class ClientGameLogicManager : MonoBehaviour
         CurrentServerSideState = gameState;
         Debug.Log(CurrentServerSideState.CurrentPhase);
         _resultActionQueue = new List<GameResultAction>(CurrentServerSideState.ResultsFromLastPhase);
-        if (CurrentServerSideState.CurrentPhase != GamePhase.Revision)
-        {
-            ClearQueuedActions();
-        }
 
         Debug.Log("didInitializeUnits / isClient =  " + didInitializeUnits + " " + isClient);
         if (!didInitializeUnits && isClient)
@@ -126,6 +122,11 @@ public class ClientGameLogicManager : MonoBehaviour
     {
         if (_resultActionQueue.Count == 0)
         {
+            if (CurrentServerSideState.CurrentPhase != GamePhase.Revision)
+            {
+                ClearQueuedActions();
+            }
+
             if (PlayerMayInteractHandler != null)
             {
                 PlayerMayInteractHandler();
