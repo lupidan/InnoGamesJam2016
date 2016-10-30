@@ -2235,8 +2235,9 @@ GameObject:
   - 224: {fileID: 1850864894}
   - 222: {fileID: 1850864896}
   - 114: {fileID: 1850864895}
+  - 114: {fileID: 1850864897}
   m_Layer: 5
-  m_Name: Announcement
+  m_Name: AnnouncementText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2281,7 +2282,7 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
     m_Font: {fileID: 12800000, guid: d21b73ead49e24e429fe605bcff35f91, type: 3}
-    m_FontSize: 20
+    m_FontSize: 18
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 1
@@ -2299,6 +2300,17 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1850864893}
+--- !u!114 &1850864897
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1850864893}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0863c5de9c084a10b32dbebbf4a3792, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2012817171
 GameObject:
   m_ObjectHideFlags: 0
