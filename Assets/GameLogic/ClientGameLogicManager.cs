@@ -52,7 +52,10 @@ public class ClientGameLogicManager : MonoBehaviour
     {
         CurrentServerSideState = gameState;
         _resultActionQueue = new List<GameResultAction>(CurrentServerSideState.ResultsFromLastPhase);
-        ClearQueuedActions();
+        if (CurrentServerSideState.CurrentPhase != GamePhase.Revision)
+        {
+            ClearQueuedActions();
+        }
 
         // Update unit controllers with new game state
         foreach (Player player in CurrentServerSideState.players.Values)
