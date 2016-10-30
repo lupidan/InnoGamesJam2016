@@ -152,10 +152,8 @@ public class UnitController :
         audioSource.Play();
     }
 
-    private void playSound(AudioClip audio)
-    {
-        audioSource.clip = audio;
-        audioSource.Play();
+    private void PlaySound(string audioFilename) {
+        SoundController.Instance.PlayAudioClip(audioFilename);
     }
 
     private void DisplayPoof()
