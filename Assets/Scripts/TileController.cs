@@ -51,7 +51,6 @@ public class TileController :
 	public bool isReachable { get; private set; }
 
 	public void OnPointerEnter(PointerEventData eventData) {
-        Debug.Log("Enter");
 	    if (isReachable)
 	    {
     	        var currentCurrentSelectedGameObject = UnitController.SelectedUnit;

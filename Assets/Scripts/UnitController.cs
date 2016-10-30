@@ -78,8 +78,6 @@ public class UnitController :
     {
         animator = GetComponent<Animator>();
         audioSource = GetComponent<AudioSource>();
-
-        unitData = new Unit();
     }
 
     void Awake()
