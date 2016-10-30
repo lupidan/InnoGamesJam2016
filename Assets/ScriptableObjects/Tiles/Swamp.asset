@@ -11,9 +11,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aad111f0fc36b468faf043e971f83952, type: 3}
   m_Name: Swamp
   m_EditorClassIdentifier: 
-  identifier: 
-  type: 0
-  walkable: 0
-  cost: 0
+  identifier: swamp_tile
+  type: 2
+  walkable: 1
+  cost: 2
   attackBonus: 0
   defenseBonus: 0

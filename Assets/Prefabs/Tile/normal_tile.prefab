@@ -21,8 +21,9 @@ GameObject:
   - 4: {fileID: 4000011802068620}
   - 212: {fileID: 212000011291214446}
   - 114: {fileID: 114000011712821850}
+  - 61: {fileID: 61000010294392564}
   m_Layer: 0
-  m_Name: grass_tile
+  m_Name: normal_tile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -41,6 +42,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
+--- !u!61 &61000010294392564
+BoxCollider2D:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000013301402850}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1}
 --- !u!114 &114000011712821850
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -52,9 +67,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f8392c003a184aef927be827635d751, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tile:
+  tileData:
     tileId: 0
-    definitionId: grass_tile
+    definitionId: 
     position:
       x: 0
       y: 0

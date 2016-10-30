@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using System.Runtime.Serialization.Formatters;
 using UnityEditor;
 using UnityEngine.Assertions.Comparers;
@@ -232,6 +233,7 @@ public class AttackShapeEditor : Editor
                 }
             }
         }
+
         staticPreview.Apply();
         return staticPreview;
 
