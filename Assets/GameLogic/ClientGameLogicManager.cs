@@ -32,7 +32,7 @@ public class ClientGameLogicManager : MonoBehaviour
         if (CurrentServerSideState == null)
         {
             //LevelGenerator generator = new LevelGenerator();
-            //generator
+            // generator.Initialize();
             
         }
         CurrentServerSideState = gameState;

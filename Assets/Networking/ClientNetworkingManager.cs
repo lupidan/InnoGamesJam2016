@@ -29,6 +29,7 @@ public class ClientNetworkingManager : MonoBehaviour
 
     public void ConnectToHost(string hostname)
     {
+        Debug.Log("Connecting to " + hostname);
         _playerId = 1;
         _client = new NetworkClient();
         RegisterClientHandlers();
