@@ -148,13 +148,14 @@ public class ServerGameLogicManager : MonoBehaviour
         {
             // move all units
             EvaluateUnitMovements(gameActions, allUnitsById, gameActionResults, blockedUnitIds);
-
-            // execute battles
-            foreach (var battlePairing in DetermineBattlePairings(allUnits))
-            {
-                ExecuteBattleForPairing(battlePairing, gameActionResults);
-            }
         }
+
+        // execute battles
+        foreach (var battlePairing in DetermineBattlePairings(allUnits))
+        {
+            ExecuteBattleForPairing(battlePairing, gameActionResults);
+        }
+
         foreach (var unit in allUnits)
         {
             battlelog += ("after: unit " + unit.unitId + " h " + unit.healthPoints + " @ " + unit.position.x + ", " + unit.position.y + "\n");
