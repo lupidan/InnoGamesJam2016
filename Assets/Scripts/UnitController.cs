@@ -25,10 +25,6 @@ public class UnitController :
 
     private AudioSource audioSource;
 
-    private Position selectedTarget;
-
-    private Position target;
-
     public Unit unitData;
 
     public AudioClip clickedSound;
@@ -172,9 +168,9 @@ public class UnitController :
 
     public void OnSelect(BaseEventData eventData) {
         UnitController.SelectedUnit = this;
-        LeanTween.value(gameObject, Color.white, Color.green, 0.5f)
+        LeanTween.value(gameObject, Color.white, Color.green, 0.25f)
                  .setLoopPingPong()
-                 .setEaseInOutCubic()
+                 .setEaseOutBack()
                  .setOnUpdate((color) => {
                      GetComponent<SpriteRenderer>().color = color;
                  });
@@ -209,7 +205,15 @@ public class UnitController :
 
     public void PlayRotateAnimation(Unit.Direction toDirection, Action onFinished)
     {
-        Debug.LogError("☜(ﾟヮﾟ☜) (" + unitData.unitId + ")");
+        if (toDirection == Unit.Direction.Left) {
+            Vector3 scale = transform.localScale;
+            scale.x = -1.0f;
+            transform.localScale = scale;
+        } else if (toDirection == Unit.Direction.Left) {
+            Vector3 scale = transform.localScale;
+            scale.x = 1.0f;
+            transform.localScale = scale;
+        }        
         onFinished();
     }
 
@@ -221,8 +225,15 @@ public class UnitController :
 
     public void PlayHitpointChange(int newHitpoints, Action onFinished)
     {
-        Debug.LogError("(╯°□°）╯︵ ┻━┻ (" + unitData.unitId + ")");
-        onFinished();
+        LeanTween.value(gameObject, Color.white, Color.red, 0.5f)
+                 .setLoopOnce()
+                 .setEaseInOutCubic()
+                 .setOnUpdate((color) => {
+                     GetComponent<SpriteRenderer>().color = color;
+                 })
+                 .setOnComplete(() => {
+                     onFinished();
+                 });
     }
 
     public void PlayDeathAnimation(Action onFinished)
