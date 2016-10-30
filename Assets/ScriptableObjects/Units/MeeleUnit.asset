@@ -17,7 +17,7 @@ MonoBehaviour:
   maxHealth: 10
   heavyDefense: 3
   meeleDefense: 5
-  rangeDefense: 7
+  rangeDefense: 3
   kingDefense: 0
   maxMovements: 8
   maxCheatingMovements: 3

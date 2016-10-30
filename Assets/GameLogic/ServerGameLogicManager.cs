@@ -101,7 +101,8 @@ public class ServerGameLogicManager : MonoBehaviour
         var remainingAlivePlayers = new List<int>(CurrentGameState.players.Keys);
         foreach (var player in CurrentGameState.players.Values)
         {
-            if (!player.units.Values.Any(unit => unit.Definition.identifier.Equals(king.identifier)))
+            
+			if (player.units.Values.Any(unit => unit.Definition.type.Equals(UnitDefinition.Type.King) && unit.healthPoints<=0))
             {
                 remainingAlivePlayers.Remove(player.id);
             }
@@ -194,6 +195,17 @@ public class ServerGameLogicManager : MonoBehaviour
                     continue;
                 }
 
+                if (desiredDestinationPosition.x < movingUnit.position.x && movingUnit.facingDirection != Unit.Direction.Left)
+                {
+                    movingUnit.facingDirection = Unit.Direction.Left;
+                    gameActionResults.Add(new GameRotateResultAction(movingUnitId, Unit.Direction.Left));
+                }
+                else if (desiredDestinationPosition.x > movingUnit.position.x && movingUnit.facingDirection != Unit.Direction.Right)
+                {
+                    movingUnit.facingDirection = Unit.Direction.Right;
+                    gameActionResults.Add(new GameRotateResultAction(movingUnitId, Unit.Direction.Right));
+                }
+
                 gameActionResults.Add(new GameMoveResultAction(movingUnitId, gameAction.moveToPositions));
                 movingUnit.position = desiredDestinationPosition;
             }
@@ -283,18 +295,29 @@ public class ServerGameLogicManager : MonoBehaviour
     {
         var result = new int[2] {0, 0};
 
-        result[0] = Math.Max(
-            GetAttackStrengthAtPosition(
-                fighterLeft.Definition.attackPattern,
-                fighterLeft.position,
-                fighterRight.position) - fighterRight.Definition.DefenseAgainst(fighterLeft.Definition.type),
-            0);
+        if (fighterLeft.healthPoints <= 0 || fighterRight.healthPoints <= 0)
+        {
+            return result;
+        }
 
         result[1] = Math.Max(
-            GetAttackStrengthAtPosition(
+            (int)Math.Ceiling(
+                GetAttackStrengthAtPosition(
+                fighterLeft.Definition.attackPattern,
+                fighterLeft.position,
+                fighterRight.position)
+                * 1.0f - (fighterRight.Definition.DefenseAgainst(fighterLeft.Definition.type) / 10.0)
+                ),
+            0);
+
+        result[0] = Math.Max(
+            (int)Math.Ceiling(
+                GetAttackStrengthAtPosition(
                 fighterRight.Definition.attackPattern,
                 fighterRight.position,
-                fighterLeft.position) - fighterLeft.Definition.DefenseAgainst(fighterRight.Definition.type),
+                fighterLeft.position)
+                * 1.0f - (fighterLeft.Definition.DefenseAgainst(fighterLeft.Definition.type) / 10.0)
+                ),
             0);
 
         return result;

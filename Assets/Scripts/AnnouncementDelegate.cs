@@ -25,10 +25,10 @@ public class AnnouncementDelegate : MonoBehaviour
                 textField.text = "Waiting for player...";
                 break;
             case GamePhase.Planning:
-                textField.text = "Choose you movement";
+                textField.text = "Preview your movement";
                 break;
             case GamePhase.Revision:
-                textField.text = "Cheat time!";
+                textField.text = "Tap to rewind or pass";
                 break;
             case GamePhase.Finished:
                 bool hasBlueWon = clientGameLogicManager.CurrentServerSideState.WinningPlayerId == 0;

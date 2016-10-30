@@ -16,7 +16,7 @@ MonoBehaviour:
   type: 0
   maxHealth: 10
   heavyDefense: 4
-  meeleDefense: 7
+  meeleDefense: 6
   rangeDefense: 2
   kingDefense: 0
   maxMovements: 5

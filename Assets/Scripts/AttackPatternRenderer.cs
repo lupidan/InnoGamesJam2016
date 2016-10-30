@@ -60,5 +60,6 @@ public class AttackPatternRenderer : MonoBehaviour
             Destroy(quad);
         }
         quads.Clear();
+        lastPosition = new Position(-1, -1);
     }
 }

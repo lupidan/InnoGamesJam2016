@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -37,6 +38,11 @@ public class IngameSubmitButtonManager : MonoBehaviour {
     {
         advanceButton.interactable = true;
         advanceButtonText.text = "Next";
+        LeanTween.value(Camera.main.gameObject, Camera.main.orthographicSize, 6.0f, 0.5f)
+                .setEaseInOutSine()
+                .setOnUpdate((newValue) => {
+                    Camera.main.orthographicSize = newValue;
+                });
     }
 
     public void SubmitTurn()
@@ -50,8 +56,17 @@ public class IngameSubmitButtonManager : MonoBehaviour {
             advanceButton.interactable = false;
             advanceButtonText.text = "Wait";
 
-            var actions = ClientGameLogicManager.GetClientLogicFromScene().QueuedGameActions;
+            var clientGameLogicManager = ClientGameLogicManager.GetClientLogicFromScene();
+
+            var actions = clientGameLogicManager.QueuedGameActionsPlanning;
+            if (clientGameLogicManager.CurrentServerSideState.CurrentPhase == GamePhase.Revision) {
+                actions = clientGameLogicManager.QueuedGameActionsRevision;
+            }
+
             ClientNetworkingManager.GetClientNetworkingManager().SendActions(actions);
+
+            clientGameLogicManager.QueuedGameActionsRevision =
+                new List<GameAction>(clientGameLogicManager.QueuedGameActionsPlanning);
 
             UnitController[] unitControllers = FindObjectsOfType<UnitController>();
             for (int i = 0; i < unitControllers.Length; i++)

@@ -63,7 +63,7 @@ public class UnitController :
     private ClientGameLogicManager _clientLogic;
 
     // checks if the death animation has been played to revive them
-    private bool isDed = false;
+    private bool isDead = false;
 
     public enum UnitAnimationEvents
     {
@@ -116,9 +116,9 @@ public class UnitController :
                 UpdateHitpointsInTextMesh(unitData.healthPoints);
             });
 
-        if (isDed && unitData.healthPoints > 0) {
+        if (isDead && unitData.healthPoints > 0) {
             animator.SetTrigger(UnitAnimationEvents.Revive.ToString());
-            isDed = false;
+            isDead = false;
         }
 
     }
@@ -222,7 +222,8 @@ public class UnitController :
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (!IngameSubmitButtonManager.GetIngameSubmitButtonManager().IsWaiting()
+        if (!isDead
+        && !IngameSubmitButtonManager.GetIngameSubmitButtonManager().IsWaiting()
             && ClientNetworkingManager.GetClientNetworkingManager().PlayerId == unitData.owningPlayerId)
         {
             ClientGameLogicManager logicManager = ClientGameLogicManager.GetClientLogicFromScene();
@@ -240,7 +241,7 @@ public class UnitController :
             }
             else if (logicManager.CurrentServerSideState.CurrentPhase == GamePhase.Revision)
             {
-                List<GameAction> gameActions = logicManager.QueuedGameActions;
+                List<GameAction> gameActions = logicManager.QueuedGameActionsRevision;
                 for (int i = 0; i < gameActions.Count; i++)
                 {
                     if (gameActions[i].UnitId == unitData.unitId) {
@@ -263,12 +264,12 @@ public class UnitController :
             Position destiny = new Position(tileController.tileData.position.x,
                 tileController.tileData.position.y);
             pathToDestination = TileController.PathFromPositionToPosition(current, destiny);
-            _clientLogic.AddQueuedActionForUnitId(unitData.unitId, pathToDestination);
+            _clientLogic.AddQueuedActionForUnitIdToPlanning(unitData.unitId, pathToDestination);
         }
         else
         {
             pathToDestination = null;
-            _clientLogic.RemoveQueuedActionForUnitId(unitData.unitId);
+            _clientLogic.RemoveQueuedActionForUnitIdFromPlanning(unitData.unitId);
         }
         SetupLine();
     }
@@ -308,71 +309,115 @@ public class UnitController :
 
     public void PlayMoveAnimation(Position toPosition, Action onFinished)
     {
-        float time = 0.2f;
-        startPlayingMovingSound();
-        animator.SetTrigger(UnitAnimationEvents.StartMoving.ToString());
-        Vector3 newPosition = transform.position;
-        newPosition.x = toPosition.x;
-        newPosition.y = toPosition.y;
-        LeanTween.move(gameObject, newPosition, time)
-            .setEaseLinear()
-            .setOnComplete(() =>
-            {
-                transform.position = newPosition;
-                animator.SetTrigger(UnitAnimationEvents.StopMoving.ToString());
-                onFinished.Invoke();
-            });
+        ZoomOutAnd(() => {
+            float time = 0.2f;
+            startPlayingMovingSound();
+            animator.SetTrigger(UnitAnimationEvents.StartMoving.ToString());
+            Vector3 newPosition = transform.position;
+            newPosition.x = toPosition.x;
+            newPosition.y = toPosition.y;
+            LeanTween.move(gameObject, newPosition, time)
+                .setEaseLinear()
+                .setOnComplete(() =>
+                {
+                    transform.position = newPosition;
+                    animator.SetTrigger(UnitAnimationEvents.StopMoving.ToString());
+                    onFinished.Invoke();
+                });
 
-        Vector3 newCameraPosition = Camera.main.transform.position;
-        newCameraPosition.x = toPosition.x;
-        newCameraPosition.y = toPosition.y;
-        LeanTween.move(Camera.main.gameObject, newCameraPosition, time)
-            .setEaseLinear();
+            Vector3 newCameraPosition = Camera.main.transform.position;
+            newCameraPosition.x = toPosition.x;
+            newCameraPosition.y = toPosition.y;
+            LeanTween.move(Camera.main.gameObject, newCameraPosition, time)
+                .setEaseLinear();
+        });        
     }
 
     public void PlayRotateAnimation(Unit.Direction toDirection, Action onFinished)
     {
         if (toDirection == Unit.Direction.Left)
         {
-            Vector3 scale = transform.localScale;
-            scale.x = -1.0f;
-            transform.localScale = scale;
+            var sprite = GetComponent<SpriteRenderer>();
+            sprite.flipX = true;
         }
-        else if (toDirection == Unit.Direction.Left)
+        else if (toDirection == Unit.Direction.Right)
         {
-            Vector3 scale = transform.localScale;
-            scale.x = 1.0f;
-            transform.localScale = scale;
+            var sprite = GetComponent<SpriteRenderer>();
+            sprite.flipX = false;
         }
         onFinished();
     }
 
+    private void MoveAnd(Action onFinished) {
+        Vector3 newPosition = Camera.main.transform.position;
+        newPosition.x = transform.position.x;
+        newPosition.y = transform.position.y;
+
+        LeanTween.move(Camera.main.gameObject, newPosition, 0.5f)
+            .setEaseInOutSine()
+            .setOnComplete(onFinished);
+    }
+
+    private void ZoomInAnd(Action onFinished) {
+        if (Camera.main.orthographicSize > 2.0f) {
+            LeanTween.value(Camera.main.gameObject, Camera.main.orthographicSize, 2.0f, 0.5f)
+                .setEaseInOutSine()
+                .setOnUpdate((newValue) => {
+                    Camera.main.orthographicSize = newValue;
+                })
+                .setOnComplete(onFinished);
+        } else {
+            onFinished.Invoke();
+        }
+    }
+
+    private void ZoomOutAnd(Action onFinished) {
+        if (Camera.main.orthographicSize < 6.0f) {
+            LeanTween.value(Camera.main.gameObject, Camera.main.orthographicSize, 6.0f, 0.5f)
+                .setEaseInOutSine()
+                .setOnUpdate((newValue) => {
+                    Camera.main.orthographicSize = newValue;
+                })
+                .setOnComplete(onFinished);
+        } else {
+            onFinished.Invoke();
+        }
+    }
+
     public void PlayAttackAnimation(Position targetPosition, Action onFinished)
     {
-        playAttackSound();
-        animator.SetTrigger(UnitAnimationEvents.StartAttacking.ToString());
-        StartCoroutine(ExecuteActionAfterTime(onFinished, 1.0f));
+        MoveAnd(() => {
+            ZoomInAnd(() => {
+                playAttackSound();
+                animator.SetTrigger(UnitAnimationEvents.StartAttacking.ToString());
+                onFinished.Invoke();
+            });
+        });
     }
 
     public void PlayHitpointChange(int oldHitpoints, int newHitpoints, Action onFinished)
     {
-        LeanTween.value(gameObject, Color.white, Color.red, 0.5f)
-                 .setLoopOnce()
-                 .setEaseInOutCubic()
-                 .setOnUpdate((color) => {
-                     GetComponent<SpriteRenderer>().color = color;
-                 })
-                 .setOnComplete(RemoveHitpointColorAnimation);
+        MoveAnd(() => {
+            ZoomInAnd(() => {
+                playDamagedSound();
+                LeanTween.value(gameObject, Color.white, Color.red, 0.5f)
+                    .setLoopOnce()
+                    .setEaseInOutCubic()
+                    .setOnUpdate((color) => {
+                        GetComponent<SpriteRenderer>().color = color;
+                    })
+                    .setOnComplete(RemoveHitpointColorAnimation);
 
-        LeanTween.value(gameObject, (float)oldHitpoints, (float)newHitpoints, 0.5f)
-            .setLoopOnce()
-            .setEaseInOutCubic()
-            .setOnUpdate((value) =>
-            {
-                var hitpoints = (int)Math.Round(value);
-                UpdateHitpointsInTextMesh(hitpoints);
-            })
-            .setOnComplete(onFinished);
+                LeanTween.value(gameObject, (float)oldHitpoints, (float)newHitpoints, 0.5f)
+                    .setLoopOnce()
+                    .setEaseInOutCubic()
+                    .setOnUpdate((value) => {
+                        var hitpoints = (int)Math.Round(value);
+                        UpdateHitpointsInTextMesh(hitpoints);
+                    })
+                    .setOnComplete(onFinished);
+            });
+        });
     }
 
     private void UpdateHitpointsInTextMesh(int hitpoints)
@@ -400,7 +445,7 @@ public class UnitController :
         playDyingSound();
         animator.SetTrigger(UnitAnimationEvents.StartDying.ToString());
         StartCoroutine(ExecuteActionAfterTime(onFinished, 1.0f));
-        isDed = true;
+        isDead = true;
     }
 
 
@@ -422,16 +467,22 @@ public class UnitController :
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        var attackPatternGameObject = GameObject.Find("AttackPatternRenderer");
-        var attackPatternRenderer = attackPatternGameObject.GetComponent<AttackPatternRenderer>();
-        attackPatternRenderer.SetPattern(unitData.position, transform,
-            unitData.Definition.attackPattern);
+        if (!isDead)
+        {
+            var attackPatternGameObject = GameObject.Find("AttackPatternRenderer");
+            var attackPatternRenderer = attackPatternGameObject.GetComponent<AttackPatternRenderer>();
+            attackPatternRenderer.SetPattern(unitData.position, transform,
+                unitData.Definition.attackPattern);
+        }
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        var attackPatternGameObject = GameObject.Find("AttackPatternRenderer");
-        var attackPatternRenderer = attackPatternGameObject.GetComponent<AttackPatternRenderer>();
-        attackPatternRenderer.HidePattern();
+        if (!isDead)
+        {
+            var attackPatternGameObject = GameObject.Find("AttackPatternRenderer");
+            var attackPatternRenderer = attackPatternGameObject.GetComponent<AttackPatternRenderer>();
+            attackPatternRenderer.HidePattern();
+        }
     }
 }
