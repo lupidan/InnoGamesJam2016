@@ -12,7 +12,8 @@ public class MenuButtonManager : MonoBehaviour {
 
     public void NewGameAsClient(string sceneName)
     {
-        HostAddressKeeper addressKeeper = FindObjectOfType<HostAddressKeeper>();
+        GameObject addressKeeperGameObject = GameObject.Find("HostAddressKeeper");
+        HostAddressKeeper addressKeeper = addressKeeperGameObject.GetComponent<HostAddressKeeper>();
         GameObject ipFieldGameObject = GameObject.Find("IpField");
         var inputField = ipFieldGameObject.GetComponent<InputField>();
         var inputFieldText = FilterIpAddress(inputField.text);

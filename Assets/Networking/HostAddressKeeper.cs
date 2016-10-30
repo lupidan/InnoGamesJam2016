@@ -7,7 +7,7 @@ public class HostAddressKeeper : MonoBehaviour
 
     public bool AmIHost()
     {
-        return HostAddress == null;
+        return string.IsNullOrEmpty(HostAddress);
     }
 
     public void Awake()
