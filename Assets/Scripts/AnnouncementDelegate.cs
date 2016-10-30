@@ -35,6 +35,8 @@ public class AnnouncementDelegate : MonoBehaviour
                 textField.color = hasBlueWon ? new Color(0.6f, 0.6f, 1f, 1f) : new Color(1f, 0.4f, 0.4f, 1f);
                 textField.text = "Player " + (hasBlueWon? "blue" : "red") + " won!";
                 textField.fontSize = 24;
+
+                IngameSubmitButtonManager.GetIngameSubmitButtonManager().SetGameFinished();
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
