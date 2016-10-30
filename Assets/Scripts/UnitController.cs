@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using Combat.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.EventSystems;
@@ -174,18 +175,23 @@ public class UnitController :
                  .setOnUpdate((color) => {
                      GetComponent<SpriteRenderer>().color = color;
                  });
+
+        List<Position> availablePositions = GetMovementPositions();
+        TileController.SetTilesAtPositionsReachable(availablePositions);
     }
 
     public void OnDeselect(BaseEventData eventData) {
         LeanTween.cancel(gameObject);
         gameObject.GetComponent<SpriteRenderer>().color = Color.white;
-
-        if (UnitController.SelectedUnit == this && TileController.HighlightedTile != null) {
+        if (UnitController.SelectedUnit == this &&
+            TileController.HighlightedTile != null) {
             Vector3 pos = UnitController.SelectedUnit.transform.position;
             pos.x = TileController.HighlightedTile.transform.position.x;
             pos.y = TileController.HighlightedTile.transform.position.y;
             UnitController.SelectedUnit.transform.position = pos;
         }
+
+        TileController.SetAllTilesUnreachable();
     }
 
     public void PlayMoveAnimation(Position toPosition, Action onFinished)
@@ -240,6 +246,21 @@ public class UnitController :
     {
         animator.SetTrigger(UnitAnimationEvents.StartDying.ToString());
         StartCoroutine(ExecuteActionAfterTime(onFinished, 1.0f));
+    }
+
+
+    private List<Position> GetMovementPositions() {
+        List<Position> options = new List<Position>();
+        for (int row = unitData.position.y - 2; row < unitData.position.y + 2; row++)
+        {
+            for (int column = unitData.position.x - 2; column < unitData.position.x + 2; column++)
+            {
+                if (row != unitData.position.y || column != unitData.position.x)
+                    options.Add(new Position(column, row));
+            }
+        }
+        return options;
+        
     }
 
 }
