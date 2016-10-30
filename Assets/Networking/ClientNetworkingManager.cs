@@ -27,7 +27,10 @@ public class ClientNetworkingManager : MonoBehaviour
             var currentPlayerText = GameObject.Find(CurrentPlayerText);
             if (currentPlayerText)
             {
-                currentPlayerText.GetComponent<Text>().text = "Player " + _playerId;
+                bool isPlayerBlue = _playerId == 0;
+                var textComponent = currentPlayerText.GetComponent<Text>();
+                textComponent.color = isPlayerBlue ? new Color(0.6f, 0.6f, 1f, 1f) : new Color(1f, 0.4f, 0.4f, 1f);
+                textComponent.text = "Player " + (isPlayerBlue? "blue" : "red");
             }
         }
     }
