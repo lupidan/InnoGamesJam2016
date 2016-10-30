@@ -22,3 +22,9 @@ MonoBehaviour:
   maxMovements: 5
   maxCheatingMovements: 2
   attackPattern: {fileID: 11400000, guid: f37256fa9553142208d7732859bbbb9f, type: 2}
+  clickedSound: {fileID: 8300000, guid: 1239f24ee36b35942aac14cc2896f0b3, type: 3}
+  attackSound: {fileID: 8300000, guid: 7c78572caa7ef634db2da7448c2347a1, type: 3}
+  damagedSound: {fileID: 8300000, guid: f280be6614cdc0048b3aba331c5ec027, type: 3}
+  movingSound: {fileID: 8300000, guid: b289db5b4f9af9e479123b11c14160cf, type: 3}
+  dyingSound: {fileID: 8300000, guid: 3d86bd866784529409d7d62beba23cd6, type: 3}
+  tombAppearSound: {fileID: 8300000, guid: 5129a66f6d2d8f240b88c2120efb9a05, type: 3}

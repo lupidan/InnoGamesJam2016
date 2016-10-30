@@ -26,6 +26,13 @@ public class UnitDefinition : ScriptableObject
 
     public AttackPatternDefinition attackPattern;
 
+    public AudioClip clickedSound;
+    public AudioClip attackSound;
+    public AudioClip damagedSound;
+    public AudioClip movingSound;
+    public AudioClip dyingSound;
+    public AudioClip tombAppearSound;
+
     public int DefenseAgainst(Type type)
     {
         switch (type)

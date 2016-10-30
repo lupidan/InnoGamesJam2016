@@ -60,18 +60,6 @@ public class UnitController :
     public SpriteRenderer pathObjectPrefab;
     public Sprite pathSprite;
 
-    public AudioClip clickedSound;
-
-    public AudioClip attackSound;
-
-    public AudioClip damagedSound;
-
-    public AudioClip movingSound;
-
-    public AudioClip dyingSound;
-
-    public AudioClip tombAppearSound;
-
     private ClientGameLogicManager _clientLogic;
 
     // checks if the death animation has been played to revive them
@@ -156,39 +144,31 @@ public class UnitController :
 
     private void playClickedSound()
     {
-        if (clickedSound)
-        {
-            audioSource.clip = clickedSound;
-            audioSource.Play();
-        }
+        audioSource.clip = unitData.Definition.clickedSound;
+        audioSource.Play();
     }
 
     private void startPlayingMovingSound()
     {
-        audioSource.clip = movingSound;
+        audioSource.clip = unitData.Definition.movingSound;
         audioSource.Play();
-    }
-
-    private void stopPlayingMovingSound()
-    {
-        audioSource.Stop();
     }
 
     private void playAttackSound()
     {
-        audioSource.clip = attackSound;
+        audioSource.clip = unitData.Definition.attackSound;
         audioSource.Play();
     }
 
     private void playDamagedSound()
     {
-        audioSource.clip = damagedSound;
+        audioSource.clip = unitData.Definition.damagedSound;
         audioSource.Play();
     }
 
     private void playDyingSound()
     {
-        audioSource.clip = dyingSound;
+        audioSource.clip = unitData.Definition.dyingSound;
         audioSource.Play();
     }
 
@@ -243,7 +223,7 @@ public class UnitController :
             && ClientNetworkingManager.GetClientNetworkingManager().PlayerId == unitData.owningPlayerId)
         {
             ClientGameLogicManager logicManager = ClientGameLogicManager.GetClientLogicFromScene();
-            if (logicManager.CurrentServerSideState.CurrentPhase == GamePhase.Planning)
+            if (true)// (logicManager.CurrentServerSideState.CurrentPhase == GamePhase.Planning)
             {
                 if (destination == null)
                 {
@@ -325,6 +305,7 @@ public class UnitController :
     public void PlayMoveAnimation(Position toPosition, Action onFinished)
     {
         float time = 0.2f;
+        startPlayingMovingSound();
         animator.SetTrigger(UnitAnimationEvents.StartMoving.ToString());
         Vector3 newPosition = transform.position;
         newPosition.x = toPosition.x;
@@ -364,6 +345,7 @@ public class UnitController :
 
     public void PlayAttackAnimation(Position targetPosition, Action onFinished)
     {
+        playAttackSound();
         animator.SetTrigger(UnitAnimationEvents.StartAttacking.ToString());
         StartCoroutine(ExecuteActionAfterTime(onFinished, 1.0f));
     }
@@ -411,6 +393,7 @@ public class UnitController :
 
     public void PlayDeathAnimation(Action onFinished)
     {
+        playDyingSound();
         animator.SetTrigger(UnitAnimationEvents.StartDying.ToString());
         StartCoroutine(ExecuteActionAfterTime(onFinished, 1.0f));
         isDed = true;
