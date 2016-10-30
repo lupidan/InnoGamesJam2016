@@ -4,10 +4,12 @@ using System.Collections.Generic;
 
 public class TileController :
 	MonoBehaviour,
-	IPointerEnterHandler,
-    IPointerExitHandler {
-
-	public static TileController HighlightedTile { get; private set; }
+	IPointerDownHandler,
+    IPointerClickHandler,
+    IPointerUpHandler,
+    IPointerEnterHandler,
+    IPointerExitHandler
+{
 
 	public static void SetTilesAtPositionsReachable(List<Position> positions) {
 		for (int i = 0; i < positions.Count; i++)
@@ -50,10 +52,8 @@ public class TileController :
 
 	public void OnPointerEnter(PointerEventData eventData) {
 
-	    if (HighlightedTile != this && isReachable)
+	    if (isReachable)
 	    {
-	        HighlightedTile = this;
-
 	        var currentCurrentSelectedGameObject = EventSystem.current.currentSelectedGameObject;
 	        if (currentCurrentSelectedGameObject)
 	        {
@@ -67,9 +67,8 @@ public class TileController :
 	}
 
 	public void OnPointerExit(PointerEventData eventData) {
-	    if (HighlightedTile == this && isReachable)
+	    if (isReachable)
 	    {
-	        HighlightedTile = null;
 	        var currentCurrentSelectedGameObject = EventSystem.current.currentSelectedGameObject;
 	        if (currentCurrentSelectedGameObject)
 	        {
@@ -80,6 +79,20 @@ public class TileController :
 	        }
 	    }
 	}
+
+	public void OnPointerDown(PointerEventData eventData) { }
+    public void OnPointerUp(PointerEventData eventData) { }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+		if (UnitController.SelectedUnit != null) {
+			UnitController selectedUnit = UnitController.SelectedUnit;
+			if (isReachable) {
+				selectedUnit.SetDestinationTileController(this);
+			}	
+		}
+		UnitController.SelectedUnit = null;
+    }
 
 	public void SetReachable(bool reachable) {
 		isReachable = reachable;

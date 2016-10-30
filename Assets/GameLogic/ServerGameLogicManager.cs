@@ -101,13 +101,13 @@ public class ServerGameLogicManager : MonoBehaviour
         var remainingAlivePlayers = new List<int>(CurrentGameState.players.Keys);
         foreach (var player in CurrentGameState.players.Values)
         {
-            if (!player.units.Values.Any(unit => unit.Definition.Equals(king)))
+            if (!player.units.Values.Any(unit => unit.Definition.identifier.Equals(king.identifier)))
             {
                 remainingAlivePlayers.Remove(player.id);
             }
         }
 
-        if (remainingAlivePlayers.Count <= 1)
+        if (remainingAlivePlayers.Count <= 1 && CurrentGameState.PlayerCount > 1)
         {
             CurrentGameState.CurrentPhase = GamePhase.Finished;
             if (remainingAlivePlayers.Count == 1)

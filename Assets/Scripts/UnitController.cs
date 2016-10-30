@@ -15,11 +15,35 @@ public class UnitController :
     MonoBehaviour,
     IPointerDownHandler,
     IPointerClickHandler,
-    IPointerUpHandler,
-    ISelectHandler,
-    IDeselectHandler
+    IPointerUpHandler
 {
-    public static UnitController SelectedUnit { get; private set; }
+    public static UnitController _selectedUnit = null;
+    public static UnitController SelectedUnit {
+        get {
+            return _selectedUnit;
+        } 
+        set {
+            if (_selectedUnit != null) {
+                LeanTween.cancel(_selectedUnit.gameObject);
+			    _selectedUnit.gameObject.GetComponent<SpriteRenderer>().color = Color.white;
+                TileController.SetAllTilesUnreachable();
+            }
+
+            if (value != null) {
+                LeanTween.value(value.gameObject, Color.white, Color.green, 0.25f)
+                         .setLoopPingPong()
+                         .setEaseOutBack()
+                         .setOnUpdate((color) => {
+                            value.gameObject.GetComponent<SpriteRenderer>().color = color;
+                         });
+                
+                List<Position> availablePositions = value.GetMovementPositions();
+                TileController.SetTilesAtPositionsReachable(availablePositions);
+            }
+            _selectedUnit = value;
+        }
+        
+    }
 
     private Animator animator;
 
@@ -171,43 +195,15 @@ public class UnitController :
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        var selected = EventSystem.current.currentSelectedGameObject;
-        if (selected != gameObject)
-        {
-            EventSystem.current.SetSelectedGameObject(gameObject);
+        if (destination == null) {
+            UnitController.SelectedUnit = this;
+        } else {
+            SetDestinationTileController(null);
         }
         playClickedSound();
     }
 
-    public void OnSelect(BaseEventData eventData) {
-        if (destination == null) {
-            UnitController.SelectedUnit = this;
-            LeanTween.value(gameObject, Color.white, Color.green, 0.25f)
-                    .setLoopPingPong()
-                    .setEaseOutBack()
-                    .setOnUpdate((color) => {
-                        GetComponent<SpriteRenderer>().color = color;
-                    });
-
-            List<Position> availablePositions = GetMovementPositions();
-            TileController.SetTilesAtPositionsReachable(availablePositions);
-        } else {
-            EventSystem.current.SetSelectedGameObject(null, eventData);
-            SetDestinationTileController(null);
-        }
-    }
-
-    public void OnDeselect(BaseEventData eventData) {
-        LeanTween.cancel(gameObject);
-        gameObject.GetComponent<SpriteRenderer>().color = Color.white;
-        if (UnitController.SelectedUnit == this && TileController.HighlightedTile != null) {
-            SetDestinationTileController(TileController.HighlightedTile);
-        }
-        UnitController.SelectedUnit = null;
-        TileController.SetAllTilesUnreachable();
-    }
-
-    private void SetDestinationTileController(TileController tileController) {
+    public void SetDestinationTileController(TileController tileController) {
         destination = tileController;
         if (destination) {
             Position current = new Position(unitData.position.x, unitData.position.y);
@@ -304,9 +300,9 @@ public class UnitController :
     private List<Position> GetMovementPositions() {
         List<Position> options = new List<Position>();
 
-        for (int row = unitData.position.y - 2; row < unitData.position.y + 2; row++)
+        for (int row = unitData.position.y - 2; row <= unitData.position.y + 2; row++)
         {
-            for (int column = unitData.position.x - 2; column < unitData.position.x + 2; column++)
+            for (int column = unitData.position.x - 2; column <= unitData.position.x + 2; column++)
             {
                 if (row != unitData.position.y || column != unitData.position.x)
                     options.Add(new Position(column, row));

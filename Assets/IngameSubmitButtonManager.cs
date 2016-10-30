@@ -8,7 +8,11 @@ public class IngameSubmitButtonManager : MonoBehaviour {
         var actions = ClientGameLogicManager.GetClientLogicFromScene().QueuedGameActions;
         ClientNetworkingManager.GetClientNetworkingManager().SendActions(actions);
 
-        // FIXME: deactivate UI
+        UnitController[] unitControllers = FindObjectsOfType<UnitController>();
+        for (int i = 0; i < unitControllers.Length; i++)
+        {
+            unitControllers[i].SetDestinationTileController(null);
+        }
     }
 
 }

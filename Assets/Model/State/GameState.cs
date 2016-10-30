@@ -59,26 +59,36 @@ public class GameState
             var unitTransformGameObject = unitTransform.gameObject;
             var unitController = unitTransformGameObject.GetComponent<UnitController>();
 
-            if (unitTransformGameObject.name.Contains("Red") && PlayerCount > 1)
+            var unitData = unitController.unitData;
+            var unitName = unitTransformGameObject.name;
+            if (unitName.Contains("Red") && PlayerCount > 1)
             {
-                unitController.unitData.owningPlayerId = 1;
-
-                unitController.unitData.unitId = unitCounter++;
-                unitController.unitData.position.x = (int)unitController.gameObject.transform.position.x;
-                unitController.unitData.position.y = (int)unitController.gameObject.transform.position.y;
-                players[1].units.Add(unitController.unitData.unitId, unitController.unitData);
-
-                unitTransformGameObject.name = "units_" + unitController.unitData.unitId;
+                unitData.owningPlayerId = 1;
             }
             else
             {
-                unitController.unitData.owningPlayerId = 0;
-                unitController.unitData.unitId = unitCounter++;
-                unitController.unitData.position.x = (int)unitController.gameObject.transform.position.x;
-                unitController.unitData.position.y = (int)unitController.gameObject.transform.position.y;
-                players[0].units.Add(unitController.unitData.unitId, unitController.unitData);
-                unitTransformGameObject.name = "units_" + unitController.unitData.unitId;
+                unitData.owningPlayerId = 0;
             }
+
+            if (unitName.Contains("Melee"))
+            {
+                unitData.definitionId = "meele_unit";
+            } else if (unitName.Contains("Range"))
+            {
+                unitData.definitionId = "range_unit";
+            } else if (unitName.Contains("Tank"))
+            {
+                unitData.definitionId = "heavy_unit";
+            } else if (unitName.Contains("King"))
+            {
+                unitData.definitionId = "king_unit";
+            }
+
+            unitData.unitId = unitCounter++;
+            unitData.position.x = (int)unitController.gameObject.transform.position.x;
+            unitData.position.y = (int)unitController.gameObject.transform.position.y;
+            players[unitData.owningPlayerId].units.Add(unitData.unitId, unitData);
+            unitTransformGameObject.name = "units_" + unitData.unitId;
         }
     }
 
