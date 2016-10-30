@@ -303,8 +303,20 @@ public class UnitController :
                      GetComponent<SpriteRenderer>().color = color;
                  })
                  .setOnComplete(() => {
-                     onFinished();
+                    RemoveHitpointColorAnimation();
+                    onFinished();
                  });
+    }
+
+    private void RemoveHitpointColorAnimation()
+    {
+        LeanTween.value(gameObject, Color.red, Color.white, 0.1f)
+            .setLoopOnce()
+            .setEaseInOutCubic()
+            .setOnUpdate((color) => {
+                GetComponent<SpriteRenderer>().color = color;
+            });
+
     }
 
     public void PlayDeathAnimation(Action onFinished)
