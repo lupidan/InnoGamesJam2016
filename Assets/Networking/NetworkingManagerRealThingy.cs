@@ -23,7 +23,7 @@ public class NetworkingManagerRealThingy : MonoBehaviour {
         // Find connector on scene
         var hostAddressKeeper = FindObjectOfType<HostAddressKeeper>();
         _amIHost = hostAddressKeeper.AmIHost();
-        if (_amIHost)
+        if (!_amIHost)
         {
             ServerHostname = hostAddressKeeper.HostAddress;
         }
