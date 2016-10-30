@@ -60,47 +60,70 @@ public class MovementManager
 			//sort active tiles by cost ascending
 			List<Position> sortedActiveTilesList = activeTilesList.OrderBy(pos => realCostsMatrix[pos.x,pos.y]).ToList();
 			//loop over sorted tiles
+			int minimumRealCosts = 0;
+			int lastMinimumRealCosts = 0;
 			foreach (Position activeTile in sortedActiveTilesList) {
-				int x = activeTile.x;
-				int y = activeTile.y;
-				int startCosts = realCostsMatrix [x,y];
+				int startCosts = realCostsMatrix [activeTile.x,activeTile.y];
 				//calculate adjacent real costs
-				List<Position> adjacentPositions = new List<Position>();
-				//adjacentPositions.Add(new Position(x - 1, y + 1)); // top left
-				adjacentPositions.Add(new Position(x, y + 1)); // top center
-				//adjacentPositions.Add(new Position(x + 1, y + 1)); // top right
-				adjacentPositions.Add(new Position(x - 1, y)); // left
-				adjacentPositions.Add(new Position(x + 1, y)); // right
-				//adjacentPositions.Add(new Position(x - 1, y - 1)); // bottom left
-				adjacentPositions.Add(new Position(x, y - 1)); // bottom center
-				//adjacentPositions.Add(new Position(x + 1, y - 1)); // bottom right
+				List<Position> adjacentPositions = getAdjacentPositions(activeTile, width, height);
 				foreach (Position position in adjacentPositions) {
 					if (isPositionValid(position, width, height)) {
 						//process tile only if not already processed
-						if (realCostsMatrix[position.x,position.y] < 0) {
+						//if (realCostsMatrix[position.x,position.y] < 0) {
 							//some unreachable tiles will be processed multiple times but that should be ok, no need to overoptimize here
 							int costs = costsMatrix [position.x,position.y];
 							// check if tile is walkable
 							if (costs > 0) {
 								int realCosts = startCosts + costs;
+								if (minimumRealCosts == 0) {
+									minimumRealCosts = realCosts;
+								} else {
+									minimumRealCosts = Math.Min (minimumRealCosts, realCosts);								
+								}
 								//add tile to next active tiles only if movements left
 								if (maxCosts <= 0 || realCosts <= maxCosts) {
-									realCostsMatrix [position.x,position.y] = realCosts;
-									if (maxCosts <= 0 || realCosts < maxCosts) {
-										nextIterationActiveTiles.Add (position);
+									int currentRealCosts = realCostsMatrix [position.x, position.y];
+									//set if currentRealCosts are uninitialized or higher than new value
+									if (currentRealCosts < 0 || currentRealCosts > realCosts) {
+										realCostsMatrix [position.x,position.y] = realCosts;
+										if (maxCosts <= 0 || realCosts < maxCosts) {
+											nextIterationActiveTiles.Add (position);
+										}	
 									}
 								}								
 							}	
-						}
+						//}
 					}
 				}				
 			}
-			//create list of all directly reachable tiles from active tiles
-			//mark reachable tiles active
-			//mark active tiles inactive
+			//TODO remove all tiles that have a higher cost than the minimum value and keep the origin tiles in active list if any of the adjacent tiles is removed
+			foreach (Position activeTile in nextIterationActiveTiles.ToList()) {
+				if (realCostsMatrix [activeTile.x, activeTile.y] > minimumRealCosts) {
+					nextIterationActiveTiles.Remove (activeTile);
+					List<Position> adjacentPositions = getAdjacentPositions (activeTile, width, height);
+					Position activeOriginTile = adjacentPositions.Find (pos => realCostsMatrix [pos.x, pos.y] == lastMinimumRealCosts);
+					nextIterationActiveTiles.Add (activeOriginTile);
+				}
+			}
+			lastMinimumRealCosts = minimumRealCosts;
 			activeTilesList = nextIterationActiveTiles.ToList();
 		}
 		return realCostsMatrix;
+	}
+
+	public List<Position> getAdjacentPositions(Position position, int width, int height) {
+		int x = position.x;
+		int y = position.y;
+		List<Position> adjacentPositions = new List<Position>();
+		//adjacentPositions.Add(new Position(x - 1, y + 1)); // top left
+		adjacentPositions.Add(new Position(x, y + 1)); // top center
+		//adjacentPositions.Add(new Position(x + 1, y + 1)); // top right
+		adjacentPositions.Add(new Position(x - 1, y)); // left
+		adjacentPositions.Add(new Position(x + 1, y)); // right
+		//adjacentPositions.Add(new Position(x - 1, y - 1)); // bottom left
+		adjacentPositions.Add(new Position(x, y - 1)); // bottom center
+		//adjacentPositions.Add(new Position(x + 1, y - 1)); // bottom right
+		return adjacentPositions.Where(pos => isPositionValid(pos, width, height)).ToList();
 	}
 
 	public void initializeIntMatrix(int[,] intMatrix, int defaultValue) {
