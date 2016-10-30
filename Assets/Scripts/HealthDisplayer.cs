@@ -22,7 +22,17 @@ public class HealthDisplayer : MonoBehaviour
 	    if (lastHealth != unitController.unitData.healthPoints)
 	    {
 	        lastHealth = unitController.unitData.healthPoints;
-	        string value = Convert.ToString(unitController.unitData.healthPoints);
+
+	        string value;
+	        if (lastHealth > 0)
+	        {
+	            value = Convert.ToString(unitController.unitData.healthPoints);
+	        }
+	        else
+	        {
+	            value = "";
+	        }
+
 	        textMesh.text = value;
 	    }
 

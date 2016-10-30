@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.UI;
 
 public delegate void ClientConnectionErrorHandler();
 
@@ -8,11 +9,29 @@ public delegate void ConnectedToServerHandler();
 
 public class ClientNetworkingManager : MonoBehaviour
 {
+    private const string CurrentPlayerText = "CurrentPlayerText";
+
     public event ClientConnectionErrorHandler ErrorHandlers;
     public event ConnectedToServerHandler ConnectedHandler;
 
     private NetworkClient _client;
+
     private int _playerId;
+    public int PlayerId
+    {
+        get { return _playerId; }
+
+        set
+        {
+            _playerId = value;
+            var currentPlayerText = GameObject.Find(CurrentPlayerText);
+            if (currentPlayerText)
+            {
+                currentPlayerText.GetComponent<Text>().text = "Player " + _playerId;
+            }
+        }
+    }
+
     private ClientGameLogicManager _gameLogic;
 
     public void Awake()
@@ -22,7 +41,7 @@ public class ClientNetworkingManager : MonoBehaviour
 
     public void ConnectLocally()
     {
-        _playerId = 0;
+        PlayerId = 0;
         _client = ClientScene.ConnectLocalServer();
         RegisterClientHandlers();
     }
@@ -30,7 +49,7 @@ public class ClientNetworkingManager : MonoBehaviour
     public void ConnectToHost(string hostname)
     {
         Debug.Log("Connecting to " + hostname);
-        _playerId = 1;
+        PlayerId = 1;
         _client = new NetworkClient();
         RegisterClientHandlers();
         _client.Connect(hostname, NetworkingConstants.GamePort);
@@ -47,7 +66,7 @@ public class ClientNetworkingManager : MonoBehaviour
     public void OnServerConnected(NetworkMessage message)
     {
         Debug.Log("Client connected to server");
-        _client.Send(NetworkingConstants.MsgTypeGameJoin, new MessagePlayerJoin(_playerId));
+        _client.Send(NetworkingConstants.MsgTypeGameJoin, new MessagePlayerJoin(PlayerId));
 
         if (ConnectedHandler != null)
         {
@@ -60,7 +79,7 @@ public class ClientNetworkingManager : MonoBehaviour
         var gameActions = new GameActions
         {
             actions = actions,
-            playerID = _playerId
+            playerID = PlayerId
         };
 
         var message = new MessageGameActions(gameActions);
