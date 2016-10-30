@@ -14,7 +14,7 @@ public class NextTurnButton : MonoBehaviour
 
     public void GoToNextTurn()
     {
-        // List<GameAction> gameActions = new List<GameAction>();
-        // clientNetworkingManager.SendActions();
+        List<GameAction> gameActions = new List<GameAction>();
+        clientNetworkingManager.SendActions(gameActions);
     }
 }
