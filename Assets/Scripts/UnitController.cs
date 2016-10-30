@@ -304,10 +304,14 @@ public class UnitController :
 
     public void PlayMoveAnimation(Position toPosition, int moveNumber, int moveTotal, Action onFinished)
     {
+        
         ZoomOutAnd(() => {
+            if (moveNumber == 0) {
+                startPlayingMovingSound();
+                animator.SetTrigger(UnitAnimationEvents.StartMoving.ToString());
+            }
+
             float time = 0.2f;
-            startPlayingMovingSound();
-            animator.SetTrigger(UnitAnimationEvents.StartMoving.ToString());
             Vector3 newPosition = transform.position;
             newPosition.x = toPosition.x;
             newPosition.y = toPosition.y;
@@ -316,7 +320,11 @@ public class UnitController :
                 .setOnComplete(() =>
                 {
                     transform.position = newPosition;
-                    animator.SetTrigger(UnitAnimationEvents.StopMoving.ToString());
+                    if (moveNumber == moveTotal) {
+                        animator.SetTrigger(UnitAnimationEvents.StopMoving.ToString());
+                    }
+                        
+
                     onFinished.Invoke();
                 });
 
