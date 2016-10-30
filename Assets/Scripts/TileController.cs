@@ -99,6 +99,9 @@ public class TileController :
 
     public void SetReachable(bool reachable) {
 		isReachable = reachable;
-		GetComponent<SpriteRenderer>().color = isReachable ? Color.black : Color.white;
+		SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
+		Color newColor = spriteRenderer.color;
+		newColor.a = isReachable ? 1.0f : 0.0f;
+		spriteRenderer.color = newColor;
 	}
 }
