@@ -251,6 +251,7 @@ public class UnitController :
 
     private List<Position> GetMovementPositions() {
         List<Position> options = new List<Position>();
+
         for (int row = unitData.position.y - 2; row < unitData.position.y + 2; row++)
         {
             for (int column = unitData.position.x - 2; column < unitData.position.x + 2; column++)

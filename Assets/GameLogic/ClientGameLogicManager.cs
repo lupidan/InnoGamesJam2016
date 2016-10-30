@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 
 public delegate void StateUpdatedHandler();
 
@@ -31,9 +32,20 @@ public class ClientGameLogicManager : MonoBehaviour
     {
         if (CurrentServerSideState == null)
         {
-            //LevelGenerator generator = new LevelGenerator();
-            // generator.Initialize();
-            
+//            var assetBaseName = "Assets/Prefabs/Units/";
+//
+//            for (int i = 0; i < gameState.PlayerCount; i++)
+//            {
+//                var assetUnitBasePath = assetBaseName + "Blue_";
+//                foreach (var unitsKey in gameState.players[i].units.Keys)
+//                {
+//                    var unit = gameState.players[i].units[unitsKey];
+//                    var prefabPath = assetUnitBasePath + unit.Definition.type + "_Unit";
+//
+//                    GameObject unitGO = (GameObject)Instantiate(AssetDatabase.LoadAssetAtPath(prefabPath,typeof(GameObject)));
+//                    unitGO.transform.position=new Vector2();
+//                }
+//            }
         }
         CurrentServerSideState = gameState;
         CurrentVisibleState = GameState.Clone(gameState);
@@ -48,6 +60,7 @@ public class ClientGameLogicManager : MonoBehaviour
             StateUpdatedHandler();
         }
     }
+
 
     // Helper to retrieve a unit controller by its unitID from the scene
     private UnitController FindUnitControllerById(int unitId)
@@ -78,22 +91,26 @@ public class ClientGameLogicManager : MonoBehaviour
                 RemoveFirstActionQueueElement();
             }
             unitController.PlayMoveAnimation(toPosition, PlayNextAnimation);
-        } else if (resultAction is GameRotateResultAction)
+        }
+        else if (resultAction is GameRotateResultAction)
         {
             RemoveFirstActionQueueElement();
             var direction = ((GameRotateResultAction) resultAction).direction;
             unitController.PlayRotateAnimation(direction, PlayNextAnimation);
-        } else if (resultAction is GameAttackResultAction)
+        }
+        else if (resultAction is GameAttackResultAction)
         {
             RemoveFirstActionQueueElement();
             var targetPosition = ((GameAttackResultAction) resultAction).target;
             unitController.PlayAttackAnimation(targetPosition, PlayNextAnimation);
-        } else if (resultAction is GameHitpointChangeResultAction)
+        }
+        else if (resultAction is GameHitpointChangeResultAction)
         {
             RemoveFirstActionQueueElement();
             var newHitpointValue = ((GameHitpointChangeResultAction) resultAction).newHitpointValue;
             unitController.PlayHitpointChange(newHitpointValue, PlayNextAnimation);
-        } else if (resultAction is GameUnitDeathResultAction)
+        }
+        else if (resultAction is GameUnitDeathResultAction)
         {
             RemoveFirstActionQueueElement();
             unitController.PlayDeathAnimation(PlayNextAnimation);
