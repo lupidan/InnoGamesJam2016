@@ -216,12 +216,18 @@ public class UnitController :
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (destination == null) {
-            UnitController.SelectedUnit = this;
-        } else {
-            SetDestinationTileController(null);
+        if (ClientNetworkingManager.GetClientNetworkingManager().PlayerId == unitData.owningPlayerId)
+        {
+            if (destination == null)
+            {
+                UnitController.SelectedUnit = this;
+            }
+            else
+            {
+                SetDestinationTileController(null);
+            }
+            playClickedSound();
         }
-        playClickedSound();
     }
 
     public void SetDestinationTileController(TileController tileController) {
