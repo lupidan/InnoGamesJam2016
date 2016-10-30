@@ -57,14 +57,22 @@ public class GameState
             if (unitTransformGameObject.name.Contains("Red") && PlayerCount > 1)
             {
                 unitController.unitData.owningPlayerId = 1;
+
                 unitController.unitData.unitId = unitCounter++;
+                unitController.unitData.position.x = (int)unitController.gameObject.transform.position.x;
+                unitController.unitData.position.y = (int)unitController.gameObject.transform.position.y;
                 players[1].units.Add(unitController.unitData.unitId, unitController.unitData);
+
+                unitTransformGameObject.name = "units_" + unitController.unitData.unitId;
             }
             else
             {
                 unitController.unitData.owningPlayerId = 0;
                 unitController.unitData.unitId = unitCounter++;
+                unitController.unitData.position.x = (int)unitController.gameObject.transform.position.x;
+                unitController.unitData.position.y = (int)unitController.gameObject.transform.position.y;
                 players[0].units.Add(unitController.unitData.unitId, unitController.unitData);
+                unitTransformGameObject.name = "units_" + unitController.unitData.unitId;
             }
         }
     }

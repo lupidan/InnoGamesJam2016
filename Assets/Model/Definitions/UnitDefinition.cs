@@ -7,7 +7,7 @@ public class UnitDefinition : ScriptableObject
 
     public enum Type
     {
-        Heavy=0,
+        Tank=0,
         Melee=1,
         Range=3,
         King=4
@@ -30,7 +30,7 @@ public class UnitDefinition : ScriptableObject
     {
         switch (type)
         {
-            case Type.Heavy:
+            case Type.Tank:
                 return heavyDefense;
             case Type.Melee:
                 return meeleDefense;
