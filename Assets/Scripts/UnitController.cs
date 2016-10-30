@@ -241,7 +241,7 @@ public class UnitController :
             }
             else if (logicManager.CurrentServerSideState.CurrentPhase == GamePhase.Revision)
             {
-                List<GameAction> gameActions = logicManager.QueuedGameActions;
+                List<GameAction> gameActions = logicManager.QueuedGameActionsRevision;
                 for (int i = 0; i < gameActions.Count; i++)
                 {
                     if (gameActions[i].UnitId == unitData.unitId) {
@@ -264,12 +264,12 @@ public class UnitController :
             Position destiny = new Position(tileController.tileData.position.x,
                 tileController.tileData.position.y);
             pathToDestination = TileController.PathFromPositionToPosition(current, destiny);
-            _clientLogic.AddQueuedActionForUnitId(unitData.unitId, pathToDestination);
+            _clientLogic.AddQueuedActionForUnitIdToPlanning(unitData.unitId, pathToDestination);
         }
         else
         {
             pathToDestination = null;
-            _clientLogic.RemoveQueuedActionForUnitId(unitData.unitId);
+            _clientLogic.RemoveQueuedActionForUnitIdFromPlanning(unitData.unitId);
         }
         SetupLine();
     }

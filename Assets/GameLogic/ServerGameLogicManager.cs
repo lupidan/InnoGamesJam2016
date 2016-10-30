@@ -283,14 +283,14 @@ public class ServerGameLogicManager : MonoBehaviour
     {
         var result = new int[2] {0, 0};
 
-        result[0] = Math.Max(
+        result[1] = Math.Max(
             GetAttackStrengthAtPosition(
                 fighterLeft.Definition.attackPattern,
                 fighterLeft.position,
                 fighterRight.position) - fighterRight.Definition.DefenseAgainst(fighterLeft.Definition.type),
             0);
 
-        result[1] = Math.Max(
+        result[0] = Math.Max(
             GetAttackStrengthAtPosition(
                 fighterRight.Definition.attackPattern,
                 fighterRight.position,
