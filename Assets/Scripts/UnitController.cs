@@ -437,6 +437,7 @@ public class UnitController :
 
     public void PlayDeathAnimation(Action onFinished)
     {
+        GetComponent<SpriteRenderer>().flipX = false;
         playDyingSound();
         animator.SetTrigger(UnitAnimationEvents.StartDying.ToString());
         StartCoroutine(ExecuteActionAfterTime(onFinished, 1.0f));
