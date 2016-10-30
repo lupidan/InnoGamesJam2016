@@ -240,21 +240,38 @@ public class UnitController :
         }
     }
 
-
+    public void MoveCameraToPoint(Position toPosition, Action onFinished)
+    {
+        Vector3 newCameraPosition = Camera.main.transform.position;
+        newCameraPosition.x = toPosition.x;
+        newCameraPosition.y = toPosition.y;
+        LeanTween.move(Camera.main.gameObject, newCameraPosition, 0.2f)
+        .setEaseLinear()
+        .setOnComplete(() => {
+            onFinished.Invoke();
+        });
+    }
 
     public void PlayMoveAnimation(Position toPosition, Action onFinished)
     {
+        float time = 0.2f;
         animator.SetTrigger(UnitAnimationEvents.StartMoving.ToString());
         Vector3 newPosition = transform.position;
         newPosition.x = toPosition.x;
         newPosition.y = toPosition.y;
-        LeanTween.move(gameObject, newPosition, 0.2f)
+        LeanTween.move(gameObject, newPosition, time)
                  .setEaseLinear()
                  .setOnComplete(() => {
                      transform.position = newPosition;
                      animator.SetTrigger(UnitAnimationEvents.StopMoving.ToString());
                      onFinished.Invoke();
                  });
+        
+        Vector3 newCameraPosition = Camera.main.transform.position;
+        newCameraPosition.x = toPosition.x;
+        newCameraPosition.y = toPosition.y;
+        LeanTween.move(Camera.main.gameObject, newCameraPosition, time)
+        .setEaseLinear();
     }
 
     public void PlayRotateAnimation(Unit.Direction toDirection, Action onFinished)

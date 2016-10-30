@@ -87,6 +87,7 @@ public class GameState
             unitData.unitId = unitCounter++;
             unitData.position.x = (int)unitController.gameObject.transform.position.x;
             unitData.position.y = (int)unitController.gameObject.transform.position.y;
+            unitData.healthPoints = unitData.Definition.maxHealth;
             players[unitData.owningPlayerId].units.Add(unitData.unitId, unitData);
             unitTransformGameObject.name = "units_" + unitData.unitId;
         }

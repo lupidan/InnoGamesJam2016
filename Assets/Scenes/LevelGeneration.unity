@@ -90,6 +90,52 @@ NavMeshSettings:
     cellSize: 0.16666667
     manualCellSize: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &46778384
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 46778386}
+  - 114: {fileID: 46778385}
+  m_Layer: 0
+  m_Name: DefinitionDatabase
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &46778385
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 46778384}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d75f4c06b90e4cc5986f776378d851f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  units:
+  - {fileID: 11400000, guid: a71636f860e8f4044a22eb8dc6b6f11e, type: 2}
+  - {fileID: 11400000, guid: 4f39f8df66d124b8ca086d34705d983b, type: 2}
+  - {fileID: 11400000, guid: c74be25311dd1469cb5939f2b83fd2a6, type: 2}
+  - {fileID: 11400000, guid: 4d1aa183b748d4292a6249a53cb63d4b, type: 2}
+  tiles: []
+--- !u!4 &46778386
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 46778384}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 14.939215, y: 12.611295, z: -5.1992188}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 9
 --- !u!1 &101527943 stripped
 GameObject:
   m_PrefabParentObject: {fileID: 1000010217409466, guid: d2dafca1c5f554290b4fa31db8965006,
@@ -762,11 +808,11 @@ Prefab:
     m_Modifications:
     - target: {fileID: 4000013962801276, guid: 4cd522224f8774752b52926ef423b760, type: 2}
       propertyPath: m_LocalPosition.x
-      value: 9
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 4000013962801276, guid: 4cd522224f8774752b52926ef423b760, type: 2}
       propertyPath: m_LocalPosition.y
-      value: 9
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 4000013962801276, guid: 4cd522224f8774752b52926ef423b760, type: 2}
       propertyPath: m_LocalPosition.z
@@ -799,7 +845,7 @@ Prefab:
     - target: {fileID: 114000010619493302, guid: 4cd522224f8774752b52926ef423b760,
         type: 2}
       propertyPath: unitData.definitionId
-      value: 
+      value: meele_unit
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 4cd522224f8774752b52926ef423b760, type: 2}
@@ -1577,6 +1623,11 @@ Prefab:
     - target: {fileID: 1000011000336512, guid: 57a0fa4627e62420b8f332f9f6fda082, type: 2}
       propertyPath: m_Name
       value: Red_Melee_Unit (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000013358136442, guid: 57a0fa4627e62420b8f332f9f6fda082,
+        type: 2}
+      propertyPath: unitData.definitionId
+      value: meele_unit
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 57a0fa4627e62420b8f332f9f6fda082, type: 2}
