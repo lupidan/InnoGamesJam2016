@@ -3,11 +3,13 @@ _InnoGamesJam 2016_
 Theme: Time Cheating
 
 # What's the game about
-Turn based strategy game with a board, you will have a set of units that will move across the board. Units will attack each other when in range, at the end of the turn.
+Multiplayer strategy game based on a post-apocalyptic world ruled by super intelligent (and violent) monkeys.
+
+Plan your turns, let your monkeys play out your strategy and... STOP! Your time cheating skills will let you change one of your actions.
 
 This is a game in which it is important to anticipate the movements of your opponent.
 
-![logo](Docs/cheatingmonkey_screenshot01.png "alt Monkeys shooting at each other")
+![logo](Docs/cheatingmonkey_screenshot01.png "Monkeys shooting at each other")
 
 ## How to win
  - Defeat the king of your opponent
@@ -21,13 +23,17 @@ This is a game in which it is important to anticipate the movements of your oppo
 ## How does a turn work
  1. Both players select the movements that their units will do
  2. Both players press ready and wait for the other to finish
- 3. Display what will the result be
- 4. Both players can slightly revert the time on some of their units
+ 3. The game will display the result as a preview (it is not really happening yet!)
+ 4. Both players can slightly revert the time on some of their units by tapping on them
  5. Finish a turn
  6. The units will show the result at the same time to both players and resolve the attacks
 
-# Controllers
- - Mouse or finger
+# Controls
+ - Mouse to click on units and target
+ - Keyboard (a,s,d,f) for scrolling in the map
+
+# Engine used
+ - Unity3D
 
 # Contributors
  - Daniel Lupiañez
