@@ -63,7 +63,7 @@ public class UnitController :
     private ClientGameLogicManager _clientLogic;
 
     // checks if the death animation has been played to revive them
-    private bool isDed = false;
+    private bool isDead = false;
 
     public enum UnitAnimationEvents
     {
@@ -116,9 +116,9 @@ public class UnitController :
                 UpdateHitpointsInTextMesh(unitData.healthPoints);
             });
 
-        if (isDed && unitData.healthPoints > 0) {
+        if (isDead && unitData.healthPoints > 0) {
             animator.SetTrigger(UnitAnimationEvents.Revive.ToString());
-            isDed = false;
+            isDead = false;
         }
 
     }
@@ -222,7 +222,8 @@ public class UnitController :
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (!IngameSubmitButtonManager.GetIngameSubmitButtonManager().IsWaiting()
+        if (!isDead
+        && !IngameSubmitButtonManager.GetIngameSubmitButtonManager().IsWaiting()
             && ClientNetworkingManager.GetClientNetworkingManager().PlayerId == unitData.owningPlayerId)
         {
             ClientGameLogicManager logicManager = ClientGameLogicManager.GetClientLogicFromScene();
@@ -400,7 +401,7 @@ public class UnitController :
         playDyingSound();
         animator.SetTrigger(UnitAnimationEvents.StartDying.ToString());
         StartCoroutine(ExecuteActionAfterTime(onFinished, 1.0f));
-        isDed = true;
+        isDead = true;
     }
 
 
@@ -422,16 +423,22 @@ public class UnitController :
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        var attackPatternGameObject = GameObject.Find("AttackPatternRenderer");
-        var attackPatternRenderer = attackPatternGameObject.GetComponent<AttackPatternRenderer>();
-        attackPatternRenderer.SetPattern(unitData.position, transform,
-            unitData.Definition.attackPattern);
+        if (!isDead)
+        {
+            var attackPatternGameObject = GameObject.Find("AttackPatternRenderer");
+            var attackPatternRenderer = attackPatternGameObject.GetComponent<AttackPatternRenderer>();
+            attackPatternRenderer.SetPattern(unitData.position, transform,
+                unitData.Definition.attackPattern);
+        }
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        var attackPatternGameObject = GameObject.Find("AttackPatternRenderer");
-        var attackPatternRenderer = attackPatternGameObject.GetComponent<AttackPatternRenderer>();
-        attackPatternRenderer.HidePattern();
+        if (!isDead)
+        {
+            var attackPatternGameObject = GameObject.Find("AttackPatternRenderer");
+            var attackPatternRenderer = attackPatternGameObject.GetComponent<AttackPatternRenderer>();
+            attackPatternRenderer.HidePattern();
+        }
     }
 }
