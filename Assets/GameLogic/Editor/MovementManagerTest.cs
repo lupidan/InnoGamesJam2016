@@ -61,6 +61,26 @@ public class MovementManagerTest {
 	}
 
 	[Test]
+	public void calculateRealCostsTestWithVaryingCosts() {
+		var manager = new MovementManager ();
+		int[,] costs = {							{1,1,1,1,1},
+													{1,0,0,0,1},
+													{1,1,1,0,1},
+													{0,0,0,0,1},
+													{1,1,1,1,1}};
+
+		int[,] expectedRealCosts = {				{4,5,6,7,8},
+			{3,-1,-1,-1,9},
+			{2,1,0,-1,10},
+			{-1,-1,-1,-1,11},
+			{16,15,14,13,12}};
+		Position startPosition = new Position(2,2);
+		int[,] realCosts = manager.calculateRealCostsMatrix (costs, startPosition, 0);
+		Debug.Log ("Real costs with obstacles;\n" + intMatrixToString(realCosts));	
+		Assert.AreEqual (expectedRealCosts, realCosts);
+	}
+
+	[Test]
 	public void calculateRealCostsTestWithObstacles() {
 		var manager = new MovementManager ();
 		int[,] costs = {							{1,1,1,1,1},
