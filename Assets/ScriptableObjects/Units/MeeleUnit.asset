@@ -19,6 +19,6 @@ MonoBehaviour:
   meeleDefense: 5
   rangeDefense: 7
   kingDefense: 0
-  maxMovements: 10
+  maxMovements: 8
   maxCheatingMovements: 3
   attackPattern: {fileID: 11400000, guid: b5b6fa5d2eecf4bc6a9e495cc47ce52d, type: 2}

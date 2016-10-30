@@ -16,9 +16,9 @@ MonoBehaviour:
   type: 3
   maxHealth: 10
   heavyDefense: 5
-  meeleDefense: 3
+  meeleDefense: 1
   rangeDefense: 4
   kingDefense: 0
-  maxMovements: 4
-  maxCheatingMovements: 3
+  maxMovements: 3
+  maxCheatingMovements: 2
   attackPattern: {fileID: 11400000, guid: 600e704412362402daf814d2408692ed, type: 2}

@@ -329,7 +329,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0c607071b6e242249bbda7131b361cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movingSpeed: 4
+  movingSpeed: 7.5
 --- !u!1 &378069136
 GameObject:
   m_ObjectHideFlags: 0
@@ -1119,7 +1119,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 9
 --- !u!1 &745102740
 GameObject:
   m_ObjectHideFlags: 0

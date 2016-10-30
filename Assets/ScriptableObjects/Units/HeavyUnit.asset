@@ -15,7 +15,7 @@ MonoBehaviour:
   unitName: Heavy unit
   type: 0
   maxHealth: 10
-  heavyDefense: 5
+  heavyDefense: 4
   meeleDefense: 7
   rangeDefense: 2
   kingDefense: 0
