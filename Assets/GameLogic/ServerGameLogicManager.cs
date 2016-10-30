@@ -301,18 +301,23 @@ public class ServerGameLogicManager : MonoBehaviour
         }
 
         result[1] = Math.Max(
-
-            GetAttackStrengthAtPosition(
+            (int)Math.Ceiling(
+                GetAttackStrengthAtPosition(
                 fighterLeft.Definition.attackPattern,
                 fighterLeft.position,
-                fighterRight.position) - fighterRight.Definition.DefenseAgainst(fighterLeft.Definition.type),
+                fighterRight.position)
+                * 1.0f - (fighterRight.Definition.DefenseAgainst(fighterLeft.Definition.type) / 10.0)
+                ),
             0);
 
         result[0] = Math.Max(
-            GetAttackStrengthAtPosition(
+            (int)Math.Ceiling(
+                GetAttackStrengthAtPosition(
                 fighterRight.Definition.attackPattern,
                 fighterRight.position,
-                fighterLeft.position) - fighterLeft.Definition.DefenseAgainst(fighterRight.Definition.type),
+                fighterLeft.position)
+                * 1.0f - (fighterLeft.Definition.DefenseAgainst(fighterLeft.Definition.type) / 10.0)
+                ),
             0);
 
         return result;
