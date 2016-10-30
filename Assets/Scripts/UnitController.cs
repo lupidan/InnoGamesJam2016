@@ -307,7 +307,7 @@ public class UnitController :
             .setOnComplete(() => { onFinished.Invoke(); });
     }
 
-    public void PlayMoveAnimation(Position toPosition, Action onFinished)
+    public void PlayMoveAnimation(Position toPosition, int moveNumber, int moveTotal, Action onFinished)
     {
         ZoomOutAnd(() => {
             float time = 0.2f;
