@@ -13,7 +13,8 @@ public class TileController :
 		for (int i = 0; i < positions.Count; i++)
 		{
 			GameObject tileGameObject = GameObject.Find("tile_" + positions[i].x + "_" + positions[i].y);
-            tileGameObject.GetComponent<TileController>().SetReachable(true);
+			if (tileGameObject)
+            	tileGameObject.GetComponent<TileController>().SetReachable(true);
 		}
 	}
 
@@ -23,6 +24,25 @@ public class TileController :
         {
             tileControllers[i].SetReachable(false);
         }
+	}
+
+	public static List<Position> PathFromPositionToPosition(Position origin, Position destiny) {
+		List<Position> path = new List<Position>();
+		Position iterator = origin;
+		while (destiny.x != iterator.x || destiny.y != iterator.y) {
+			if (iterator.x < destiny.x)
+				iterator.x += 1;
+			else if (iterator.x > destiny.x)
+				iterator.x -= 1;
+			else if (iterator.y < destiny.y)
+				iterator.y += 1;
+			else if (iterator.y > destiny.y)
+				iterator.y -= 1;
+
+			Position copy = new Position(iterator.x, iterator.y);
+			path.Add(copy);
+		}
+		return path;
 	}
 
 	public Tile tileData;
