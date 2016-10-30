@@ -49,13 +49,36 @@ public class TileController :
 	public bool isReachable { get; private set; }
 
 	public void OnPointerEnter(PointerEventData eventData) {
-		if (HighlightedTile != this && isReachable)
-			HighlightedTile = this;
+
+	    if (HighlightedTile != this && isReachable)
+	    {
+	        HighlightedTile = this;
+
+	        var currentCurrentSelectedGameObject = EventSystem.current.currentSelectedGameObject;
+	        if (currentCurrentSelectedGameObject)
+	        {
+	            var attackPatternGameObject = GameObject.Find("AttackPatternRenderer");
+	            var attackPatternRenderer = attackPatternGameObject.GetComponent<AttackPatternRenderer>();
+	            attackPatternRenderer.SetPattern(tileData.position, transform,
+	                currentCurrentSelectedGameObject.GetComponent<UnitController>().unitData.Definition.attackPattern);
+	        }
+	    }
+
 	}
 
 	public void OnPointerExit(PointerEventData eventData) {
-		if (HighlightedTile == this && isReachable)
-			HighlightedTile = null;
+	    if (HighlightedTile == this && isReachable)
+	    {
+	        HighlightedTile = null;
+	        var currentCurrentSelectedGameObject = EventSystem.current.currentSelectedGameObject;
+	        if (currentCurrentSelectedGameObject)
+	        {
+	            var attackPatternGameObject = GameObject.Find("AttackPatternRenderer");
+	            var attackPatternRenderer = attackPatternGameObject.GetComponent<AttackPatternRenderer>();
+	            attackPatternRenderer.HidePattern(tileData.position,
+	                currentCurrentSelectedGameObject.GetComponent<UnitController>().unitData.Definition.attackPattern);
+	        }
+	    }
 	}
 
 	public void SetReachable(bool reachable) {
