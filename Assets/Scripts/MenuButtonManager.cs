@@ -5,14 +5,9 @@ using UnityEngine.UI;
 
 public class MenuButtonManager : MonoBehaviour {
 
-    void Start() {
-        SoundController.Instance.PlayBackgroundClip("main screen theme FINAL");
-    }
-
 	public void NewGame (string sceneName)
 	{
 	    SceneManager.LoadScene (sceneName);
-        SoundController.Instance.PlayBackgroundClip("planet_background");
 	}
 
     public void NewGameAsClient(string sceneName)
@@ -27,7 +22,6 @@ public class MenuButtonManager : MonoBehaviour {
         {
             addressKeeper.HostAddress = inputFieldText;
             SceneManager.LoadScene (sceneName);
-            SoundController.Instance.PlayBackgroundClip("planet_background");
         }
     }
 
