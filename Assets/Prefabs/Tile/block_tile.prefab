@@ -69,7 +69,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tileData:
     tileId: 0
-    definitionId: 
+    definitionId: block_tile
     position:
       x: 0
       y: 0

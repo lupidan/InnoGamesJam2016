@@ -99,6 +99,9 @@ public class TileController :
     }
 
     public void SetReachable(bool reachable) {
+		if (!tileData.Definition.walkable)
+			return;
+
 		isReachable = reachable;
 		SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
 		Color newColor = spriteRenderer.color;
