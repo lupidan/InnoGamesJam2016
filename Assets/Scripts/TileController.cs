@@ -85,16 +85,19 @@ public class TileController :
 
     public void OnPointerClick(PointerEventData eventData)
     {
-		if (UnitController.SelectedUnit != null) {
-			UnitController selectedUnit = UnitController.SelectedUnit;
-			if (isReachable) {
-				selectedUnit.SetDestinationTileController(this);
-			}	
-		}
-		UnitController.SelectedUnit = null;
+        if (UnitController.SelectedUnit != null)
+        {
+            UnitController selectedUnit = UnitController.SelectedUnit;
+            if (isReachable)
+            {
+                selectedUnit.SetDestinationTileController(this);
+
+            }
+        }
+        UnitController.SelectedUnit = null;
     }
 
-	public void SetReachable(bool reachable) {
+    public void SetReachable(bool reachable) {
 		isReachable = reachable;
 		GetComponent<SpriteRenderer>().color = isReachable ? Color.black : Color.white;
 	}
