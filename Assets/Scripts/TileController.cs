@@ -4,10 +4,9 @@ using System.Collections.Generic;
 
 public class TileController :
 	MonoBehaviour,
-	IPointerEnterHandler,
-    IPointerExitHandler {
-
-	public static TileController HighlightedTile { get; private set; }
+	IPointerDownHandler,
+    IPointerClickHandler,
+    IPointerUpHandler {
 
 	public static void SetTilesAtPositionsReachable(List<Position> positions) {
 		for (int i = 0; i < positions.Count; i++)
@@ -48,15 +47,20 @@ public class TileController :
 	public Tile tileData;
 	public bool isReachable { get; private set; }
 
-	public void OnPointerEnter(PointerEventData eventData) {
-		if (HighlightedTile != this && isReachable)
-			HighlightedTile = this;
-	}
+	public void OnPointerDown(PointerEventData eventData) { }
+    public void OnPointerUp(PointerEventData eventData) { }
 
-	public void OnPointerExit(PointerEventData eventData) {
-		if (HighlightedTile == this && isReachable)
-			HighlightedTile = null;
-	}
+    public void OnPointerClick(PointerEventData eventData)
+    {
+		if (UnitController.SelectedUnit != null) {
+			UnitController selectedUnit = UnitController.SelectedUnit;
+			if (isReachable) {
+				selectedUnit.SetDestinationTileController(this);
+			}	
+		}
+		UnitController.SelectedUnit = null;
+    }
+
 
 	public void SetReachable(bool reachable) {
 		isReachable = reachable;
