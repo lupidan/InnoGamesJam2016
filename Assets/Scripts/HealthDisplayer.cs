@@ -9,12 +9,11 @@ public class HealthDisplayer : MonoBehaviour
     private TextMesh textMesh;
     private int lastHealth = -1;
 
-    // Use this for initialization
-	void Start ()
-	{
-	    unitController = GetComponent<UnitController>();
-	    textMesh = GetComponent<TextMesh>();
-	}
+    void Awake()
+    {
+        unitController = GetComponent<UnitController>();
+        textMesh = gameObject.GetComponentInChildren<TextMesh>();
+    }
 	
 	// Update is called once per frame
 	void Update ()
