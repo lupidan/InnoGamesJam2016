@@ -193,18 +193,22 @@ public class UnitController :
 
     private void DisplayHeavyShotRelative()
     {
-        GameObject gameObject = FindObjectOfType<MapGenerator>().InstantiatePrefab("HeavyEffect");
-        gameObject.transform.SetParent(this.transform);
-        Vector3 localPosition = new Vector3(0.9f, 0.05f, -0.1f);
-        gameObject.transform.localPosition = localPosition;
+        bool isFlipped = GetComponent<SpriteRenderer>().flipX;
+        GameObject heavyEffect = FindObjectOfType<MapGenerator>().InstantiatePrefab("HeavyEffect");
+        heavyEffect.transform.SetParent(this.transform);
+        heavyEffect.GetComponent<SpriteRenderer>().flipX = isFlipped;
+        Vector3 localPosition = new Vector3(isFlipped ? -0.9f : 0.9f, 0.05f, -0.1f);
+        heavyEffect.transform.localPosition = localPosition;
     }
 
     private void DisplayRangeShotRelative()
     {
-        GameObject gameObject = FindObjectOfType<MapGenerator>().InstantiatePrefab("RangeEffect");
-        gameObject.transform.SetParent(this.transform);
-        Vector3 localPosition = new Vector3(0.737f, 0.521f, -0.1f);
-        gameObject.transform.localPosition = localPosition;
+        bool isFlipped = GetComponent<SpriteRenderer>().flipX;
+        GameObject rangeEffect = FindObjectOfType<MapGenerator>().InstantiatePrefab("RangeEffect");
+        rangeEffect.transform.SetParent(this.transform);
+        rangeEffect.GetComponent<SpriteRenderer>().flipX = isFlipped;
+        Vector3 localPosition = new Vector3(isFlipped ? -0.737f : 0.737f, 0.521f, -0.1f);
+        rangeEffect.transform.localPosition = localPosition;
     }
 
     public void OnPointerDown(PointerEventData eventData)
@@ -304,10 +308,14 @@ public class UnitController :
 
     public void PlayMoveAnimation(Position toPosition, int moveNumber, int moveTotal, Action onFinished)
     {
+        
         ZoomOutAnd(() => {
+            if (moveNumber == 0) {
+                startPlayingMovingSound();
+                animator.SetTrigger(UnitAnimationEvents.StartMoving.ToString());
+            }
+
             float time = 0.2f;
-            startPlayingMovingSound();
-            animator.SetTrigger(UnitAnimationEvents.StartMoving.ToString());
             Vector3 newPosition = transform.position;
             newPosition.x = toPosition.x;
             newPosition.y = toPosition.y;
@@ -316,7 +324,11 @@ public class UnitController :
                 .setOnComplete(() =>
                 {
                     transform.position = newPosition;
-                    animator.SetTrigger(UnitAnimationEvents.StopMoving.ToString());
+                    if (moveNumber == moveTotal) {
+                        animator.SetTrigger(UnitAnimationEvents.StopMoving.ToString());
+                    }
+                        
+
                     onFinished.Invoke();
                 });
 
