@@ -43,6 +43,7 @@ public class ServerGameLogicManager : MonoBehaviour
 
     public void PlayerHasJoined(int playerId)
     {
+        Debug.Log("Player with id "+ playerId+" has joined!");
         if (CurrentGameState.CurrentPhase == GamePhase.WaitingForStart)
         {
             CurrentGameState.PendingPlayerIDs.Remove(playerId);

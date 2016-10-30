@@ -28,22 +28,26 @@ public class NetworkingManagerRealThingy : MonoBehaviour {
             ServerHostname = hostAddressKeeper.HostAddress;
         }
         Destroy(hostAddressKeeper);
+        Debug.Log("Awaked!");
     }
 
     void OnConnectionError()
     {
         _isAtStartup = true;
         _isConnected = false;
+        Debug.Log("Connection error");
     }
 
     void OnStateChanged()
     {
         _isWaiting = false;
+        Debug.Log("State changed");
     }
 
     void OnConnected()
     {
         _isConnected = true;
+        Debug.Log("Connected!");
     }
 
     void Update()

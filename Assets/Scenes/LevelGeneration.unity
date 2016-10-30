@@ -284,6 +284,50 @@ MonoBehaviour:
   meele: {fileID: 11400000, guid: c74be25311dd1469cb5939f2b83fd2a6, type: 2}
   range: {fileID: 11400000, guid: 4d1aa183b748d4292a6249a53cb63d4b, type: 2}
   king: {fileID: 11400000, guid: 4f39f8df66d124b8ca086d34705d983b, type: 2}
+--- !u!1 &558353041
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 558353043}
+  - 114: {fileID: 558353042}
+  m_Layer: 0
+  m_Name: NetworkManagerRealThingy
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &558353042
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 558353041}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b86cbb43b65c402fab65e757041552e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Server: {fileID: 378069138}
+  Client: {fileID: 1363846842}
+  GameLogic: {fileID: 1363846843}
+  ServerHostname: 127.0.0.1
+--- !u!4 &558353043
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 558353041}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 9.109027, y: 10.932471, z: -10}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 6
 --- !u!1 &745102740
 GameObject:
   m_ObjectHideFlags: 0
@@ -403,13 +447,13 @@ MonoBehaviour:
     CurrentPhase: 0
     PendingPlayerIDs: 
     ResultsFromLastPhase: []
-    MapPattern: {fileID: 0}
+    MapPattern: {fileID: 11400000, guid: cbbb925c26e7c466daf7a6582cf03d19, type: 2}
     WinningPlayerId: 0
   CurrentVisibleState:
     CurrentPhase: 0
     PendingPlayerIDs: 
     ResultsFromLastPhase: []
-    MapPattern: {fileID: 0}
+    MapPattern: {fileID: 11400000, guid: cbbb925c26e7c466daf7a6582cf03d19, type: 2}
     WinningPlayerId: 0
 --- !u!114 &1363846844
 MonoBehaviour:
