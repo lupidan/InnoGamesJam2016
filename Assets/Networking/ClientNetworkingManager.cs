@@ -45,6 +45,7 @@ public class ClientNetworkingManager : MonoBehaviour
 
     public void OnServerConnected(NetworkMessage message)
     {
+        Debug.Log("Client connected to server");
         _client.Send(NetworkingConstants.MsgTypeGameJoin, new MessagePlayerJoin(_playerId));
 
         if (ConnectedHandler != null)
@@ -67,12 +68,14 @@ public class ClientNetworkingManager : MonoBehaviour
 
     private void OnServerToClientStateMessage(NetworkMessage networkMessage)
     {
+        Debug.Log("Client received state from server");
         var message = networkMessage.ReadMessage<MessageGameState>();
         _gameLogic.ReceivedNewGameState(message.ToGameState());
     }
 
     private void OnClientNetworkError(NetworkMessage networkMessage)
     {
+        Debug.Log("Client connection error");
         if (ErrorHandlers != null)
         {
             ErrorHandlers();
