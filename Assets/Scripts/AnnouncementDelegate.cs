@@ -31,7 +31,7 @@ public class AnnouncementDelegate : MonoBehaviour
                 textField.text = "Waiting for player...";
                 break;
             case GamePhase.Planning:
-                textField.text = "Preview your movement";
+                textField.text = "Plan your attack";
                 break;
             case GamePhase.Revision:
                 textField.text = "Choose your cheating monkey";
