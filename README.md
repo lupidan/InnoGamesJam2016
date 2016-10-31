@@ -9,6 +9,9 @@ Plan your turns, let your monkeys play out your strategy and... STOP! Your time 
 
 This is a game in which it is important to anticipate the movements of your opponent.
 
+**See the game in action here:**
+[Gameplay Video](https://www.youtube.com/watch?v=KnX364M9kCo&feature=youtu.be)
+
 ![logo](Docs/cheatingmonkey_screenshot01.png "Monkeys shooting at each other")
 
 ## How to win
@@ -37,16 +40,17 @@ This is a game in which it is important to anticipate the movements of your oppo
  - Created on 28th October at 19:00, finished the 30th at 14:28!
 
 # Contributors
- - Daniel Lupiañez
+ - Sergio R. Lumley 
  - Dennis Bliefernicht
  - Erik Frey
  - Giancarlo Dessena
  - Jan Becker
  - Marta Viader
  - Oriol Ribas
- - Sergio R. Lumley
+ - Daniel Lupiañez
 
  [logo]: relative/path/to/img.jpg?raw=true
+ 
  
  # Binaries for Download
  - [OSX](Binaries/CheetingMonkey1.0.0-osx.app.zip)
